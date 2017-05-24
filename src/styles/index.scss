@@ -1,0 +1,24 @@
+@import "/node_modules/codemirror/lib/codemirror.css";
+
+.container {
+  max-width: 40rem;
+  margin: 2rem auto;
+}
+
+.instructions {
+  font-weight: bold;
+  display: block;
+}
+
+.assignment {
+  width: 100%;
+  max-width: 100%;
+  height: 5rem;
+  resize: none;
+}
+
+.model-solution {
+  white-space: pre;
+  border: 0.01rem solid #d0d0d0;
+  width: 100%;
+}
