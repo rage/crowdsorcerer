@@ -4,9 +4,8 @@ import Api from 'utils/api';
 
 import { combineReducers } from 'redux';
 
-import writerReducer from 'reducers/writer-reducer';
-import type { State as TextState } from 'reducers/writer-reducer';
-import { reducer as formReducer } from 'redux-form';
+import formReducer from 'reducers/form-reducer';
+import type { State as FormState } from 'reducers/form-reducer';
 
 /* eslint-disable no-use-before-define */
 export type ThunkAction = (dispatch: Dispatch, getState: GetState, arguments: ThunkArguments) => any;
@@ -14,7 +13,7 @@ export type ThunkAction = (dispatch: Dispatch, getState: GetState, arguments: Th
 export type Action = { type: string, payload?: any } | ThunkAction | Promise<any>;
 
 export type State = {
-  writerReducer: TextState,
+  formReducer: FormState,
 }
 export type Dispatch = (action: Action) => any;
 
@@ -25,6 +24,5 @@ export type ThunkArguments = {
 export type GetState = () => State;
 
 export default combineReducers({
-  writerReducer,
   formReducer,
 });
