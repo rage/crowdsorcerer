@@ -5,6 +5,9 @@ export const CHANGE_ASSIGNMENT = 'CHANGE_ASSIGNMENT';
 export const CHANGE_MODEL_SOLUTION = 'CHANGE_MODEL_SOLUTION';
 export const CHANGE_TEST_INPUT = 'CHANGE_TEST_INPUT';
 export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
+export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
+export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
+export const TOGGLE_MARKING = 'TOGGLE_MARKING';
 
 export function addTestFieldAction(field: Array<string>) {
   return {
@@ -43,17 +46,43 @@ export function testOutputChangeAction(testOutput: string, index: number) {
   };
 }
 
-export function submitAction(assignment: string, modelSolution: string, testIo: []) {
+export function submitAction(
+  assignment: string,
+  modelSolution: string,
+  testIo: Array<Array<string>>,
+  hiddenRows: Array<number>,
+  ) {
   return {
     assignment,
     modelSolution,
     testIo,
+    hiddenRows,
     type: SUBMIT,
   };
 }
 
+export function addHiddenRow(row: number) {
+  return {
+    row,
+    type: ADD_HIDDEN_ROW,
+  };
+}
+
+export function deleteHiddenRow(row: number) {
+  return {
+    row,
+    type: DELETE_HIDDEN_ROW,
+  };
+}
+
+export function toggleMarking() {
+  return {
+    type: TOGGLE_MARKING,
+  };
+}
+
 export type AddTestFieldAction = {
-  Field: Array<string>,
+  field: Array<string>,
   type: string
 };
 
@@ -81,5 +110,20 @@ export type SubmitAction = {
   assignment: string,
   modelSolution: string,
   testIo: Array<Array<string>>,
+  hiddenRows: Array<number>,
+  type: string
+};
+
+export type AddHiddenRowAction = {
+  row: number,
+  type: string
+};
+
+export type DeleteHiddenRowAction = {
+  row: number,
+  type: string
+};
+
+export type ToggleMarkingAction = {
   type: string
 };

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { Form, Button, Row, Container, Label, Input, Col } from 'reactstrap';
-import CodeMirror from 'react-codemirror';
+import CodeMirror, { TextMarker } from 'react-codemirror';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import {
@@ -11,18 +11,91 @@ import {
   testInputChangeAction,
   testOutputChangeAction,
   assignmentChangeAction,
+  addHiddenRow,
+  deleteHiddenRow,
+  toggleMarking,
 } from 'state/actions';
 import 'codemirror/mode/clike/clike';
-require('codemirror/mode/javascript/javascript.js');
+
+const MAX_TEST_COUNT = 5;
 
 class AssignmentForm extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = { addFieldDisabled: false };
+    this.handleAddField = this.handleAddField.bind(this);
+    this.handleAddNewHiddenRow = this.handleAddNewHiddenRow.bind(this);
+  }
+
+  state: {
+    addFieldDisabled: boolean;
+  };
+
+  componentDidMount() {
+    this.addMarkers();
+    const codeDocument = this.textInput.getCodeMirror();
+    debugger;
+    codeDocument.on('gutterClick',() => this.handleAddNewHiddenRow());
+  }
+
+  componentWillUpdate() {
+    if (this.props.modelSolution) {
+      this.markers.forEach(marker => marker.clear());
+    }
+  }
+
+  componentDidUpdate() {
+    this.addMarkers();
+  }
+
+  addMarkers() {
+    if (this.props.modelSolution) {
+      const codeDocument = this.textInput.getCodeMirror().getDoc();
+      this.markers = this.props.solutionRows.map(row => (
+        codeDocument.markText(
+          { line: row, ch: 0 },
+          { line: row, ch: codeDocument.getLine(row).length },
+          { className: prefixer('hiddenRow'), inclusiveLeft: true, inclusiveRight: false },
+        )
+      ));
+    }
+  }
+
+  handleAddField() {
+    if (this.props.inputOutput.length < MAX_TEST_COUNT) {
+      this.props.onAddFieldClick();
+    }
+    // -1 since adding new field is done asynchronously
+    if (this.props.inputOutput.length === MAX_TEST_COUNT - 1) {
+      this.setState({ addFieldDisabled: true });
+    }
+  }
+
+  handleAddNewHiddenRow(_, line: number, gutter: string, clickEvent: Event) {
+    console.log('handle add hidden row');
+    if (this.props.markingRows) {
+      const codeDocument = this.textInput.getCodeMirror().getDoc();
+      console.log('Cursor: ' + codeDocument.getCursor());
+    }
+  }
+
+  handleAddField: Function;
+  handleAddNewHiddenRow: Function;
+  addFieldDisabled: string;
+  textInput: CodeMirror;
+  markers: TextMarker;
+  wrapper: HTMLDivElement;
 
   props: {
     assignment: string,
     modelSolution: string,
     inputOutput: Array<Array<string>>,
+    solutionRows: Array<number>,
     handleSubmit: (assignment: string, model: string, IO: Array<Array<string>>) => void,
-    onAddFieldClick: (IO: Array<string>) => void,
+    onToggleMarkingRows: () => void,
+    onAddFieldClick: () => void,
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onModelSolutionChange: (modelSolution: string) => void,
@@ -52,12 +125,23 @@ class AssignmentForm extends Component {
           <Row>
             <CodeMirror
               className={prefixer('model-solution')}
-              options={{ mode: 'javascript' }}
+              options={{ mode: 'text/x-java' }, { lineNumbers: true }}
               value={this.props.modelSolution}
               onChange={(solution) => {
-                this.props.onModelSolutionChange(solution)
+                this.props.onModelSolutionChange(solution);
               }}
+              ref={(input) => { this.textInput = input; }}
             />
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                className="col-5 float-right"
+                onClick={this.props.onToggleMarkingRows}
+              >
+              Merkitse piilotettavat rivit
+              </Button>
+            </Col>
           </Row>
           <Label className={prefixer('instructions')}>
             Testit
@@ -91,13 +175,18 @@ class AssignmentForm extends Component {
             ))
           }
           <Row>
-            <Button color="basic" className="btn-block" onClick={this.props.onAddFieldClick}>
+            <Button
+              color="basic"
+              className="btn-block"
+              onClick={this.handleAddField}
+              disabled={(this.state.addFieldDisabled) ? 'disabled' : ''}
+            >
               + Lisää kenttä
             </Button>
           </Row>
           <Button color="success">
             Submit
-        </Button>
+          </Button>
         </Container>
       </Form>
     );
@@ -109,6 +198,8 @@ function mapStateToProps(state: State) {
     assignment: state.formReducer.assignment,
     modelSolution: state.formReducer.modelSolution,
     inputOutput: state.formReducer.inputOutput,
+    solutionRows: state.formReducer.solutionRows,
+    markingRows: state.formReducer.markingRows,
   };
 }
 
@@ -131,6 +222,15 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onTestOutputChange(output: string, index: number) {
       dispatch(testOutputChangeAction(output, index));
+    },
+    onNewHiddenRow(row: number) {
+      dispatch(addHiddenRow(row));
+    },
+    onDeleteHiddenRow(row: number) {
+      dispatch(deleteHiddenRow(row));
+    },
+    onToggleMarkingRows() {
+      dispatch(toggleMarking());
     },
   };
 }

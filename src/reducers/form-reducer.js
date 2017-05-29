@@ -8,36 +8,39 @@ import {
   CHANGE_MODEL_SOLUTION,
   CHANGE_TEST_INPUT,
   CHANGE_TEST_OUTPUT,
+  ADD_HIDDEN_ROW,
+  DELETE_HIDDEN_ROW,
+  TOGGLE_MARKING,
 } from 'state/actions';
 import type {
-  SubmitAction,
+    SubmitAction,
     AddTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
     AssignmentChangeAction,
     ModelSolutionChangeAction,
+    AddHiddenRowAction,
+    DeleteHiddenRowAction,
+    ToggleMarkingAction,
 } from 'state/actions';
 
 export type State = {
   assignment: string,
   modelSolution: string,
   inputOutput: Array<Array<string>>,
+  solutionRows: Array<number>,
+  markingRows: boolean,
 }
 
 const initialState = {
-  assignment: 'opettele reactia',
-  modelSolution: 'git push force',
-  inputOutput: [['irene', 'hv irene'], ['henrik', 'moi henrik']],
+  assignment: '',
+  modelSolution: '',
+  inputOutput: [['', ''], ['', '']],
+  solutionRows: [],
+  markingRows: false,
 };
 
 export default createReducer(initialState, {
-  [SUBMIT](state: State, action: SubmitAction): State {
-    return {
-      assignment: action.assignment,
-      modelSolution: action.modelSolution,
-      inputOutput: action.testIo,
-    };
-  },
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
     return {
       ...state,
@@ -87,6 +90,32 @@ export default createReducer(initialState, {
       ...state,
       ...{
         inputOutput: newInputOutput,
+      },
+    };
+  },
+  [ADD_HIDDEN_ROW](state: State, action: AddHiddenRowAction): State {
+    return {
+      ...state,
+      ...{
+        solutionRows: [...state.solutionRows, action.row],
+      },
+    };
+  },
+  [DELETE_HIDDEN_ROW](state: State, action: DeleteHiddenRowAction): State {
+    const i = state.solutionRows.findIndex(x => x === action.row);
+    return {
+      ...state,
+      ...{
+        solutionRows: [...state.solutionRows.slice(0, i), ...state.solutionRows.slice(i + 1)],
+      },
+    };
+  },
+  [TOGGLE_MARKING](state: State, action: ToggleMarkingAction): State {
+    const marking = state.markingRows;
+    return {
+      ...state,
+      ...{
+        markingRows: !marking,
       },
     };
   },
