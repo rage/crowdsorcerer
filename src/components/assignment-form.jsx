@@ -36,8 +36,8 @@ class AssignmentForm extends Component {
   componentDidMount() {
     this.addMarkers();
     const codeDocument = this.textInput.getCodeMirror();
-    debugger;
-    codeDocument.on('gutterClick',() => this.handleAddNewHiddenRow());
+    codeDocument.on('gutterClick',
+      (instance, line, gutter, clickEvent) => this.handleAddNewHiddenRow(instance, line, gutter, clickEvent));
   }
 
   componentWillUpdate() {
@@ -76,8 +76,7 @@ class AssignmentForm extends Component {
   handleAddNewHiddenRow(_, line: number, gutter: string, clickEvent: Event) {
     console.log('handle add hidden row');
     if (this.props.markingRows) {
-      const codeDocument = this.textInput.getCodeMirror().getDoc();
-      console.log('Cursor: ' + codeDocument.getCursor());
+      console.log('Cursor line #: ' + line);
     }
   }
 
@@ -125,7 +124,7 @@ class AssignmentForm extends Component {
           <Row>
             <CodeMirror
               className={prefixer('model-solution')}
-              options={{ mode: 'text/x-java' }, { lineNumbers: true }}
+              options={{ mode: 'text/x-java', lineNumbers: true }}
               value={this.props.modelSolution}
               onChange={(solution) => {
                 this.props.onModelSolutionChange(solution);
@@ -136,7 +135,7 @@ class AssignmentForm extends Component {
           <Row>
             <Col>
               <Button
-                className="col-5 float-right"
+                className="float-right"
                 onClick={this.props.onToggleMarkingRows}
               >
               Merkitse piilotettavat rivit
