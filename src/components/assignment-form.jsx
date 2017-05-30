@@ -13,7 +13,6 @@ import {
   assignmentChangeAction,
   addHiddenRow,
   deleteHiddenRow,
-  toggleMarking,
 } from 'state/actions';
 import 'codemirror/mode/clike/clike';
 
@@ -27,6 +26,7 @@ class AssignmentForm extends Component {
     this.state = { addFieldDisabled: false };
     this.handleAddField = this.handleAddField.bind(this);
     this.handleAddNewHiddenRow = this.handleAddNewHiddenRow.bind(this);
+    this.modelSolutionMarkers = [];
   }
 
   state: {
@@ -35,9 +35,10 @@ class AssignmentForm extends Component {
 
   componentDidMount() {
     this.addMarkers();
+    this.addGutterMarks();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('gutterClick',
-      (instance, line, gutter, clickEvent) => this.handleAddNewHiddenRow(instance, line, gutter, clickEvent));
+       (instance, line, gutter, clickEvent) => this.handleAddNewHiddenRow(instance, line, gutter));
   }
 
   componentWillUpdate() {
@@ -48,18 +49,35 @@ class AssignmentForm extends Component {
 
   componentDidUpdate() {
     this.addMarkers();
+    this.addGutterMarks();
+  }
+
+  addGutterMarks() {
+    this.modelSolutionMarkers.forEach((lineHandle) => {
+      lineHandle.gutterMarkers['modelsolution-lines'] = null;
+    });
+    this.props.solutionRows.forEach((rowNumber) => {
+      const element = document.createElement('div');
+      element.innerHTML = '☑';
+      const lineHandle = this.textInput.getCodeMirror().setGutterMarker(rowNumber, 'modelsolution-lines', element);
+      this.modelSolutionMarkers.push(lineHandle);
+    });
   }
 
   addMarkers() {
     if (this.props.modelSolution) {
       const codeDocument = this.textInput.getCodeMirror().getDoc();
-      this.markers = this.props.solutionRows.map(row => (
-        codeDocument.markText(
+      this.markers = this.props.solutionRows.map((row) => {
+        let end = 0;
+        if (codeDocument.getLine(row)) {
+          end = codeDocument.getLine(row).length;
+        }
+        return codeDocument.markText(
           { line: row, ch: 0 },
-          { line: row, ch: codeDocument.getLine(row).length },
+          { line: row, ch: end },
           { className: prefixer('hiddenRow'), inclusiveLeft: true, inclusiveRight: false },
-        )
-      ));
+        );
+      });
     }
   }
 
@@ -73,19 +91,35 @@ class AssignmentForm extends Component {
     }
   }
 
-  handleAddNewHiddenRow(_, line: number, gutter: string, clickEvent: Event) {
-    console.log('handle add hidden row');
-    if (this.props.markingRows) {
-      console.log('Cursor line #: ' + line);
+  handleAddNewHiddenRow(cm: CodeMirror, line: number, gutter: string) {
+    if (this.props.solutionRows.includes(line)) {
+      this.props.onDeleteHiddenRow(line);
+      // const info = cm.lineInfo(line);
+      // cm.setGutterMarker(line, 'CodeMirror-linenumbers', info.gutterMarkers = null);
+    } else {
+      this.props.onNewHiddenRow(line);
+      // const info = cm.lineInfo(line);
+      // cm.setGutterMarker(line, 'CodeMirror-linenumbers', info.gutterMarkers = this.makeMarker());
     }
+  }
+
+  makeMarker() {
+    const marker = document.createElement('div');
+    marker.innerHTML = '.';
+    marker.classList.add('CodeMirror-linenumber');
+    marker.classList.add('Codemirror-gutter-elt');
+    marker.classList.add(prefixer('checkbox'));
+    return marker;
   }
 
   handleAddField: Function;
   handleAddNewHiddenRow: Function;
+  makeMarker: Function;
   addFieldDisabled: string;
   textInput: CodeMirror;
   markers: TextMarker;
   wrapper: HTMLDivElement;
+  modelSolutionMarkers: Array<Object>;
 
   props: {
     assignment: string,
@@ -93,12 +127,13 @@ class AssignmentForm extends Component {
     inputOutput: Array<Array<string>>,
     solutionRows: Array<number>,
     handleSubmit: (assignment: string, model: string, IO: Array<Array<string>>) => void,
-    onToggleMarkingRows: () => void,
     onAddFieldClick: () => void,
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onModelSolutionChange: (modelSolution: string) => void,
     onAssignmentChange: (assignment: string) => void,
+    onNewHiddenRow: (row: number) => void,
+    onDeleteHiddenRow: (row: number) => void,
   }
 
   render() {
@@ -124,23 +159,17 @@ class AssignmentForm extends Component {
           <Row>
             <CodeMirror
               className={prefixer('model-solution')}
-              options={{ mode: 'text/x-java', lineNumbers: true }}
+              options={{
+                mode: 'text/x-java',
+                lineNumbers: true,
+                gutters: ['CodeMirror-linenumbers', 'modelsolution-lines'],
+              }}
               value={this.props.modelSolution}
               onChange={(solution) => {
                 this.props.onModelSolutionChange(solution);
               }}
               ref={(input) => { this.textInput = input; }}
             />
-          </Row>
-          <Row>
-            <Col>
-              <Button
-                className="float-right"
-                onClick={this.props.onToggleMarkingRows}
-              >
-              Merkitse piilotettavat rivit
-              </Button>
-            </Col>
           </Row>
           <Label className={prefixer('instructions')}>
             Testit
@@ -198,7 +227,6 @@ function mapStateToProps(state: State) {
     modelSolution: state.formReducer.modelSolution,
     inputOutput: state.formReducer.inputOutput,
     solutionRows: state.formReducer.solutionRows,
-    markingRows: state.formReducer.markingRows,
   };
 }
 
@@ -227,9 +255,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onDeleteHiddenRow(row: number) {
       dispatch(deleteHiddenRow(row));
-    },
-    onToggleMarkingRows() {
-      dispatch(toggleMarking());
     },
   };
 }

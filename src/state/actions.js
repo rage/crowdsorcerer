@@ -7,7 +7,6 @@ export const CHANGE_TEST_INPUT = 'CHANGE_TEST_INPUT';
 export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
-export const TOGGLE_MARKING = 'TOGGLE_MARKING';
 
 export function addTestFieldAction(field: Array<string>) {
   return {
@@ -75,12 +74,6 @@ export function deleteHiddenRow(row: number) {
   };
 }
 
-export function toggleMarking() {
-  return {
-    type: TOGGLE_MARKING,
-  };
-}
-
 export type AddTestFieldAction = {
   field: Array<string>,
   type: string
@@ -121,9 +114,5 @@ export type AddHiddenRowAction = {
 
 export type DeleteHiddenRowAction = {
   row: number,
-  type: string
-};
-
-export type ToggleMarkingAction = {
   type: string
 };
