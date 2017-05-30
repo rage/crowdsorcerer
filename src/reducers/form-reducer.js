@@ -10,7 +10,6 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
-  TOGGLE_MARKING,
 } from 'state/actions';
 import type {
     SubmitAction,
@@ -21,7 +20,6 @@ import type {
     ModelSolutionChangeAction,
     AddHiddenRowAction,
     DeleteHiddenRowAction,
-    ToggleMarkingAction,
 } from 'state/actions';
 
 export type State = {
@@ -29,7 +27,6 @@ export type State = {
   modelSolution: string,
   inputOutput: Array<Array<string>>,
   solutionRows: Array<number>,
-  markingRows: boolean,
 }
 
 const initialState = {
@@ -37,7 +34,6 @@ const initialState = {
   modelSolution: '',
   inputOutput: [['', ''], ['', '']],
   solutionRows: [],
-  markingRows: false,
 };
 
 export default createReducer(initialState, {
@@ -107,15 +103,6 @@ export default createReducer(initialState, {
       ...state,
       ...{
         solutionRows: [...state.solutionRows.slice(0, i), ...state.solutionRows.slice(i + 1)],
-      },
-    };
-  },
-  [TOGGLE_MARKING](state: State, action: ToggleMarkingAction): State {
-    const marking = state.markingRows;
-    return {
-      ...state,
-      ...{
-        markingRows: !marking,
       },
     };
   },
