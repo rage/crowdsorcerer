@@ -27,17 +27,6 @@
   background-color: lightblue;
 }
 
-.CodeMirror-linenumber:after {
-  content: "\2610";
-  font-size: 15px;
-  padding: 0 0 0 2px;
-}
-
-.CodeMirror-linenumber.checkbox:after {
-  width: .8em;
-  content: "\2611";
-}
-
 .modelsolution-lines {
   width: 2em;
 }

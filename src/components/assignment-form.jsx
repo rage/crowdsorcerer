@@ -34,50 +34,48 @@ class AssignmentForm extends Component {
   };
 
   componentDidMount() {
-    this.addMarkers();
+    this.showMarkers(true);
     this.addGutterMarks();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('gutterClick',
-       (instance, line, gutter, clickEvent) => this.handleAddNewHiddenRow(instance, line, gutter));
+      (instance, line) => this.handleAddNewHiddenRow(instance, line));
   }
 
   componentWillUpdate() {
-    if (this.props.modelSolution) {
-      this.markers.forEach(marker => marker.clear());
-    }
+    this.showMarkers(false);
   }
 
   componentDidUpdate() {
-    this.addMarkers();
+    this.showMarkers(true);
     this.addGutterMarks();
   }
 
   addGutterMarks() {
-    this.modelSolutionMarkers.forEach((lineHandle) => {
-      lineHandle.gutterMarkers['modelsolution-lines'] = null;
-    });
-    this.props.solutionRows.forEach((rowNumber) => {
+    this.textInput.getCodeMirror().getDoc().clearGutter('modelsolution-lines');
+    let count = 0;
+    this.textInput.getCodeMirror().getDoc().eachLine(() => {
       const element = document.createElement('div');
-      element.innerHTML = '☑';
-      const lineHandle = this.textInput.getCodeMirror().setGutterMarker(rowNumber, 'modelsolution-lines', element);
+      if (this.props.solutionRows.includes(count)) {
+        element.innerHTML = '\u2611'; // ☑
+      } else {
+        element.innerHTML = '\u2610'; // ☐
+      }
+      const lineHandle = this.textInput.getCodeMirror().setGutterMarker(count, 'modelsolution-lines', element);
       this.modelSolutionMarkers.push(lineHandle);
+      count++;
     });
   }
 
-  addMarkers() {
+  showMarkers(visible: boolean) {
     if (this.props.modelSolution) {
       const codeDocument = this.textInput.getCodeMirror().getDoc();
-      this.markers = this.props.solutionRows.map((row) => {
-        let end = 0;
-        if (codeDocument.getLine(row)) {
-          end = codeDocument.getLine(row).length;
-        }
-        return codeDocument.markText(
-          { line: row, ch: 0 },
-          { line: row, ch: end },
-          { className: prefixer('hiddenRow'), inclusiveLeft: true, inclusiveRight: false },
-        );
-      });
+      if (visible) {
+        this.markers = this.props.solutionRows.map(row =>
+          codeDocument.addLineClass(row, 'background', prefixer('hiddenRow')));
+      } else {
+        this.markers = this.props.solutionRows.map(row =>
+          codeDocument.removeLineClass(row, 'background', prefixer('hiddenRow')));
+      }
     }
   }
 
@@ -91,30 +89,16 @@ class AssignmentForm extends Component {
     }
   }
 
-  handleAddNewHiddenRow(cm: CodeMirror, line: number, gutter: string) {
+  handleAddNewHiddenRow(cm: CodeMirror, line: number) {
     if (this.props.solutionRows.includes(line)) {
       this.props.onDeleteHiddenRow(line);
-      // const info = cm.lineInfo(line);
-      // cm.setGutterMarker(line, 'CodeMirror-linenumbers', info.gutterMarkers = null);
     } else {
       this.props.onNewHiddenRow(line);
-      // const info = cm.lineInfo(line);
-      // cm.setGutterMarker(line, 'CodeMirror-linenumbers', info.gutterMarkers = this.makeMarker());
     }
-  }
-
-  makeMarker() {
-    const marker = document.createElement('div');
-    marker.innerHTML = '.';
-    marker.classList.add('CodeMirror-linenumber');
-    marker.classList.add('Codemirror-gutter-elt');
-    marker.classList.add(prefixer('checkbox'));
-    return marker;
   }
 
   handleAddField: Function;
   handleAddNewHiddenRow: Function;
-  makeMarker: Function;
   addFieldDisabled: string;
   textInput: CodeMirror;
   markers: TextMarker;
@@ -140,8 +124,11 @@ class AssignmentForm extends Component {
     return (
       <Form onSubmit={this.props.handleSubmit}>
         <Container>
-          <Label className={prefixer('instructions')}>
-            Tehtävänanto </Label>
+          <Row>
+            <Label className={prefixer('instructions')}>
+              Tehtävänanto
+            </Label>
+          </Row>
           <Row>
             <Input
               type="textarea"
@@ -153,9 +140,11 @@ class AssignmentForm extends Component {
               }}
             />
           </Row>
-          <Label className={prefixer('instructions')}>
-            Malliratkaisu
-          </Label >
+          <Row>
+            <Label className={prefixer('instructions')}>
+              Malliratkaisu
+            </Label >
+          </Row>
           <Row>
             <CodeMirror
               className={prefixer('model-solution')}
@@ -171,9 +160,11 @@ class AssignmentForm extends Component {
               ref={(input) => { this.textInput = input; }}
             />
           </Row>
-          <Label className={prefixer('instructions')}>
-            Testit
-          </Label >
+          <Row>
+            <Label className={prefixer('instructions')}>
+              Testit
+            </Label >
+          </Row>
           {
             this.props.inputOutput.map((io, index) => (
               <Row>
@@ -203,6 +194,9 @@ class AssignmentForm extends Component {
             ))
           }
           <Row>
+            &nbsp;
+          </Row>
+          <Row>
             <Button
               color="basic"
               className="btn-block"
@@ -212,9 +206,19 @@ class AssignmentForm extends Component {
               + Lisää kenttä
             </Button>
           </Row>
-          <Button color="success">
-            Submit
-          </Button>
+          <Row>
+            &nbsp;
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                color="success"
+                className="float-right"
+              >
+                Lähetä
+              </Button>
+            </Col>
+          </Row>
         </Container>
       </Form>
     );
