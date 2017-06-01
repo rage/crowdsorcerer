@@ -31,7 +31,7 @@ export type State = {
 
 const initialState = {
   assignment: '',
-  modelSolution: '',
+  modelSolution: 'public static final int moi() {',
   inputOutput: [['', ''], ['', '']],
   solutionRows: [],
 };
