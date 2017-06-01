@@ -14,6 +14,7 @@ import {
   addHiddenRow,
   deleteHiddenRow,
 } from 'state/actions';
+import formSolutionTemplate from 'utils/solution-template-former';
 import 'codemirror/mode/clike/clike';
 
 const MAX_TEST_COUNT = 5;
@@ -214,6 +215,7 @@ class AssignmentForm extends Component {
               <Button
                 color="success"
                 className="float-right"
+                onClick={formSolutionTemplate(this.props.modelSolution)}
               >
                 Lähetä
               </Button>
