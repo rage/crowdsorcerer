@@ -49,7 +49,7 @@ export default createReducer(initialState, {
     const previousSolution = state.modelSolution.split('\n');
     const newSolution = action.modelSolution.split('\n');
     let newSolutionRows = state.solutionRows;
-    const newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
+    let newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
     if (state.solutionRows.length > 0) {
       if (newSolutionDifferenceToPrevious < 0) {
         // const removedSolutionRows = [];
@@ -68,15 +68,15 @@ export default createReducer(initialState, {
         //   }
         //   return row;
         // });
+        newSolutionDifferenceToPrevious = Math.abs(newSolutionDifferenceToPrevious);
         let i = 0;
-        debugger;
         for (; i < newSolution.length; i++) {
           if (newSolution[i].localeCompare(previousSolution[i]) !== 0) {
             break;
           }
         }
         const removedSolutionRows = [];
-        const endRow = i + Math.abs(newSolutionDifferenceToPrevious);
+        const endRow = i + newSolutionDifferenceToPrevious;
         for (; i < endRow; i++) {
           if (state.solutionRows.includes(i)) {
             removedSolutionRows.push(i);
@@ -86,8 +86,11 @@ export default createReducer(initialState, {
           !removedSolutionRows.includes(row)
         ));
         newSolutionRows = newSolutionRows.map((row) => {
-          if (row > i) {
-            return row + newSolutionDifferenceToPrevious;
+          if (row >= i) {
+            if (row - newSolutionDifferenceToPrevious >= 0) {
+              return row - newSolutionDifferenceToPrevious;
+            }
+            return 0;
           }
           return row;
         });

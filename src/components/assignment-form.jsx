@@ -43,11 +43,10 @@ class AssignmentForm extends Component {
   }
 
   componentWillUpdate() {
-    this.showMarkers(false);
   }
 
   componentDidUpdate() {
-    this.showMarkers(true);
+    this.showMarkers();
     this.addGutterMarks();
   }
 
@@ -67,17 +66,13 @@ class AssignmentForm extends Component {
     });
   }
 
-  showMarkers(visible: boolean) {
-    if (this.props.modelSolution) {
-      const codeDocument = this.textInput.getCodeMirror().getDoc();
-      if (visible) {
-        this.markers = this.props.solutionRows.map(row =>
-          codeDocument.addLineClass(row, 'background', prefixer('hiddenRow')));
-      } else {
-        this.markers = this.props.solutionRows.map(row =>
-          codeDocument.removeLineClass(row, 'background', prefixer('hiddenRow')));
-      }
+  showMarkers() {
+    const codeDocument = this.textInput.getCodeMirror().getDoc();
+    for (let i = 0; i <= codeDocument.getEditor().lineCount(); i++) {
+      codeDocument.removeLineClass(i, 'background', prefixer('hiddenRow'));
     }
+    this.props.solutionRows.forEach(row =>
+      codeDocument.addLineClass(row, 'background', prefixer('hiddenRow')));
   }
 
   handleAddField() {
