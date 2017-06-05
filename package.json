@@ -10,6 +10,7 @@
     "build": "rm -rf dist && NODE_ENV=production node ./node_modules/.bin/webpack",
     "lint": "yarn run eslint -- --ext .js --ext .jsx",
     "test": "yarn run nyc ava",
+    "testrprt": "./node_modules/.bin/nyc report --reporter=html; google-chrome coverage/index.html",
     "coverage": "BABEL_ENV=production babel --out-dir=dist index.jsx"
   },
   "dependencies": {
