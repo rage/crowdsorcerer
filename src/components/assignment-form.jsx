@@ -215,7 +215,7 @@ class AssignmentForm extends Component {
               <Button
                 color="success"
                 className="float-right"
-                onClick={formSolutionTemplate(this.props.modelSolution)}
+                onClick={formSolutionTemplate(this.props.modelSolution, this.props.solutionRows)}
               >
                 Lähetä
               </Button>
