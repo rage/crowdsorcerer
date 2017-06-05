@@ -46,10 +46,84 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
+    const previousSolution = state.modelSolution.split('\n');
+    const newSolution = action.modelSolution.split('\n');
+    let newSolutionRows = state.solutionRows;
+    const newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
+    if (state.solutionRows.length > 0) {
+      if (newSolutionDifferenceToPrevious < 0) {
+        // const removedSolutionRows = [];
+        // previousSolution.forEach((row, index) => {
+        //   if (!newSolution.includes(row) && state.solutionRows.includes(index)) {
+        //     removedSolutionRows.push(index);
+        //   }
+        // });
+        // newSolutionRows = state.solutionRows.filter(row => (
+        //   !removedSolutionRows.includes(row)
+        // ));
+        // removedSolutionRows.sort().reverse();
+        // newSolutionRows = newSolutionRows.map((row) => {
+        //   if (row > removedSolutionRows[0]) {
+        //     return row - removedSolutionRows.length;
+        //   }
+        //   return row;
+        // });
+        let i = 0;
+        debugger;
+        for (; i < newSolution.length; i++) {
+          if (newSolution[i].localeCompare(previousSolution[i]) !== 0) {
+            break;
+          }
+        }
+        const removedSolutionRows = [];
+        const endRow = i + Math.abs(newSolutionDifferenceToPrevious);
+        for (; i < endRow; i++) {
+          if (state.solutionRows.includes(i)) {
+            removedSolutionRows.push(i);
+          }
+        }
+        newSolutionRows = state.solutionRows.filter(row => (
+          !removedSolutionRows.includes(row)
+        ));
+        newSolutionRows = newSolutionRows.map((row) => {
+          if (row > i) {
+            return row + newSolutionDifferenceToPrevious;
+          }
+          return row;
+        });
+      } else if (newSolutionDifferenceToPrevious > 0) {
+        // const addedSolutionRows = [];
+        // newSolution.forEach((row, index) => {
+        //   if (!previousSolution.includes(row)) {
+        //     addedSolutionRows.push(index);
+        //   }
+        // });
+        // addedSolutionRows.sort().reverse();
+        // newSolutionRows = newSolutionRows.map((row) => {
+        //   if (row >= addedSolutionRows[0]) {
+        //     return row + addedSolutionRows.length;
+        //   }
+        //   return row;
+        // });
+        let i = 0;
+        for (; i < previousSolution.length; i++) {
+          if (previousSolution[i].localeCompare(newSolution[i]) !== 0) {
+            break;
+          }
+        }
+        newSolutionRows = newSolutionRows.map((row) => {
+          if (row >= i) {
+            return row + newSolutionDifferenceToPrevious;
+          }
+          return row;
+        });
+      }
+    }
     return {
       ...state,
       ...{
         modelSolution: action.modelSolution,
+        solutionRows: newSolutionRows,
       },
     };
   },
