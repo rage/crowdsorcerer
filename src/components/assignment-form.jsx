@@ -85,6 +85,12 @@ class AssignmentForm extends Component {
     }
   }
 
+  handleRemoveField(field) {
+    if (this.props.inputOutput.length > 0) {
+      this.props.onRemoveFieldClick();
+    }
+  }
+
   handleAddNewHiddenRow(cm: CodeMirror, line: number) {
     if (this.props.solutionRows.includes(line)) {
       this.props.onDeleteHiddenRow(line);
@@ -186,6 +192,15 @@ class AssignmentForm extends Component {
                     }}
                   />
                 </Col>
+                <Col>
+                  <Button
+                    color="red"
+                    className="btn-block"
+                    onClick={this.handleRemoveField}
+                  >
+                    - Poista kenttä
+                  </Button>
+                </Col>
               </Row>
             ))
           }
@@ -238,6 +253,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onAddFieldClick() {
       dispatch(addTestFieldAction(['', '']));
+    },
+    onRemoveFieldClick() {
+      dispatch(removeTestFieldAction());
     },
     onModelSolutionChange(modelSolution: string) {
       dispatch(modelSolutionChangeAction(modelSolution));

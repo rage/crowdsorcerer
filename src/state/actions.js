@@ -1,6 +1,7 @@
 // @flow
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
+export const REMOVE_TEST_FIELD = 'REMOVE_TEST_FIELD';
 export const CHANGE_ASSIGNMENT = 'CHANGE_ASSIGNMENT';
 export const CHANGE_MODEL_SOLUTION = 'CHANGE_MODEL_SOLUTION';
 export const CHANGE_TEST_INPUT = 'CHANGE_TEST_INPUT';
@@ -12,6 +13,12 @@ export function addTestFieldAction(field: Array<string>) {
   return {
     field,
     type: ADD_TEST_FIELD,
+  };
+}
+
+export function removeTestFieldAction() {
+  return {
+    type: REMOVE_TEST_FIELD,
   };
 }
 

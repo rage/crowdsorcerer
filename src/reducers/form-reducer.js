@@ -45,6 +45,11 @@ export default createReducer(initialState, {
       },
     };
   },
+  [REMOVE_TEST_FIELD](state: State, action: AddTestFieldAction): State {
+    return {
+
+    }
+  },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
     const previousSolution = state.modelSolution.split('\n');
     const newSolution = action.modelSolution.split('\n');
