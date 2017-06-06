@@ -35,7 +35,7 @@ class AssignmentForm extends Component {
   };
 
   componentDidMount() {
-    this.showMarkers(true);
+    // this.showMarkers(true);
     this.addGutterMarks();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('gutterClick',
@@ -148,6 +148,8 @@ class AssignmentForm extends Component {
                 mode: 'text/x-java',
                 lineNumbers: true,
                 gutters: ['CodeMirror-linenumbers', 'modelsolution-lines'],
+                tabSize: 4,
+                indentUnit: 4,
               }}
               value={this.props.modelSolution}
               onChange={(solution) => {
@@ -210,7 +212,7 @@ class AssignmentForm extends Component {
               <Button
                 color="success"
                 className="float-right"
-                onClick={formSolutionTemplate(this.props.modelSolution, this.props.solutionRows)}
+                onClick={() => formSolutionTemplate(this.props.modelSolution, this.props.solutionRows)}
               >
                 Lähetä
               </Button>

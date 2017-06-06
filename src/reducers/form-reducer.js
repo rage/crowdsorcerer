@@ -1,8 +1,8 @@
 // @flow
 import { createReducer } from 'redux-create-reducer';
-import prefixer from 'utils/class-name-prefixer';
+// import prefixer from 'utils/class-name-prefixer';
 import {
-  SUBMIT,
+//  SUBMIT,
   ADD_TEST_FIELD,
   CHANGE_ASSIGNMENT,
   CHANGE_MODEL_SOLUTION,
@@ -12,7 +12,7 @@ import {
   DELETE_HIDDEN_ROW,
 } from 'state/actions';
 import type {
-    SubmitAction,
+//    SubmitAction,
     AddTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
@@ -31,7 +31,7 @@ export type State = {
 
 const initialState = {
   assignment: '',
-  modelSolution: 'public static final int moi() {',
+  modelSolution: '',
   inputOutput: [['', ''], ['', '']],
   solutionRows: [],
 };
@@ -52,22 +52,6 @@ export default createReducer(initialState, {
     let newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
     if (state.solutionRows.length > 0) {
       if (newSolutionDifferenceToPrevious < 0) {
-        // const removedSolutionRows = [];
-        // previousSolution.forEach((row, index) => {
-        //   if (!newSolution.includes(row) && state.solutionRows.includes(index)) {
-        //     removedSolutionRows.push(index);
-        //   }
-        // });
-        // newSolutionRows = state.solutionRows.filter(row => (
-        //   !removedSolutionRows.includes(row)
-        // ));
-        // removedSolutionRows.sort().reverse();
-        // newSolutionRows = newSolutionRows.map((row) => {
-        //   if (row > removedSolutionRows[0]) {
-        //     return row - removedSolutionRows.length;
-        //   }
-        //   return row;
-        // });
         newSolutionDifferenceToPrevious = Math.abs(newSolutionDifferenceToPrevious);
         let i = 0;
         for (; i < newSolution.length; i++) {
@@ -95,19 +79,6 @@ export default createReducer(initialState, {
           return row;
         });
       } else if (newSolutionDifferenceToPrevious > 0) {
-        // const addedSolutionRows = [];
-        // newSolution.forEach((row, index) => {
-        //   if (!previousSolution.includes(row)) {
-        //     addedSolutionRows.push(index);
-        //   }
-        // });
-        // addedSolutionRows.sort().reverse();
-        // newSolutionRows = newSolutionRows.map((row) => {
-        //   if (row >= addedSolutionRows[0]) {
-        //     return row + addedSolutionRows.length;
-        //   }
-        //   return row;
-        // });
         let i = 0;
         for (; i < previousSolution.length; i++) {
           if (previousSolution[i].localeCompare(newSolution[i]) !== 0) {
