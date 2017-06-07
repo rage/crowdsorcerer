@@ -10,7 +10,7 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
-} from 'state/actions';
+} from 'state/form';
 import type {
 //    SubmitAction,
     AddTestFieldAction,
@@ -20,7 +20,7 @@ import type {
     ModelSolutionChangeAction,
     AddHiddenRowAction,
     DeleteHiddenRowAction,
-} from 'state/actions';
+} from 'state/form';
 
 export type State = {
   assignment: string,
