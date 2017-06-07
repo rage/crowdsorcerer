@@ -80,10 +80,7 @@ class AssignmentForm extends Component {
     if (this.props.inputOutput.length < MAX_TEST_COUNT) {
       this.props.onAddFieldClick();
     }
-    // -1 since adding new field is done asynchronously
-    if (this.props.inputOutput.length === MAX_TEST_COUNT - 1) {
-      this.setState({ addFieldDisabled: true });
-    }
+
   }
 
   handleRemoveField(index) {
@@ -193,13 +190,14 @@ class AssignmentForm extends Component {
                     }}
                   />
                 </Col>
-                <Col>
+                <Col sm={2}>
+                  <Label> </Label>
                   <Button
                     color="red"
-                    className="btn-block"
+                    className="float-right"
                     onClick={() => { this.handleRemoveField(index); }}
                   >
-                    - Poista kenttä
+                    Poista
                   </Button>
                 </Col>
               </Row>
@@ -213,7 +211,10 @@ class AssignmentForm extends Component {
               color="basic"
               className="btn-block"
               onClick={this.handleAddField}
-              disabled={(this.state.addFieldDisabled) ? 'disabled' : ''}
+              disabled={
+                (this.props.inputOutput.length >= MAX_TEST_COUNT) ?
+                  'disabled' : ''
+                }
             >
               + Lisää kenttä
             </Button>
