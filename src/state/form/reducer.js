@@ -34,7 +34,7 @@ export type State = {
 const initialState = {
   assignment: '',
   modelSolution: '',
-  inputOutput: [['', ''], ['', '']],
+  inputOutput: [['', '']],
   solutionRows: [],
 };
 
