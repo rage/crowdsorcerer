@@ -7,9 +7,12 @@ import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction } from 'state/form';
 import formSolutionTemplate from 'utils/solution-template-former';
 import 'codemirror/mode/clike/clike';
+import Transition from 'react-motion-ui-pack';
+import { spring } from 'react-motion';
 import InputOutput from './input-output';
 import ModelSolution from './model-solution';
 import Assignment from './assignment';
+
 
 class AssignmentForm extends Component {
 
@@ -35,7 +38,19 @@ class AssignmentForm extends Component {
             Testit
           </Label >
         </FormGroup>
-        {this.props.inputOutput.map((io, index) => <InputOutput index={index} io={io} key={index.toString()} />)}
+        {/*this.props.inputOutput.map((io, index) => <InputOutput index={index} io={io} key={index.toString()} />)*/
+          <Transition
+            appear={{ opacity: 0, translateY: 80 }}
+            enter={{ opacity: 1, translateY: spring(0, { stiffness: 120, damping: 15 }) }}
+            leave={{ opacity: 0 }}
+          >
+            {this.props.inputOutput.map((io, index) =>
+              (<div key={index.toString()}>
+                {<InputOutput index={index} io={io} key={index.toString()} />}
+              </div>),
+            )}
+          </Transition>
+        }
         <FormGroup>
           &nbsp;
         </FormGroup>
