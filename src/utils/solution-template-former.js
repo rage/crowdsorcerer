@@ -1,6 +1,6 @@
-const TEMPLATE_BEGIN_TAG = '// BEGIN';
-const TEMPLATE_END_TAG = '// END';
-const RETURN_STATEMENT = 'return ';
+const TEMPLATE_BEGIN_TAG = '// BEGIN SOLUTION';
+const TEMPLATE_END_TAG = '// END SOLUTION';
+const TEMPLATE_RETURN_STUB = '// STUB: return ';
 const scopeModifiersRegex = /^(\bpublic\b|\bprotected\b|\bprivate\b)/;
 const otherModifiers = ['static', 'final', 'synchronized', 'native', 'staticfp'];
 
@@ -120,12 +120,15 @@ function findNumberOfOccurrences(line: string, searchString: string) {
 function findEndOfMethod(modelLines: Array<string>, index: number) {
   let curlyBraceCounter = 0;
   let i = index;
+  let openCurlyBraceObserved = false;
 
   for (; i < modelLines.length; i++) {
     curlyBraceCounter += findNumberOfOccurrences(modelLines[i], '{');
     curlyBraceCounter -= findNumberOfOccurrences(modelLines[i], '}');
 
-    if (curlyBraceCounter === 0) {
+    if (modelLines[i].includes('{')) openCurlyBraceObserved = true;
+
+    if (curlyBraceCounter === 0 && openCurlyBraceObserved) {
       break;
     }
   }
@@ -135,15 +138,14 @@ function findEndOfMethod(modelLines: Array<string>, index: number) {
 
 function fixTemplateWithStub(modelLines: Array<string>) {
   let row = 0;
-
   for (; row < modelLines.length; row++) {
     const returnObject = findMethodSignature(modelLines, row);
     if (returnObject.index >= 0) {
       row = findEndOfMethod(modelLines, returnObject.index);
       if (row >= 0) {
         const type = generateReturnValue(returnObject.returnType);
-        if (!modelLines[row - 1].includes(RETURN_STATEMENT)) {
-          modelLines.splice(row, 0, '\treturn '.concat(type).concat(';'));
+        if (modelLines[row - 1].includes(TEMPLATE_END_TAG)) {
+          modelLines.splice(row, 0, TEMPLATE_RETURN_STUB.concat(type).concat(';'));
         }
         row++;
       } else {
@@ -159,15 +161,7 @@ export default function formSolutionTemplate(modelSolution: string, solutionRows
   fixTemplateWithStub(finalLines);
 
   const final = finalLines.join('\n');
-  console.log('fixed template '.concat(final));
+  console.log('fixed template: \n '.concat(final));
 
   return final;
 }
-
-// Lisää Begin ja End -tagit piilotettavien rivien alkuun ja loppuun
-
-// Tarkista piilotettavaksi merkattavista riveistä, sisältävätkö ne
-// return-käskyä
-// --> etsi näiden return statementtien tyyppi metodin allekirjoituksesta
-// lisää piilotettavan returnin jälkeen uusi return-lause,
-// jossa oikean tyyppinen arvo

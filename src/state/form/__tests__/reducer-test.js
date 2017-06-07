@@ -1,3 +1,4 @@
+// @flow
 import test from 'ava';
 import reducers from 'state/reducer';
 import {
@@ -8,7 +9,7 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
-} from 'state/actions';
+} from 'state/form';
 
 const twoLineSolution = `print('Hello');
 return world`;

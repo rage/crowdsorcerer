@@ -18,9 +18,9 @@ test('Basic input without any lines marked', (t) => {
 
 test('Basic input with single line marked', (t) => {
   const modelOutput = `public void kerro(int x, int y) {
-// BEGIN
+// BEGIN SOLUTION
     System.out.print(x * y);
-// END
+// END SOLUTION
   }`;
   const output = formSolutionTemplate(inputBasic, [1]);
   t.deepEqual(output, modelOutput);
@@ -28,10 +28,10 @@ test('Basic input with single line marked', (t) => {
 
 test('Basic input with two subsequent lines marked', (t) => {
   const modelOutput = `public void kerro(int x, int y) {
-// BEGIN
+// BEGIN SOLUTION
     System.out.print(x * y);
     System.out.print(x + y);
-// END
+// END SOLUTION
     System.out.print(x - y);
   }`;
   const output = formSolutionTemplate(inputBasicFewLines, [1, 2]);
@@ -40,13 +40,13 @@ test('Basic input with two subsequent lines marked', (t) => {
 
 test('Basic input with two subsequent lines marked', (t) => {
   const modelOutput = `public void kerro(int x, int y) {
-// BEGIN
+// BEGIN SOLUTION
     System.out.print(x * y);
-// END
+// END SOLUTION
     System.out.print(x + y);
-// BEGIN
+// BEGIN SOLUTION
     System.out.print(x - y);
-// END
+// END SOLUTION
   }`;
   const output = formSolutionTemplate(inputBasicFewLines, [1, 3]);
   t.deepEqual(output, modelOutput);
