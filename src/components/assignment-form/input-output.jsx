@@ -1,8 +1,10 @@
 // @flow
 import React, { Component } from 'react';
+import prefixer from "utils/class-name-prefixer";
 import { connect } from 'react-redux';
-import { Row, Label, Input, Col } from 'reactstrap';
+import { Row, Label, Input, Col, Button } from 'reactstrap';
 import type { Dispatch } from 'state/reducer';
+import { removeTestFieldAction } from 'state/form';
 import {
   testInputChangeAction,
   testOutputChangeAction,
@@ -42,6 +44,16 @@ class InputOutput extends Component {
             }}
           />
         </Col>
+        <Col sm={1}>
+          <Label> &nbsp; </Label>
+          <button
+            role="button"
+            className={prefixer('close-button')}
+            onClick={() => { this.props.onRemoveFieldClick(this.props.index); }}
+          >
+            &#10005;
+          </button>
+        </Col>
       </Row>
     );
   }
@@ -54,6 +66,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onTestOutputChange(output: string, index: number) {
       dispatch(testOutputChangeAction(output, index));
+    },
+    onRemoveFieldClick(index) {
+      dispatch(removeTestFieldAction(index));
     },
   };
 }

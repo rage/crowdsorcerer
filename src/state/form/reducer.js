@@ -4,6 +4,7 @@ import { createReducer } from 'redux-create-reducer';
 import {
 //  SUBMIT,
   ADD_TEST_FIELD,
+  REMOVE_TEST_FIELD,
   CHANGE_ASSIGNMENT,
   CHANGE_MODEL_SOLUTION,
   CHANGE_TEST_INPUT,
@@ -14,6 +15,7 @@ import {
 import type {
 //    SubmitAction,
     AddTestFieldAction,
+    RemoveTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
     AssignmentChangeAction,
@@ -42,6 +44,18 @@ export default createReducer(initialState, {
       ...state,
       ...{
         inputOutput: [...state.inputOutput, action.field],
+      },
+    };
+  },
+
+  [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
+    return {
+      ...state,
+      ...{
+        inputOutput: [
+          ...state.inputOutput.slice(0, action.index),
+          ...state.inputOutput.slice(action.index + 1),
+        ],
       },
     };
   },

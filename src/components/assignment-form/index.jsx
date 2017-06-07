@@ -44,6 +44,10 @@ class AssignmentForm extends Component {
             color="basic"
             className="btn-block"
             onClick={this.props.onAddFieldClick}
+            disabled={
+              (this.props.inputOutput.length >= 5) ?
+	              'disabled' : ''
+	          }
           >
             + Lisää kenttä
           </Button>

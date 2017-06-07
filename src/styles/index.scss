@@ -30,3 +30,17 @@
 .modelsolution-lines {
   width: 1em;
 }
+
+$close-button-color: #e74c3c;
+
+.close-button {
+  border: 0;
+  background: transparent;
+  color: $close-button-color;
+  cursor: hand;
+  font-weight: bold;
+  transition: color 0.2s;
+  &:hover {
+    color: darken($close-button-color, 10%);
+  }
+}
