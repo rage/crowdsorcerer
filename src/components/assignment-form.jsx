@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import {
   addTestFieldAction,
+  removeTestFieldAction,
   modelSolutionChangeAction,
   testInputChangeAction,
   testOutputChangeAction,
@@ -85,9 +86,9 @@ class AssignmentForm extends Component {
     }
   }
 
-  handleRemoveField(field) {
+  handleRemoveField(index) {
     if (this.props.inputOutput.length > 0) {
-      this.props.onRemoveFieldClick();
+      this.props.onRemoveFieldClick(index);
     }
   }
 
@@ -196,7 +197,7 @@ class AssignmentForm extends Component {
                   <Button
                     color="red"
                     className="btn-block"
-                    onClick={this.handleRemoveField}
+                    onClick={() => { this.handleRemoveField(index); }}
                   >
                     - Poista kenttä
                   </Button>
@@ -254,8 +255,8 @@ function mapDispatchToProps(dispatch: Dispatch) {
     onAddFieldClick() {
       dispatch(addTestFieldAction(['', '']));
     },
-    onRemoveFieldClick() {
-      dispatch(removeTestFieldAction());
+    onRemoveFieldClick(index) {
+      dispatch(removeTestFieldAction(index));
     },
     onModelSolutionChange(modelSolution: string) {
       dispatch(modelSolutionChangeAction(modelSolution));

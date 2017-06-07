@@ -16,8 +16,9 @@ export function addTestFieldAction(field: Array<string>) {
   };
 }
 
-export function removeTestFieldAction() {
+export function removeTestFieldAction(index: number) {
   return {
+    index,
     type: REMOVE_TEST_FIELD,
   };
 }
@@ -84,6 +85,11 @@ export function deleteHiddenRow(row: number) {
 export type AddTestFieldAction = {
   field: Array<string>,
   type: string
+};
+
+export type RemoveTestFieldAction = {
+  index: number,
+  type: number
 };
 
 export type AssignmentChangeAction = {

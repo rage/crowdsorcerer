@@ -4,6 +4,7 @@ import prefixer from 'utils/class-name-prefixer';
 import {
   SUBMIT,
   ADD_TEST_FIELD,
+  REMOVE_TEST_FIELD,
   CHANGE_ASSIGNMENT,
   CHANGE_MODEL_SOLUTION,
   CHANGE_TEST_INPUT,
@@ -14,6 +15,7 @@ import {
 import type {
     SubmitAction,
     AddTestFieldAction,
+    RemoveTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
     AssignmentChangeAction,
@@ -45,10 +47,18 @@ export default createReducer(initialState, {
       },
     };
   },
-  [REMOVE_TEST_FIELD](state: State, action: AddTestFieldAction): State {
-    return {
+  [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
+    //debugger;
 
-    }
+    return {
+      ...state,
+      ...{
+        inputOutput: [
+          ...state.inputOutput.slice(0, action.index),
+          ...state.inputOutput.slice(action.index + 1),
+        ],
+      },
+    };
   },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
     const previousSolution = state.modelSolution.split('\n');
