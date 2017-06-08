@@ -20,7 +20,7 @@ export function removeTestFieldAction(index: number) {
   return {
     index,
     type: REMOVE_TEST_FIELD,
-	};
+  };
 }
 
 export function assignmentChangeAction(assignment: string) {

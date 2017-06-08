@@ -1,13 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import prefixer from "utils/class-name-prefixer";
+import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
-import { Row, Label, Input, Col, Button } from 'reactstrap';
+import { Row, Label, Input, Col } from 'reactstrap';
 import type { Dispatch } from 'state/reducer';
-import { removeTestFieldAction } from 'state/form';
 import {
   testInputChangeAction,
   testOutputChangeAction,
+  removeTestFieldAction,
 } from 'state/form';
 
 class InputOutput extends Component {
@@ -17,6 +17,7 @@ class InputOutput extends Component {
     io: Array<string>,
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
+    onRemoveFieldClick: (index: number) => void,
   };
 
   render() {
