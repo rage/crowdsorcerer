@@ -12,7 +12,7 @@ import {
   DELETE_HIDDEN_ROW,
 } from 'state/form';
 import type {
-    AddTestFieldAction,
+  AddTestFieldAction,
     RemoveTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
@@ -27,6 +27,7 @@ export type State = {
   modelSolution: string,
   inputOutput: Array<IO>,
   solutionRows: Array<number>,
+  valid: boolean,
 }
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
   modelSolution: '',
   inputOutput: [new IO()],
   solutionRows: [],
+  valid: false,
 };
 
 export default createReducer(initialState, {
@@ -47,13 +49,19 @@ export default createReducer(initialState, {
   },
 
   [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
+    let inputOutput;
+    if (state.inputOutput.length === 1) {
+      inputOutput = [new IO()];
+    } else {
+      inputOutput = [
+        ...state.inputOutput.slice(0, action.index),
+        ...state.inputOutput.slice(action.index + 1),
+      ];
+    }
     return {
       ...state,
       ...{
-        inputOutput: [
-          ...state.inputOutput.slice(0, action.index),
-          ...state.inputOutput.slice(action.index + 1),
-        ],
+        inputOutput,
       },
     };
   },
@@ -124,7 +132,7 @@ export default createReducer(initialState, {
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
     const newInputOutput = state.inputOutput.map((io, i) => {
       if (i === action.index) {
-        return new IO(action.testInput, io.output);
+        return io.changeInput(action.testInput);
       }
       return io;
     });
@@ -138,7 +146,7 @@ export default createReducer(initialState, {
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
     const newInputOutput = state.inputOutput.map((io, i) => {
       if (i === action.index) {
-        return new IO(io.input, action.testOutput);
+        return io.changeOutput(action.testOutput);
       }
       return io;
     });

@@ -21,4 +21,17 @@ export default class IO {
     this.hashCode = currentCount.toString();
     return this.hashCode;
   }
+
+  changeInput(input: string) {
+    const newIO = new IO(input, this.output);
+    newIO.hashCode = this.hashCode;
+    return newIO;
+  }
+
+  changeOutput(output: string) {
+    const newIO = new IO(this.input, output);
+    newIO.hashCode = this.hashCode;
+    return newIO;
+  }
+
 }
