@@ -25,6 +25,7 @@ class AssignmentForm extends Component {
     modelSolution: string,
     handleSubmit: (assignment: string, model: string, IO: Array<IO>) => void,
     onAddFieldClick: () => void,
+    valid: boolean,
   }
 
   render() {
@@ -65,6 +66,7 @@ class AssignmentForm extends Component {
             <Button
               color="success"
               className="float-right"
+              disabled={!this.props.valid}
               onClick={() => formSolutionTemplate(this.props.modelSolution, this.props.solutionRows)}
             >
               Lähetä
@@ -81,6 +83,7 @@ function mapStateToProps(state: State) {
     modelSolution: state.form.modelSolution,
     inputOutput: state.form.inputOutput,
     solutionRows: state.form.solutionRows,
+    valid: state.form.valid,
   };
 }
 

@@ -1,6 +1,7 @@
 // @flow
 import { createReducer } from 'redux-create-reducer';
 import IO from 'domain/io';
+
 import {
   ADD_TEST_FIELD,
   REMOVE_TEST_FIELD,
@@ -22,13 +23,7 @@ import type {
     DeleteHiddenRowAction,
 } from 'state/form';
 
-export type State = {
-  assignment: string,
-  modelSolution: string,
-  inputOutput: Array<IO>,
-  solutionRows: Array<number>,
-  valid: boolean,
-}
+import type { State } from './index';
 
 const initialState = {
   assignment: '',
