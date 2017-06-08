@@ -1,8 +1,7 @@
 // @flow
 import { createReducer } from 'redux-create-reducer';
-// import prefixer from 'utils/class-name-prefixer';
+import IO from 'domain/io';
 import {
-//  SUBMIT,
   ADD_TEST_FIELD,
   REMOVE_TEST_FIELD,
   CHANGE_ASSIGNMENT,
@@ -13,7 +12,6 @@ import {
   DELETE_HIDDEN_ROW,
 } from 'state/form';
 import type {
-//    SubmitAction,
     AddTestFieldAction,
     RemoveTestFieldAction,
     TestInputChangeAction,
@@ -27,14 +25,14 @@ import type {
 export type State = {
   assignment: string,
   modelSolution: string,
-  inputOutput: Array<Array<string>>,
+  inputOutput: Array<IO>,
   solutionRows: Array<number>,
 }
 
 const initialState = {
   assignment: '',
   modelSolution: '',
-  inputOutput: [['', '']],
+  inputOutput: [new IO()],
   solutionRows: [],
 };
 
@@ -126,7 +124,7 @@ export default createReducer(initialState, {
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
     const newInputOutput = state.inputOutput.map((io, i) => {
       if (i === action.index) {
-        return [action.testInput, io[1]];
+        return new IO(action.testInput, io.output);
       }
       return io;
     });
@@ -140,7 +138,7 @@ export default createReducer(initialState, {
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
     const newInputOutput = state.inputOutput.map((io, i) => {
       if (i === action.index) {
-        return [io[0], action.testOutput];
+        return new IO(io.input, action.testOutput);
       }
       return io;
     });

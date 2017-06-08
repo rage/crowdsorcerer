@@ -9,22 +9,21 @@ import formSolutionTemplate from 'utils/solution-template-former';
 import 'codemirror/mode/clike/clike';
 import Transition from 'react-motion-ui-pack';
 import { spring } from 'react-motion';
+import IO from 'domain/io';
 import InputOutput from './input-output';
 import ModelSolution from './model-solution';
 import Assignment from './assignment';
 
-
 class AssignmentForm extends Component {
 
-  handleAddField: Function;
   handleAddNewHiddenRow: Function;
   wrapper: HTMLDivElement;
 
   props: {
-    inputOutput: Array<Array<string>>,
+    inputOutput: Array<IO>,
     solutionRows: Array<number>,
     modelSolution: string,
-    handleSubmit: (assignment: string, model: string, IO: Array<Array<string>>) => void,
+    handleSubmit: (assignment: string, model: string, IO: Array<IO>) => void,
     onAddFieldClick: () => void,
   }
 
@@ -38,19 +37,17 @@ class AssignmentForm extends Component {
             Testit
           </Label >
         </FormGroup>
-        {/*this.props.inputOutput.map((io, index) => <InputOutput index={index} io={io} key={index.toString()} />)*/
-          <Transition
-            appear={{ opacity: 0, translateY: 80 }}
-            enter={{ opacity: 1, translateY: spring(0, { stiffness: 120, damping: 15 }) }}
-            leave={{ opacity: 0 }}
-          >
-            {this.props.inputOutput.map((io, index) =>
-              (<div key={index.toString()}>
-                {<InputOutput index={index} io={io} key={index.toString()} />}
-              </div>),
-            )}
-          </Transition>
-        }
+        <Transition
+          appear={{ opacity: 0, height: 70, translateY: 80, translateX: 0 }}
+          enter={{ overflow: 'hidden', height: 70, opacity: 1, translateX: 0, translateY: spring(0, { stiffness: 120, damping: 15 }) }}
+          leave={{ opacity: 0, height: 0 }}
+        >
+          {this.props.inputOutput.map((io: IO, index: number) =>
+            (<div key={io.hash()}>
+              {<InputOutput index={index} io={io} />}
+            </div>),
+          )}
+        </Transition>
         <FormGroup>
           &nbsp;
         </FormGroup>
@@ -59,10 +56,6 @@ class AssignmentForm extends Component {
             color="basic"
             className="btn-block"
             onClick={this.props.onAddFieldClick}
-            disabled={
-              (this.props.inputOutput.length >= 5) ?
-                'disabled' : ''
-            }
           >
             + Lisää kenttä
           </Button>
@@ -97,7 +90,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       // dispatch action
     },
     onAddFieldClick() {
-      dispatch(addTestFieldAction(['', '']));
+      dispatch(addTestFieldAction());
     },
   };
 }

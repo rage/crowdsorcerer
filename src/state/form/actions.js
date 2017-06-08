@@ -1,4 +1,6 @@
 // @flow
+import IO from 'domain/io';
+
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
 export const REMOVE_TEST_FIELD = 'REMOVE_TEST_FIELD';
@@ -9,9 +11,9 @@ export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
 
-export function addTestFieldAction(field: Array<string>) {
+export function addTestFieldAction() {
   return {
-    field,
+    field: new IO(),
     type: ADD_TEST_FIELD,
   };
 }
@@ -83,7 +85,7 @@ export function deleteHiddenRow(row: number) {
 }
 
 export type AddTestFieldAction = {
-  field: Array<string>,
+  field: IO,
   type: string
 };
 
@@ -115,7 +117,7 @@ export type TestOutputChangeAction = {
 export type SubmitAction = {
   assignment: string,
   modelSolution: string,
-  testIo: Array<Array<string>>,
+  testIo: Array<IO>,
   hiddenRows: Array<number>,
   type: string
 };

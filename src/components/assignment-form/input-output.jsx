@@ -4,6 +4,7 @@ import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import { Row, Label, Input, Col } from 'reactstrap';
 import type { Dispatch } from 'state/reducer';
+import IO from 'domain/io';
 import {
   testInputChangeAction,
   testOutputChangeAction,
@@ -14,7 +15,7 @@ class InputOutput extends Component {
 
   props: {
     index: number,
-    io: Array<string>,
+    io: IO,
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
@@ -28,7 +29,7 @@ class InputOutput extends Component {
           <Input
             type="text"
             name={`input ${this.props.index}`}
-            value={this.props.io[0]}
+            value={this.props.io.input}
             onChange={(event) => {
               this.props.onTestInputChange(event.currentTarget.value, this.props.index);
             }}
@@ -39,7 +40,7 @@ class InputOutput extends Component {
           <Input
             type="text"
             name={`output ${this.props.index}`}
-            value={this.props.io[1]}
+            value={this.props.io.output}
             onChange={(event) => {
               this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
             }}
@@ -50,7 +51,7 @@ class InputOutput extends Component {
           <button
             role="button"
             className={prefixer('close-button')}
-            onClick={() => { this.props.onRemoveFieldClick(this.props.index); }}
+            onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
           >
             &#10005;
           </button>
