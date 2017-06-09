@@ -32,6 +32,7 @@ const initialState = {
   inputOutput: [new IO()],
   solutionRows: [],
   valid: false,
+  errors: [],
 };
 
 export default createReducer(initialState, {

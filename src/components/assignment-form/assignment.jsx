@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import { Row, Label, Input } from 'reactstrap';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import { assignmentChangeAction } from 'state/form';
@@ -19,13 +18,11 @@ class Assignment extends Component {
 
   render() {
     return (
-      <div>
-        <Row>
-          <Label className={prefixer('instructions')}>
+      <div className={prefixer('form-component')}>
+        <div>
+          <div className={prefixer('instructions')}>
             Tehtävänanto
-          </Label>
-        </Row>
-        <Row>
+          </div>
           <div className={prefixer('assignment-editor')}>
             <Editor
               id="assignment"
@@ -35,16 +32,7 @@ class Assignment extends Component {
               }}
             />
           </div>
-          {/* <Input
-            type="textarea"
-            id="assignment"
-            className={prefixer('assignment')}
-            value={this.props.assignment}
-            onChange={(event) => {
-              this.props.onAssignmentChange(event.currentTarget.value);
-            }}
-          />*/}
-        </Row>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { Row, Label } from 'reactstrap';
 import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from 'react-codemirror';
 import type { Dispatch } from 'state/reducer';
@@ -80,13 +79,13 @@ class ModelSolution extends Component {
 
   render() {
     return (
-      <div>
-        <Row>
-          <Label className={prefixer('instructions')}>
+      <div className={prefixer('form-component')}>
+        <div>
+          <div className={prefixer('instructions')}>
             Malliratkaisu
-          </Label >
-        </Row>
-        <Row>
+          </div >
+        </div>
+        <div>
           <CodeMirror
             className={prefixer('model-solution')}
             options={{
@@ -102,7 +101,7 @@ class ModelSolution extends Component {
             }}
             ref={(input) => { this.textInput = input; }}
           />
-        </Row>
+        </div>
       </div>
     );
   }

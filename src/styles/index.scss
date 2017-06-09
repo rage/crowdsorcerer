@@ -16,12 +16,21 @@
   max-width: 100%;
   height: 5rem;
   resize: none;
+  border: 0.1rem solid #d0d0d0;
+  border-radius: 0.4rem;
+}
+.assignment:focus {
+  border: 0.15rem solid #a5cbff;
 }
 
 .model-solution {
   white-space: pre;
-  border: 0.01rem solid #d0d0d0;
+  border: 0.1rem solid #d0d0d0;
+  border-radius: 0.25rem;
   width: 100%;
+  &:focus {
+  border: 0.15rem solid #a5cbff;
+  }
 }
 
 .hiddenRow {
@@ -38,7 +47,7 @@ $close-button-color: #e74c3c;
   border: 0;
   background: transparent;
   color: $close-button-color;
-  cursor: hand;
+  cursor: pointer;
   font-weight: bold;
   transition: color 0.2s;
   &:hover {
@@ -48,8 +57,69 @@ $close-button-color: #e74c3c;
 
 .assignment-editor {
   width: 100%;
-  height: 3rem;
-  //background-color: magenta;
+  min-height: 3rem;
   border: 1px solid rgba(0,0,0,.15);
   border-radius: .25rem;
+}
+
+.errors {
+  border: 0.1rem solid #be1c22;
+  background-color: #fbe4e4;
+  width: 80%;
+  display: inline-block;
+  padding: 10 10 10 10;
+}
+
+.error {
+  margin: 5 0 5 0;
+}
+
+.sender {
+  vertical-align: top;
+  float: right;
+  border-radius: 0.4rem;
+  border: 0.1rem solid #d0d0d0;
+  background-color: #3eba41;
+  padding: 0.5rem 2rem;
+  color: #fff;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+.same-line {
+  display: inline-block;
+}
+
+.test-field {
+  width: 48%;
+}
+
+.input-field {
+  width: 95%;
+  border: 0.1rem solid #d0d0d0;
+  border-radius: 0.15rem;
+  &:focus {
+  border: 0.15rem solid #a5cbff;
+  }
+}
+
+.form-component {
+  padding: 15 0 15 0;
+}
+
+.io-component {
+  padding: 5 0 5 0;
+}
+
+.add-field {
+  padding: 0.5rem 2rem;
+  width: 100%;
+  border: 0.1rem solid #d0d0d0;
+  border-radius: 0.4rem;
+  background-color: #458faa;
+  color: #fff;
+  cursor: pointer;
 }

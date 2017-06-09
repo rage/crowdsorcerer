@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
-import { Row, Label, Input, Col } from 'reactstrap';
 import type { Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import {
@@ -23,10 +22,12 @@ class InputOutput extends Component {
 
   render() {
     return (
-      <Row>
-        <Col>
-          <Label for={`input ${this.props.index}`}>Syöte</Label>
-          <Input
+      <div>
+        <div className={prefixer('same-line').concat(' ').concat(prefixer('test-field'))}>
+          <label htmlFor={`input ${this.props.index}`}>Syöte</label>
+          <br />
+          <input
+            className={prefixer('input-field')}
             type="text"
             name={`input ${this.props.index}`}
             value={this.props.io.input}
@@ -34,10 +35,12 @@ class InputOutput extends Component {
               this.props.onTestInputChange(event.currentTarget.value, this.props.index);
             }}
           />
-        </Col>
-        <Col>
-          <Label for={`output ${this.props.index}`}>Tulos</Label>
-          <Input
+        </div>
+        <div className={prefixer('same-line').concat(' ').concat(prefixer('test-field'))}>
+          <label htmlFor={`output ${this.props.index}`}>Tulos</label>
+          <br />
+          <input
+            className={prefixer('input-field')}
             type="text"
             name={`output ${this.props.index}`}
             value={this.props.io.output}
@@ -45,9 +48,8 @@ class InputOutput extends Component {
               this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
             }}
           />
-        </Col>
-        <Col sm={1}>
-          <Label> &nbsp; </Label>
+        </div>
+        <div className={prefixer('same-line')}>
           <button
             role="button"
             className={prefixer('close-button')}
@@ -55,8 +57,8 @@ class InputOutput extends Component {
           >
             &#10005;
           </button>
-        </Col>
-      </Row>
+        </div>
+      </div>
     );
   }
 }
