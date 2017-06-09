@@ -18,6 +18,8 @@
     "babel-polyfill": "^6.23.0",
     "codemirror": "^5.26.0",
     "draft-js": "^0.10.1",
+    "draft-js-plugins-editor": "^2.0.0-beta1",
+    "draft-js-side-toolbar-plugin": "^2.0.0-beta6",
     "file-loader": "^0.11.1",
     "react": "^15.5.4",
     "react-addons-css-transition-group": "^15.5.2",

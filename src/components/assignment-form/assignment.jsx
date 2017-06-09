@@ -1,21 +1,34 @@
 // @flow
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import { Row, Label, Input } from 'reactstrap';
+import { Row, Label } from 'reactstrap';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import { assignmentChangeAction } from 'state/form';
-import { Editor, EditorState, ContentState, convertToRaw } from 'draft-js';
+// import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
+//import Editor, { EditorState } from 'draft-js-plugins-editor';
+import { EditorState, Editor, RichUtils } from 'draft-js';
+import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
+
+const sideToolbarPlugin = createSideToolbarPlugin();
+const { SideToolbar } = sideToolbarPlugin;
 
 class Assignment extends Component {
 
   props: {
     editorState: EditorState,
-    //contentState: ContentState, // convertFromRaw(this.props.contentState),
-    // assignment: string,
     onAssignmentChange: (editorState: EditorState) => void,
-
   }
+
+  focus = () => {
+    this.editor.focus();
+  }
+
+  _onBoldClick(e) {
+    e.preventDefault();
+    RichUtils.toggleInlineStyle(this.props.editorState, 'BOLD');
+  }
+
 
   render() {
     return (
@@ -26,24 +39,18 @@ class Assignment extends Component {
           </Label>
         </Row>
         <Row>
-          <div className={prefixer('assignment-editor')}>
+          <div className={prefixer('assignment-editor')} onClick={this.focus}>
+            <button onClick={this._onBoldClick.bind(this)}>Bold</button>
             <Editor
               id="assignment"
               editorState={this.props.editorState}
               onChange={(editorState) => {
                 this.props.onAssignmentChange(editorState);
               }}
+              plugins={[sideToolbarPlugin]}
+              ref={(element) => { this.editor = element; }}
             />
           </div>
-          {/* <Input
-            type="textarea"
-            id="assignment"
-            className={prefixer('assignment')}
-            value={this.props.assignment}
-            onChange={(event) => {
-              this.props.onAssignmentChange(event.currentTarget.value);
-            }}
-          />*/}
         </Row>
       </div>
     );
