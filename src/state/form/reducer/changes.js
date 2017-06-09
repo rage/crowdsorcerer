@@ -22,11 +22,12 @@ import type {
     AddHiddenRowAction,
     DeleteHiddenRowAction,
 } from 'state/form';
+import { EditorState } from 'draft-js';
 
 import type { State } from './index';
 
 const initialState = {
-  assignment: '',
+  assignment: EditorState.createEmpty(),
   modelSolution: '',
   inputOutput: [new IO()],
   solutionRows: [],

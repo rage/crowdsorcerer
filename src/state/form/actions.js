@@ -1,5 +1,6 @@
 // @flow
 import IO from 'domain/io';
+import { EditorState } from 'draft-js';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -25,7 +26,7 @@ export function removeTestFieldAction(index: number) {
   };
 }
 
-export function assignmentChangeAction(assignment: string) {
+export function assignmentChangeAction(assignment: EditorState) {
   return {
     assignment,
     type: CHANGE_ASSIGNMENT,
@@ -95,8 +96,8 @@ export type RemoveTestFieldAction = {
 };
 
 export type AssignmentChangeAction = {
-  assignment: string,
-  type: string
+  assignment: EditorState,
+  type: EditorState
 };
 
 export type ModelSolutionChangeAction = {
