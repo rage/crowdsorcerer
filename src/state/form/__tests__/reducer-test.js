@@ -160,3 +160,12 @@ test('Remove a single empty field from intial state test input/output array', (t
   t.deepEqual(state.form.inputOutput, [new IO()]);
 });
 
+test('Remove only field from intial state test input/output array', (t) => {
+  const state = reducers(
+    { form: { assignment: '', modelSolution: '', inputOutput: [new IO()], solutionRows: [] } },
+    { index: 0, type: REMOVE_TEST_FIELD },
+  );
+
+  t.deepEqual(state.form.inputOutput, [new IO()]);
+});
+
