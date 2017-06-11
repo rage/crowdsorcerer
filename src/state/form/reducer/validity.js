@@ -1,4 +1,5 @@
 // @flow
+import { Plain } from 'slate';
 import {
   ADD_TEST_FIELD,
   REMOVE_TEST_FIELD,
@@ -56,7 +57,7 @@ function isFormAction(actionContainer: AnyAction) {
 }
 
 function isValidAssignment(state: State) {
-  const words = state.assignment.getCurrentContent().getPlainText().split(/[ \n]+/).filter(Boolean);
+  const words = Plain.serialize(state.assignment).split(/[ \n]+/).filter(Boolean);
   let errorMessage;
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
     errorMessage = ASSIGNMENT_ERROR;

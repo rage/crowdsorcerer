@@ -1,11 +1,11 @@
 import reduceReducers from 'reduce-reducers';
 import IO from 'domain/io';
-import { EditorState } from 'draft-js';
+import { State as sState } from 'slate';
 import changes from './changes';
 import validity from './validity';
 
 export type State = {
-  assignment: EditorState,
+  assignment: sState,
   modelSolution: string,
   inputOutput: Array<IO>,
   solutionRows: Array<number>,

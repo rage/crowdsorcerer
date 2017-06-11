@@ -22,12 +22,25 @@ import type {
     AddHiddenRowAction,
     DeleteHiddenRowAction,
 } from 'state/form';
-import { EditorState } from 'draft-js';
+import { Raw } from 'slate';
 
 import type { State } from './index';
 
 const initialState = {
-  assignment: EditorState.createEmpty(),
+  assignment: Raw.deserialize({
+    nodes: [
+      {
+        kind: 'block',
+        type: 'paragraph',
+        nodes: [
+          {
+            kind: 'text',
+            text: '',
+          },
+        ],
+      },
+    ],
+  }, { terse: true }),
   modelSolution: '',
   inputOutput: [new IO()],
   solutionRows: [],

@@ -1,6 +1,6 @@
 // @flow
 import IO from 'domain/io';
-import { EditorState } from 'draft-js';
+import { State as sState } from 'slate';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -26,7 +26,7 @@ export function removeTestFieldAction(index: number) {
   };
 }
 
-export function assignmentChangeAction(assignment: EditorState) {
+export function assignmentChangeAction(assignment: sState) {
   return {
     assignment,
     type: CHANGE_ASSIGNMENT,
@@ -57,7 +57,7 @@ export function testOutputChangeAction(testOutput: string, index: number) {
 }
 
 export function submitAction(
-  assignment: string,
+  assignment: sState,
   modelSolution: string,
   testIo: Array<Array<string>>,
   hiddenRows: Array<number>,
@@ -96,8 +96,8 @@ export type RemoveTestFieldAction = {
 };
 
 export type AssignmentChangeAction = {
-  assignment: EditorState,
-  type: EditorState
+  assignment: sState,
+  type: sState
 };
 
 export type ModelSolutionChangeAction = {
@@ -116,7 +116,7 @@ export type TestOutputChangeAction = {
 };
 
 export type SubmitAction = {
-  assignment: string,
+  assignment: sState,
   modelSolution: string,
   testIo: Array<IO>,
   hiddenRows: Array<number>,
