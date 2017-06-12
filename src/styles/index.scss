@@ -1,6 +1,6 @@
 @import "../../node_modules/codemirror/lib/codemirror";
 @import "../../node_modules/draft-js/dist/Draft.css";
-
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 .container {
   max-width: 40rem;
   margin: 2rem auto;
@@ -60,6 +60,7 @@ $close-button-color: #e74c3c;
   min-height: 3rem;
   border: 1px solid rgba(0,0,0,.15);
   border-radius: .25rem;
+  padding: 0.25rem;
 }
 
 .errors {
@@ -216,17 +217,20 @@ $close-button-color: #e74c3c;
 .button {
   color: #ccc;
   cursor: pointer;
+  //margin-left: 0.25rem;
+  margin-right: 0.25rem;
 }
 
 .button[data-active="true"] {
   color: black;
+  margin-right: 0.25rem;
 }
 
 .toolbar-menu {
-  padding: 1px 0 17px 18px;
-  margin: 0 -20px;
-  border-bottom: 2px solid #eee;
-  margin-bottom: 20px;
+  //padding: 1px 0 17px 18px;
+  //margin: .25rem;//0 -20px;
+  margin-top: .8rem;
+  margin-bottom: 0.3rem;
 }
 
 .hover-menu {
@@ -274,4 +278,10 @@ $close-button-color: #e74c3c;
 
 .check-list-item > span:last-child:focus {
   outline: none;
+}
+
+// material icons
+.material-icons {
+  font-size: 18px;
+  vertical-align: text-bottom;
 }

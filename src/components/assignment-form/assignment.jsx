@@ -84,6 +84,7 @@ class Assignment extends Component {
   }
 
   onClickMark = (e: Event, type: string) => {
+    // debugger;
     e.preventDefault();
     let state = this.props.editorState;
 
@@ -92,7 +93,8 @@ class Assignment extends Component {
       .toggleMark(type)
       .apply();
 
-    this.setState(state);
+    this.props.onAssignmentChange(state);
+    // this.setState(state);
   }
 
   onClickBlock = (e: Event, type: string) => {
@@ -139,33 +141,34 @@ class Assignment extends Component {
     }
 
     state = transform.apply();
-    this.setState(state);
+    this.props.onAssignmentChange(state);
+    // this.setState(state);
   }
 
   renderMarkButton = (type: string, icon: string) => {
     const isActive = this.hasMark(type);
-    const onMouseDown = e => this.onClickMark(e: Event, type: string);
+    const onMouseDown = e => this.onClickMark(e, type);
 
     return (
       <span className={prefixer('button')} onMouseDown={onMouseDown} data-active={isActive}>
-        <span className={prefixer('material-icons')}>{icon}</span>
+        <span className="material-icons">{icon}</span>
       </span>
     );
   }
 
   renderBlockButton = (type: string, icon: string) => {
     const isActive = this.hasBlock(type);
-    const onMouseDown = e => this.onClickBlock(e: Event, type: string);
+    const onMouseDown = e => this.onClickBlock(e, type);
 
     return (
       <span className={prefixer('button')} onMouseDown={onMouseDown} data-active={isActive}>
-        <span className={prefixer('material-icons')}>{icon}</span>
+        <span className="material-icons">{icon}</span>
       </span>
     );
   }
 
   renderToolbar = () => (
-    <div className={prefixer('menu toolbar-menu')}>
+    <div className={prefixer('toolbar-menu')}>
       {this.renderMarkButton('bold', 'format_bold')}
       {this.renderMarkButton('italic', 'format_italic')}
       {this.renderMarkButton('underlined', 'format_underlined')}
@@ -180,8 +183,9 @@ class Assignment extends Component {
 
   renderEditor = () => (
     <Editor
+      spellCheck="false"
       id="assignment"
-      placeholder={'Enter some rich text...'}
+      placeholder={'Vähintään viisi sanaa.'}
       schema={schema}
       state={this.props.editorState}
       onChange={(editorState) => {
