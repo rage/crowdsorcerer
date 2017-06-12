@@ -45,7 +45,7 @@ const initialState = {
   inputOutput: [new IO()],
   solutionRows: [],
   valid: false,
-  errors: [],
+  errors: new Map(),
 };
 
 export default createReducer(initialState, {

@@ -63,7 +63,7 @@ function isValidAssignment(state: State) {
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
     return {
       key: 'assignmentError',
-      msg: ASSIGNMENT_ERROR,
+      errors: [ASSIGNMENT_ERROR],
     };
   }
   return undefined;
@@ -85,32 +85,32 @@ function isValidModelSolution(state: State) {
   if (errorMessage) {
     return {
       key: 'modelSolutionError',
-      msg: errorMessage,
+      errors: [errorMessage],
     };
   }
   return undefined;
 }
 
 function isValidTestInputOutput(state: State) {
-  const IOErrors = [];
+  const errors = [];
   for (let i = 0; i < state.inputOutput.length; i++) {
     if (state.inputOutput[i].input.length === 0) {
-      IOErrors.push({
+      errors.push({
         key: 'inputError',
         msg: TEST_INPUT_ERROR,
         index: i,
       });
     }
     if (state.inputOutput[i].output.length === 0) {
-      IOErrors.push({
+      errors.push({
         key: 'outputError',
         msg: TEST_OUTPUT_ERROR,
         index: i,
       });
     }
   }
-  if (IOErrors.length !== 0) {
-    return { key: 'IOError', IOErrors };
+  if (errors.length > 0) {
+    return { key: 'IOError', errors };
   }
   return undefined;
 }
@@ -119,11 +119,11 @@ export default function (state: State, action: AnyAction) {
   const validityFunctions = [isValidAssignment, isValidModelSolution, isValidTestInputOutput];
   if (isFormAction(action)) {
     let valid = false;
-    const errors = [];
+    const errors = new Map();
     validityFunctions.forEach((func) => {
       const error = func(state);
       if (error) {
-        errors.push(error);
+        errors.set(error.key, error.errors);
       }
     });
     if (errors.size === 0) {

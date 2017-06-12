@@ -73,37 +73,17 @@ $close-button-color: #e74c3c;
 }
 
 .error {
-  // margin: 5 0 5 0;
   position:relative;
-  // top: 1.70rem;
-  padding:0.2rem;
-  margin:1em 0 3em;
+  margin: 0 0.3em 0 0.3em;
   color:#000;
-  background:#f3961c; /* default background for browsers without gradient support */
-  /* css3 */
+  width: 48%;
+  background:#f3961c;
   background:-webkit-gradient(linear, 0 0, 0 100%, from(#f3711c), to(#f93535));
   background:-moz-linear-gradient(#f3711c, #f93535);
   background:-o-linear-gradient(#f3711c, #f93535);
   background:linear-gradient(#f3711c, #f93535);  -webkit-border-radius:10px;
   -moz-border-radius:10px;
   border-radius:10px;
-  &:after {
-    content:"";
-    position:absolute;
-    top:-0.95rem; /* value = - border-top-width - border-bottom-width */
-    right:20rem; /* controls horizontal position */
-    bottom:auto;
-    left:auto;
-    border-width:0 0.95rem 0.95rem; /* vary these values to change the angle of the vertex */
-    border-color:#f3711c transparent;
-    border-style: solid;
-    display: block;
-    width: 0;
-  }
-}
-
-.errorHide {
-  visibility: hidden;
 }
 
 .sender {
@@ -121,8 +101,10 @@ $close-button-color: #e74c3c;
   }
 }
 
-.same-line {
-  display: inline-block;
+.field-container {
+	display: flex;
+  flex-direction: row;
+  align-items: flex-end;
 }
 
 .test-field {
@@ -141,10 +123,6 @@ $close-button-color: #e74c3c;
 
 .form-component {
   padding: 15 0 15 0;
-}
-
-.io-component {
-  padding: 5 0 5 0;
 }
 
 .add-field {
@@ -314,4 +292,10 @@ $close-button-color: #e74c3c;
 .material-icons {
   font-size: 18px;
   vertical-align: text-bottom;
+}
+
+.IO-error-messages {
+  display: flex;
+  justify-content: center;
+  width: 94%;
 }

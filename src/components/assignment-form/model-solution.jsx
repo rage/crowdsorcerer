@@ -9,6 +9,7 @@ import {
   addHiddenRow,
   deleteHiddenRow,
 } from 'state/form';
+import Transition from 'react-motion-ui-pack';
 
 class ModelSolution extends Component {
 
@@ -72,7 +73,7 @@ class ModelSolution extends Component {
   props: {
     value: string,
     solutionRows: Array<number>,
-    errors: Array<Object>,
+    errors: Map<string, Array<Object>>,
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
@@ -81,12 +82,11 @@ class ModelSolution extends Component {
   render() {
     let errMessage = '';
     let errClass = prefixer('errorHide');
-    this.props.errors.forEach((error) => {
-      if (error.key === 'modelSolutionError') {
-        errClass = prefixer('error');
-        errMessage = error.msg;
-      }
-    });
+    const modelSolutionErrors = this.props.errors.get('modelSolutionError');
+    if (modelSolutionErrors) {
+      errClass = prefixer('error');
+      errMessage = modelSolutionErrors[0];
+    }
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -111,9 +111,15 @@ class ModelSolution extends Component {
             ref={(input) => { this.textInput = input; }}
           />
         </div>
-        <span id="modelSolutionError" className={errClass}>
-          {errMessage}
-        </span>
+        <Transition
+          appear={{ opacity: 0 }}
+          enter={{ opacity: 1 }}
+          leave={{ opacity: 0 }}
+        >
+          <span key={errClass} className={errClass}>
+            {errMessage}
+          </span>
+        </Transition>
       </div>
     );
   }

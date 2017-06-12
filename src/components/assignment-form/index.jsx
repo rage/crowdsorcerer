@@ -25,14 +25,9 @@ class AssignmentForm extends Component {
     handleSubmit: (assignment: string, model: string, IO: Array<IO>) => void,
     onAddFieldClick: () => void,
     valid: boolean,
-    errors: Array<Object>,
   }
 
   render() {
-    let errorsClass = '';
-    if (this.props.errors.length !== 0) {
-      errorsClass = prefixer('errors');
-    }
     const form = (
       <form onSubmit={this.props.handleSubmit}>
         <Assignment />
@@ -76,7 +71,7 @@ class AssignmentForm extends Component {
           </button>
         </div>
         <div className={prefixer('form-component')}>
-          {/*<div className={errorsClass} >
+          {/* <div className={errorsClass} >
             {this.props.errors.map(error => (<div className={prefixer('error')} key={error}>{error} </div>))}
           </div>*/}
           <button
