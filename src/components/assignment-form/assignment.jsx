@@ -4,28 +4,31 @@ import prefixer from 'utils/class-name-prefixer';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import { assignmentChangeAction } from 'state/form';
+import Transition from 'react-motion-ui-pack';
 import { Editor, EditorState, ContentState, convertToRaw } from 'draft-js';
 
 class Assignment extends Component {
 
   props: {
     editorState: EditorState,
-    errors: Array<Object>,
-    //contentState: ContentState, // convertFromRaw(this.props.contentState),
+    errors: Map<string, Array<Object>>,
+    // contentState: ContentState, // convertFromRaw(this.props.contentState),
     // assignment: string,
     onAssignmentChange: (editorState: EditorState) => void,
 
   }
 
   render() {
+    const count = 0;
     let errMessage = '';
     let errClass = prefixer('errorHide');
-    this.props.errors.forEach((error) => {
-      if (error.key === 'assignmentError') {
+    if (this.props.errors) {
+      const assignmentErrors = this.props.errors.get('assignmentError');
+      if (assignmentErrors) {
         errClass = prefixer('error');
-        errMessage = error.msg;
+        errMessage = assignmentErrors[0];
       }
-    });
+    }
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -41,11 +44,17 @@ class Assignment extends Component {
               }}
             />
           </div>
-          <span id="assignmentError" className={errClass}>
-            {errMessage}
-          </span>
-        </div>
-      </div>
+          <Transition
+            appear={{ opacity: 0 }}
+            enter={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
+          >
+            <span key={errClass} className={errClass}>
+              {errMessage}
+            </span>
+          </Transition>
+        </div >
+      </div >
     );
   }
 }
