@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from 'react-codemirror';
-import type { Dispatch } from 'state/reducer';
+import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import {
   modelSolutionChangeAction,
@@ -72,12 +72,21 @@ class ModelSolution extends Component {
   props: {
     value: string,
     solutionRows: Array<number>,
+    errors: Array<Object>,
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
   };
 
   render() {
+    let errMessage = '';
+    let errClass = prefixer('errorHide');
+    this.props.errors.forEach((error) => {
+      if (error.key === 'modelSolutionError') {
+        errClass = prefixer('error');
+        errMessage = error.msg;
+      }
+    });
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -102,9 +111,18 @@ class ModelSolution extends Component {
             ref={(input) => { this.textInput = input; }}
           />
         </div>
+        <span id="modelSolutionError" className={errClass}>
+          {errMessage}
+        </span>
       </div>
     );
   }
+}
+
+function mapStateToProps(state: State) {
+  return {
+    errors: state.form.errors,
+  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
@@ -121,4 +139,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(ModelSolution);
+export default connect(mapStateToProps, mapDispatchToProps)(ModelSolution);

@@ -30,7 +30,7 @@
   border-radius: 0.25rem;
   width: 100%;
   &:focus {
-  border: 0.15rem solid #a5cbff;
+    border: 0.15rem solid #a5cbff;
   }
 }
 
@@ -73,7 +73,37 @@ $close-button-color: #e74c3c;
 }
 
 .error {
-  margin: 5 0 5 0;
+  // margin: 5 0 5 0;
+  position:relative;
+  // top: 1.70rem;
+  padding:0.2rem;
+  margin:1em 0 3em;
+  color:#000;
+  background:#f3961c; /* default background for browsers without gradient support */
+  /* css3 */
+  background:-webkit-gradient(linear, 0 0, 0 100%, from(#f3711c), to(#f93535));
+  background:-moz-linear-gradient(#f3711c, #f93535);
+  background:-o-linear-gradient(#f3711c, #f93535);
+  background:linear-gradient(#f3711c, #f93535);  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  border-radius:10px;
+  &:after {
+    content:"";
+    position:absolute;
+    top:-0.95rem; /* value = - border-top-width - border-bottom-width */
+    right:20rem; /* controls horizontal position */
+    bottom:auto;
+    left:auto;
+    border-width:0 0.95rem 0.95rem; /* vary these values to change the angle of the vertex */
+    border-color:#f3711c transparent;
+    border-style: solid;
+    display: block;
+    width: 0;
+  }
+}
+
+.errorHide {
+  visibility: hidden;
 }
 
 .sender {
@@ -97,6 +127,7 @@ $close-button-color: #e74c3c;
 
 .test-field {
   width: 48%;
+  padding: 5 0 0 0;
 }
 
 .input-field {
@@ -104,7 +135,7 @@ $close-button-color: #e74c3c;
   border: 0.1rem solid #d0d0d0;
   border-radius: 0.15rem;
   &:focus {
-  border: 0.15rem solid #a5cbff;
+    border: 0.15rem solid #a5cbff;
   }
 }
 

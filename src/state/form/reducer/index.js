@@ -10,7 +10,7 @@ export type State = {
   inputOutput: Array<IO>,
   solutionRows: Array<number>,
   valid: boolean,
-  errors: Array<string>,
+  errors: Array<Object>,
 }
 
 export default reduceReducers(changes, validity);

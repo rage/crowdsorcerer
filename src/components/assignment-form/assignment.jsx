@@ -141,6 +141,7 @@ class Assignment extends Component {
   props: {
     editorState: sState,
     onAssignmentChange: (editorState: sState) => void,
+    errors: Array<Object>,
   }
 
   renderMarkButton = (type: string, icon: string) => {
@@ -194,6 +195,14 @@ class Assignment extends Component {
   )
 
   render() {
+    let errMessage = '';
+    let errClass = prefixer('errorHide');
+    this.props.errors.forEach((error) => {
+      if (error.key === 'assignmentError') {
+        errClass = prefixer('error');
+        errMessage = error.msg;
+      }
+    });
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -206,6 +215,9 @@ class Assignment extends Component {
           <div className={prefixer('assignment-editor')}>
             {this.renderEditor()}
           </div>
+          <span id="assignmentError" className={errClass}>
+            {errMessage}
+          </span>
         </div>
       </div>
     );
@@ -215,6 +227,7 @@ class Assignment extends Component {
 function mapStateToProps(state: State) {
   return {
     editorState: state.form.assignment,
+    errors: state.form.errors,
   };
 }
 

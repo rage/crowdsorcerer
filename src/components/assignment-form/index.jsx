@@ -25,7 +25,7 @@ class AssignmentForm extends Component {
     handleSubmit: (assignment: string, model: string, IO: Array<IO>) => void,
     onAddFieldClick: () => void,
     valid: boolean,
-    errors: Array<string>,
+    errors: Array<Object>,
   }
 
   render() {
@@ -54,7 +54,7 @@ class AssignmentForm extends Component {
               }}
               enter={{
                 overflow: 'hidden',
-                height: 70,
+                height: 95,
                 opacity: 1,
                 translateX: 0,
                 translateY: spring(0, { stiffness: 120, damping: 15 }),
@@ -76,9 +76,9 @@ class AssignmentForm extends Component {
           </button>
         </div>
         <div className={prefixer('form-component')}>
-          <div className={errorsClass} >
+          {/*<div className={errorsClass} >
             {this.props.errors.map(error => (<div className={prefixer('error')} key={error}>{error} </div>))}
-          </div>
+          </div>*/}
           <button
             disabled={!this.props.valid}
             className={prefixer('sender')}
