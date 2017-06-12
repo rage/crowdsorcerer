@@ -183,7 +183,7 @@ class Assignment extends Component {
 
   renderEditor = () => (
     <Editor
-      spellCheck="false"
+      spellCheck={false}
       id="assignment"
       placeholder={'Vähintään viisi sanaa.'}
       schema={schema}
