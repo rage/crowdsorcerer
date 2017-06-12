@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
-import type { Dispatch } from 'state/reducer';
+import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import {
   testInputChangeAction,
@@ -15,6 +15,7 @@ class InputOutput extends Component {
   props: {
     index: number,
     io: IO,
+    errors: Array<Object>,
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
@@ -36,6 +37,13 @@ class InputOutput extends Component {
             }}
           />
         </div>
+        {this.props.errors.forEach((error) => {
+          if (error.key === 'IOError' && error.index === this.props.index) {
+            return <span key={'input'.concat(this.props.index.toString())} className={prefixer('error')}> {error.msg} </span>;
+          }
+          return undefined;
+        })
+        }
         <div className={prefixer('same-line').concat(' ').concat(prefixer('test-field'))}>
           <label htmlFor={`output ${this.props.index}`}>Tulos</label>
           <br />
@@ -58,9 +66,22 @@ class InputOutput extends Component {
             &#10005;
           </button>
         </div>
+        {this.props.errors.map((error) => {
+          if (error.key === 'outputError' && error.index === this.props.index) {
+            return <span key={'output'.concat(this.props.index.toString())} className={prefixer('error')}> {error.msg} </span>;
+          }
+          return undefined;
+        })
+        }
       </div>
     );
   }
+}
+
+function mapStateToProps(state: State) {
+  return {
+    errors: state.form.errors,
+  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
@@ -77,4 +98,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(InputOutput);
+export default connect(mapStateToProps, mapDispatchToProps)(InputOutput);

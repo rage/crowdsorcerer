@@ -10,6 +10,7 @@ class Assignment extends Component {
 
   props: {
     editorState: EditorState,
+    errors: Array<Object>,
     //contentState: ContentState, // convertFromRaw(this.props.contentState),
     // assignment: string,
     onAssignmentChange: (editorState: EditorState) => void,
@@ -17,6 +18,14 @@ class Assignment extends Component {
   }
 
   render() {
+    let errMessage = '';
+    let errClass = prefixer('errorHide');
+    this.props.errors.forEach((error) => {
+      if (error.key === 'assignmentError') {
+        errClass = prefixer('error');
+        errMessage = error.msg;
+      }
+    });
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -32,6 +41,9 @@ class Assignment extends Component {
               }}
             />
           </div>
+          <span id="assignmentError" className={errClass}>
+            {errMessage}
+          </span>
         </div>
       </div>
     );
@@ -41,6 +53,7 @@ class Assignment extends Component {
 function mapStateToProps(state: State) {
   return {
     editorState: state.form.assignment,
+    errors: state.form.errors,
   };
 }
 

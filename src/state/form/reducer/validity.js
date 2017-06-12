@@ -36,7 +36,8 @@ const MODEL_SOLUTION_LINE_ERROR = 'Mallivastauksen tulee olla vähintään '
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = 'Mallivastauksen tulee olla vähintään '
   .concat(MIN_MODEL_SOLUTION_LINE_AMOUNT.toString())
   .concat(' riviä ja ').concat(MIN_MODEL_SOLUTION_WORD_AMOUNT.toString()).concat(' sanaa pitkä.');
-const TEST_INPUT_OUTPUT_ERROR = 'Testien syöte- ja tulos-kentät eivät voi olla tyhjiä.';
+const TEST_INPUT_ERROR = 'Testin syöte-kenttä ei voi olla tyhjä.';
+const TEST_OUTPUT_ERROR = 'Testin tulos-kenttä ei voi olla tyhjä.';
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
@@ -57,11 +58,13 @@ function isFormAction(actionContainer: AnyAction) {
 
 function isValidAssignment(state: State) {
   const words = state.assignment.getCurrentContent().getPlainText().split(/[ \n]+/).filter(Boolean);
-  let errorMessage;
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
-    errorMessage = ASSIGNMENT_ERROR;
+    return {
+      key: 'assignmentError',
+      msg: ASSIGNMENT_ERROR,
+    };
   }
-  return errorMessage;
+  return undefined;
 }
 
 
@@ -77,15 +80,35 @@ function isValidModelSolution(state: State) {
   } else if (lines.length < MIN_MODEL_SOLUTION_LINE_AMOUNT) {
     errorMessage = MODEL_SOLUTION_LINE_ERROR;
   }
-  return errorMessage;
+  if (errorMessage) {
+    return {
+      key: 'modelSolutionError',
+      msg: errorMessage,
+    };
+  }
+  return undefined;
 }
 
 function isValidTestInputOutput(state: State) {
+  const IOErrors = [];
   for (let i = 0; i < state.inputOutput.length; i++) {
-    if (state.inputOutput[i].input.length === 0 ||
-      state.inputOutput[i].output.length === 0) {
-      return TEST_INPUT_OUTPUT_ERROR;
+    if (state.inputOutput[i].input.length === 0) {
+      IOErrors.push({
+        key: 'inputError',
+        msg: TEST_INPUT_ERROR,
+        index: i,
+      });
     }
+    if (state.inputOutput[i].output.length === 0) {
+      IOErrors.push({
+        key: 'outputError',
+        msg: TEST_OUTPUT_ERROR,
+        index: i,
+      });
+    }
+  }
+  if (IOErrors.length !== 0) {
+    return { key: 'IOError', IOErrors };
   }
   return undefined;
 }
@@ -101,7 +124,7 @@ export default function (state: State, action: AnyAction) {
         errors.push(error);
       }
     });
-    if (errors.length === 0) {
+    if (errors.size === 0) {
       valid = true;
     }
     return { ...state, ...{ valid, errors } };
