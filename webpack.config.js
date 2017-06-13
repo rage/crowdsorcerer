@@ -38,13 +38,14 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+        TMC_TOKEN: JSON.stringify(process.env.TMCTOKEN || 'development'),
       },
     }),
     new ExtractTextPlugin('[name].css'),
     isDevelopment ? null : new webpack.optimize.UglifyJsPlugin({ minimize: true }),
     new BrowserSyncPlugin({
       host: 'localhost',
-      port: 3000,
+      port: 3001,
       proxy: 'http://localhost:51433/',
     }),
   ].filter(p => !!p),

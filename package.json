@@ -34,7 +34,8 @@
     "redux-thunk": "^2.2.0",
     "slate": "^0.20.3",
     "style-loader": "^0.18.1",
-    "url-loader": "^0.5.8"
+    "url-loader": "^0.5.8",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "app-module-path": "^2.2.0",

@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+import 'whatwg-fetch';
 // import '../node_modules/bootstrap/scss/bootstrap.scss';
 
 import React from 'react';

@@ -1,6 +1,8 @@
 // @flow
 import IO from 'domain/io';
 import { State as sState } from 'slate';
+import type { ThunkArgument } from 'state/store';
+import type { Dispatch, GetState } from 'state/reducer';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -56,7 +58,7 @@ export function testOutputChangeAction(testOutput: string, index: number) {
   };
 }
 
-export function submitAction(
+export function createSubmitAction(
   assignment: sState,
   modelSolution: string,
   testIo: Array<Array<string>>,
@@ -68,6 +70,12 @@ export function submitAction(
     testIo,
     hiddenRows,
     type: SUBMIT,
+  };
+}
+
+export function submitAction() {
+  return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    await api.postForm(getState);
   };
 }
 

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import { addTestFieldAction } from 'state/form';
+import { addTestFieldAction, submitAction } from 'state/form';
 import formSolutionTemplate from 'utils/solution-template-former';
 import 'codemirror/mode/clike/clike';
 import Transition from 'react-motion-ui-pack';
@@ -101,7 +101,7 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
     handleSubmit() {
-      // dispatch action
+      dispatch(submitAction());
     },
     onAddFieldClick() {
       dispatch(addTestFieldAction());
