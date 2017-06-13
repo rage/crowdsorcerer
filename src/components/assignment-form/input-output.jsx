@@ -30,63 +30,66 @@ class InputOutput extends Component {
       <div >
         <div className={prefixer('field-container')}>
           <span className={prefixer('same-line').concat(' ').concat(prefixer('test-field'))}>
-            <label htmlFor={`input ${this.props.index}`}>Syöte</label>
-            <br />
-            <input
-              className={prefixer('input-field')}
-              type="text"
-              name={`input ${this.props.index}`}
-              value={this.props.io.input}
-              onChange={(event) => {
-                this.props.onTestInputChange(event.currentTarget.value, this.props.index);
-              }}
-            />
+            <div>
+              <label htmlFor={`input ${this.props.index}`}>Syöte</label>
+              <br />
+              <input
+                className={prefixer('input-field')}
+                type="text"
+                name={`input ${this.props.index}`}
+                value={this.props.io.input}
+                onChange={(event) => {
+                  this.props.onTestInputChange(event.currentTarget.value, this.props.index);
+                }}
+              />
+              {IOErrors.map((error) => {
+                if (error.key === 'inputError' && error.index === this.props.index) {
+                  return (
+                    <span
+                      key={'input'.concat(this.props.index.toString())} className={prefixer('error')}
+                    >
+                      {error.msg}
+                    </span>);
+                }
+                return undefined;
+              })
+              }
+            </div>
           </span>
           <span className={(prefixer('test-field'))}>
-            <label htmlFor={`output ${this.props.index}`}>Tulos</label>
-            <br />
-            <input
-              className={prefixer('input-field')}
-              type="text"
-              name={`output ${this.props.index}`}
-              value={this.props.io.output}
-              onChange={(event) => {
-                this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
-              }}
-            />
+            <div>
+              <label htmlFor={`output ${this.props.index}`}>Tulos</label>
+              <br />
+              <input
+                className={prefixer('input-field')}
+                type="text"
+                name={`output ${this.props.index}`}
+                value={this.props.io.output}
+                onChange={(event) => {
+                  this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
+                }}
+              />
+              {IOErrors.map((error) => {
+                if (error.key === 'outputError' && error.index === this.props.index) {
+                  return (
+                    <span
+                      key={'output'.concat(this.props.index.toString())}
+                      className={prefixer('error').concat(' ').concat(prefixer('output'))}
+                    > {error.msg}
+                    </span>);
+                }
+                return undefined;
+              })
+              }
+            </div>
           </span>
-          <span >
-            <button
-              role="button"
-              className={prefixer('close-button')}
-              onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
-            >
+          <button
+            role="button"
+            className={prefixer('close-button')}
+            onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
+          >
             &#10005;
           </button>
-          </span>
-        </div>
-        <div className={prefixer('IO-error-messages')}>
-          <span >
-            {IOErrors.map((error) => {
-              if (error.key === 'inputError' && error.index === this.props.index) {
-                return <span key={'input'.concat(this.props.index.toString())} className={prefixer('error')}> {error.msg} </span>;
-              }
-              return undefined;
-            })
-            }
-            {IOErrors.map((error) => {
-              if (error.key === 'outputError' && error.index === this.props.index) {
-                return (
-                  <span
-                    key={'output'.concat(this.props.index.toString())}
-                    className={prefixer('error').concat(' ').concat(prefixer('output'))}
-                  > {error.msg}
-                  </span>);
-              }
-              return undefined;
-            })
-          }
-          </span>
         </div>
       </div>
     );

@@ -71,9 +71,6 @@ class AssignmentForm extends Component {
           </button>
         </div>
         <div className={prefixer('form-component')}>
-          {/* <div className={errorsClass} >
-            {this.props.errors.map(error => (<div className={prefixer('error')} key={error}>{error} </div>))}
-          </div>*/}
           <button
             disabled={!this.props.valid}
             className={prefixer('sender')}
