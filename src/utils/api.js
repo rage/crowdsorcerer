@@ -1,8 +1,12 @@
 // @flow
+import { Raw } from 'slate';
 import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
 
+const SERVER = 'http://localhost:3000';
+
 export default class Api {
+
   store: Store<any>;
 
   fetchNewShit(): Promise<{ zip_url: string }> {
@@ -16,7 +20,7 @@ export default class Api {
       oauth_token: process.env.TMC_TOKEN,
       exercise: {
         assignment_id: 1,
-        description: state.assignment,
+        description: Raw.serialize(state.assignment),
         code: state.modelSolution,
         testIO: IOArray,
       },
@@ -27,14 +31,16 @@ export default class Api {
   postForm(state: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
       const data = this.createJSON(state);
-      fetch('/exercises', {
+      fetch(`${SERVER}/exercises`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'same-origin',
-      }).then((response) => {
+      }).then(resp => resp.json())
+      .then((response) => {
+        debugger;
         console.log('response:'.concat(response.toString()));
 
         // resolve(response.text());

@@ -75,7 +75,7 @@ export function createSubmitAction(
 
 export function submitAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    await api.postForm(getState);
+    await api.postForm(getState().form);
   };
 }
 

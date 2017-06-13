@@ -76,6 +76,7 @@ class AssignmentForm extends Component {
             className={prefixer('sender')}
             onClick={(e) => {
               e.preventDefault();
+              this.props.handleSubmit();
               formSolutionTemplate(this.props.modelSolution, this.props.solutionRows);
             }}
           >
