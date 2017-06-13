@@ -1,6 +1,7 @@
 @import "../../node_modules/codemirror/lib/codemirror";
 @import "../../node_modules/draft-js/dist/Draft.css";
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+
 .container {
   max-width: 40rem;
   margin: 2rem auto;
@@ -227,8 +228,6 @@ $close-button-color: #e74c3c;
 }
 
 .toolbar-menu {
-  //padding: 1px 0 17px 18px;
-  //margin: .25rem;//0 -20px;
   margin-top: .8rem;
   margin-bottom: 0.3rem;
 }

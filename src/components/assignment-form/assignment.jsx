@@ -38,21 +38,6 @@ const schema = {
 
 class Assignment extends Component {
 
-  props: {
-    editorState: sState,
-    onAssignmentChange: (editorState: sState) => void,
-  }
-
-  hasMark = (type: string) => {
-    const state = this.props.editorState;
-    return state.marks.some(mark => mark.type == type);
-  }
-
-  hasBlock = (type: string) => {
-    const state = this.props.editorState;
-    return state.blocks.some(node => node.type == type);
-  }
-
   onKeyDown = (e: Event, data: Data, state: State) => {
     if (!data.isMod) return;
     let mark;
@@ -74,13 +59,14 @@ class Assignment extends Component {
         return;
     }
 
-    state = state
+    const newstate = state
       .transform()
       .toggleMark(mark)
       .apply();
 
     e.preventDefault();
-    return state;
+    this.props.onAssignmentChange(newstate);
+    // return newstate;
   }
 
   onClickMark = (e: Event, type: string) => {
@@ -104,7 +90,7 @@ class Assignment extends Component {
     const { document } = state;
 
     // Handle everything but list buttons.
-    if (type != 'bulleted-list' && type != 'numbered-list') {
+    if (type !== 'bulleted-list' && type !== 'numbered-list') {
       const isActive = this.hasBlock(type);
       const isList = this.hasBlock('list-item');
 
@@ -117,12 +103,9 @@ class Assignment extends Component {
         transform
           .setBlock(isActive ? DEFAULT_NODE : type);
       }
-    }
-
-    // Handle the extra wrapping required for list buttons.
-    else {
+    } else {  // Handle the extra wrapping required for list buttons.
       const isList = this.hasBlock('list-item');
-      const istype = state.blocks.some((block) => !!document.getClosest(block.key, parent => parent.type == type));
+      const istype = state.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type));
 
       if (isList && istype) {
         transform
@@ -131,7 +114,7 @@ class Assignment extends Component {
           .unwrapBlock('numbered-list');
       } else if (isList) {
         transform
-          .unwrapBlock(type == 'bulleted-list' ? 'numbered-list' : 'bulleted-list')
+          .unwrapBlock(type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list')
           .wrapBlock(type);
       } else {
         transform
@@ -143,6 +126,21 @@ class Assignment extends Component {
     state = transform.apply();
     this.props.onAssignmentChange(state);
     // this.setState(state);
+  }
+
+  hasBlock = (type: string) => {
+    const state = this.props.editorState;
+    return state.blocks.some(node => node.type === type);
+  }
+
+  hasMark = (type: string) => {
+    const state = this.props.editorState;
+    return state.marks.some(mark => mark.type === type);
+  }
+
+  props: {
+    editorState: sState,
+    onAssignmentChange: (editorState: sState) => void,
   }
 
   renderMarkButton = (type: string, icon: string) => {
