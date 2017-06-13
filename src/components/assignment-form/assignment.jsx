@@ -19,7 +19,6 @@ class Assignment extends Component {
   }
 
   render() {
-    const count = 0;
     let errMessage = '';
     let errClass = prefixer('errorHide');
     if (this.props.errors) {
