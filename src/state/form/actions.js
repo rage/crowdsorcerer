@@ -3,6 +3,7 @@ import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
 import type { Dispatch, GetState } from 'state/reducer';
+import { startSendAction, sendSuccessfulAction, sendFailAction } from 'state/submission';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -75,7 +76,16 @@ export function createSubmitAction(
 
 export function submitAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    await api.postForm(getState().form);
+    dispatch(startSendAction());
+    api.postForm(getState().form)
+    .then((success) => {
+      dispatch(sendSuccessfulAction());
+      console.info(success);
+    }
+    , (error) => {
+      console.error(error);
+      dispatch(sendFailAction());
+    });
   };
 }
 

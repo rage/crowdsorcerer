@@ -4,7 +4,6 @@ import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction, submitAction } from 'state/form';
-import formSolutionTemplate from 'utils/solution-template-former';
 import 'codemirror/mode/clike/clike';
 import Transition from 'react-motion-ui-pack';
 import { spring } from 'react-motion';
@@ -22,12 +21,18 @@ class AssignmentForm extends Component {
     inputOutput: Array<IO>,
     solutionRows: Array<number>,
     modelSolution: string,
-    handleSubmit: (assignment: string, model: string, IO: Array<IO>) => void,
+    handleSubmit: () => void,
     onAddFieldClick: () => void,
     valid: boolean,
+    sendingStatus: string,
   }
 
   render() {
+    let statusDisplay = prefixer('sendingStatus');
+    if (this.props.sendingStatus === 'NONE') {
+      statusDisplay = statusDisplay.concat(' ').concat(prefixer('sendingStatusHidden'));
+    }
+
     const form = (
       <form onSubmit={this.props.handleSubmit}>
         <Assignment />
@@ -77,11 +82,15 @@ class AssignmentForm extends Component {
             onClick={(e) => {
               e.preventDefault();
               this.props.handleSubmit();
-              formSolutionTemplate(this.props.modelSolution, this.props.solutionRows);
             }}
           >
             Lähetä
           </button>
+        </div>
+        <div className={statusDisplay}>
+          <div className={prefixer('sendingInfo')}>
+            {this.props.sendingStatus}
+          </div>
         </div>
       </form>
     );
@@ -96,6 +105,7 @@ function mapStateToProps(state: State) {
     solutionRows: state.form.solutionRows,
     valid: state.form.valid,
     errors: state.form.errors,
+    sendingStatus: state.submission.sendingStatus,
   };
 }
 

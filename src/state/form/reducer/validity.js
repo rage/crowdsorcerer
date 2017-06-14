@@ -59,7 +59,6 @@ function isFormAction(actionContainer: AnyAction) {
 
 function isValidAssignment(state: State) {
   const words = Plain.serialize(state.assignment).split(/[ \n]+/).filter(Boolean);
-  let errorMessage;
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
     return {
       key: 'assignmentError',

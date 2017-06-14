@@ -13,7 +13,7 @@ import {
   DELETE_HIDDEN_ROW,
 } from 'state/form';
 import type {
-  AddTestFieldAction,
+    AddTestFieldAction,
     RemoveTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,

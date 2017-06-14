@@ -2,6 +2,7 @@
 import { Raw } from 'slate';
 import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
+import formSolutionTemplate from 'utils/solution-template-former';
 
 const SERVER = 'http://localhost:3000';
 
@@ -9,19 +10,20 @@ export default class Api {
 
   store: Store<any>;
 
-  fetchNewShit(): Promise<{ zip_url: string }> {
-    return Promise.resolve({ zip_url: 'https://example.com/lol.zip' });
-  }
+  // fetchNewShit(): Promise<{ zip_url: string }> {
+  //   return Promise.resolve({ zip_url: 'https://example.com/lol.zip' });
+  // }
 
   createJSON(state: FormState) {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
+    const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
     {
       oauth_token: process.env.TMC_TOKEN,
       exercise: {
         assignment_id: 1,
         description: Raw.serialize(state.assignment),
-        code: state.modelSolution,
+        code: parsedForm,
         testIO: IOArray,
       },
     }
@@ -38,16 +40,9 @@ export default class Api {
           'Content-Type': 'application/json',
         },
         credentials: 'same-origin',
-      }).then(resp => resp.json())
-      .then((response) => {
-        debugger;
-        console.log('response:'.concat(response.toString()));
-
-        // resolve(response.text());
-      }, (error) => {
-        console.log('error'.concat(error.toString()));
-        // reject(error); //= > String
-      });
+      })
+      .then(resp => resp.json())
+      .then(resolve, reject);
     });
   }
 
