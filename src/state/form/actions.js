@@ -3,7 +3,7 @@ import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
 import type { Dispatch, GetState } from 'state/reducer';
-import { startSendAction, sendSuccessfulAction, sendFailAction } from 'state/submission';
+import { startSendAction, sendReceivedAction, sendFailAction } from 'state/submission';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -79,12 +79,15 @@ export function submitAction() {
     dispatch(startSendAction());
     api.postForm(getState().form)
     .then((success) => {
-      dispatch(sendSuccessfulAction());
+      dispatch(sendReceivedAction());
       console.info(success);
     }
     , (error) => {
       console.error(error);
       dispatch(sendFailAction());
+    });
+    api.createSubscription(() => {
+      console.info('dispatch action to change prosessing state');
     });
   };
 }

@@ -3,12 +3,15 @@ import { Raw } from 'slate';
 import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
 import formSolutionTemplate from 'utils/solution-template-former';
+import ActionCable from 'actioncable';
 
 const SERVER = 'http://localhost:3000';
+const SOCKET_SERVER = 'wss://localhost:3000/cable';
 
 export default class Api {
 
   store: Store<any>;
+  // App:
 
   // fetchNewShit(): Promise<{ zip_url: string }> {
   //   return Promise.resolve({ zip_url: 'https://example.com/lol.zip' });
@@ -28,6 +31,19 @@ export default class Api {
       },
     }
     );
+  }
+
+  createSubscription(onUpdate: () => void) {
+    const cable = ActionCable.createConsumer(SOCKET_SERVER);
+
+    const room = cable.subscriptions.create('SubmissionStatusChannel', {
+      connected() {
+        console.info('connected');
+      },
+      disconnected() {},
+      received() {},
+    });
+    onUpdate.call();
   }
 
   postForm(state: FormState): Promise<any> {
