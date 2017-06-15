@@ -1,5 +1,6 @@
 // @flow
 import { createReducer } from 'redux-create-reducer';
+import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 
 import {
@@ -61,7 +62,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        inputOutput: [...state.inputOutput, action.field],
+        inputOutput: [...state.inputOutput, new FormValue(action.field)],
       },
     };
   },
@@ -69,7 +70,7 @@ export default createReducer(initialState, {
   [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
     let inputOutput;
     if (state.inputOutput.length === 1) {
-      inputOutput = [new IO()];
+      inputOutput = [new FormValue(new IO())];
     } else {
       inputOutput = [
         ...state.inputOutput.slice(0, action.index),
@@ -84,7 +85,7 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
-    const previousSolution = state.modelSolution.split('\n');
+    const previousSolution = state.modelSolution.get().split('\n');
     const newSolution = action.modelSolution.split('\n');
     let newSolutionRows = state.solutionRows;
     let newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
@@ -134,7 +135,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        modelSolution: action.modelSolution,
+        modelSolution: new FormValue(action.modelSolution),
         solutionRows: newSolutionRows,
       },
     };
@@ -148,12 +149,15 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
-    const newInputOutput = state.inputOutput.map((io, i) => {
-      if (i === action.index) {
-        return io.changeInput(action.testInput);
-      }
-      return io;
-    });
+    const newInputOutput = state.inputOutput
+      .map(o => o.get())
+      .map((io, i) => {
+        if (i === action.index) {
+          return io.changeInput(action.testInput);
+        }
+        return io;
+      })
+      .map(o => new FormValue(o));
     return {
       ...state,
       ...{
@@ -162,12 +166,15 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
-    const newInputOutput = state.inputOutput.map((io, i) => {
-      if (i === action.index) {
-        return io.changeOutput(action.testOutput);
-      }
-      return io;
-    });
+    const newInputOutput = state.inputOutput
+      .map(o => o.get())
+      .map((io, i) => {
+        if (i === action.index) {
+          return io.changeOutput(action.testOutput);
+        }
+        return io;
+      })
+      .map(o => new FormValue(o));
     return {
       ...state,
       ...{

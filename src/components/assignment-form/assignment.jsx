@@ -237,7 +237,6 @@ class Assignment extends Component {
 function mapStateToProps(state: State) {
   return {
     editorState: state.form.assignment,
-    errors: state.form.errors,
     showErrors: state.form.showErrors,
   };
 }
