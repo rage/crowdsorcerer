@@ -11,6 +11,7 @@ export type State = {
   solutionRows: Array<number>,
   valid: boolean,
   errors: Map<string, Array<Object>>,
+  showErrors: boolean,
 }
 
 export default reduceReducers(changes, validity);

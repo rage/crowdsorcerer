@@ -198,7 +198,7 @@ class Assignment extends Component {
   render() {
     let errMessage = '';
     let errClass = prefixer('errorHide');
-    if (this.props.errors) {
+    if (this.props.errors && this.props.showErrors) {
       const assignmentErrors = this.props.errors.get('assignmentError');
       if (assignmentErrors) {
         errClass = prefixer('error');
@@ -236,6 +236,7 @@ function mapStateToProps(state: State) {
   return {
     editorState: state.form.assignment,
     errors: state.form.errors,
+    showErrors: state.form.showErrors,
   };
 }
 

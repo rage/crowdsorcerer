@@ -14,6 +14,7 @@ export const CHANGE_TEST_INPUT = 'CHANGE_TEST_INPUT';
 export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
+export const CHANGE_ERRORS_VISIBILITY = 'CHANGE_ERRORS_VISIBILITY';
 
 export function addTestFieldAction() {
   return {
@@ -59,6 +60,12 @@ export function testOutputChangeAction(testOutput: string, index: number) {
   };
 }
 
+export function changeErrorVisibilityAction() {
+  return {
+    type: CHANGE_ERRORS_VISIBILITY,
+  };
+}
+
 export function createSubmitAction(
   assignment: sState,
   modelSolution: string,
@@ -89,6 +96,18 @@ export function submitAction() {
     api.createSubscription(() => {
       console.info('dispatch action to change prosessing state');
     });
+  };
+}
+
+
+export function submitButtonPressedAction() {
+  return function submitter(dispatch: Dispatch, getState: GetState) {
+    dispatch(changeErrorVisibilityAction());
+    const state = getState();
+    if (!state.form.valid) {
+      return;
+    }
+    dispatch(submitAction());
   };
 }
 
@@ -151,5 +170,9 @@ export type AddHiddenRowAction = {
 
 export type DeleteHiddenRowAction = {
   row: number,
+  type: string
+};
+
+export type ChangeErrorsVisibilityAction = {
   type: string
 };

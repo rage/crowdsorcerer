@@ -83,7 +83,7 @@ class ModelSolution extends Component {
     let errMessage = '';
     let errClass = prefixer('errorHide');
     const modelSolutionErrors = this.props.errors.get('modelSolutionError');
-    if (modelSolutionErrors) {
+    if (modelSolutionErrors && this.props.showErrors) {
       errClass = prefixer('error');
       errMessage = modelSolutionErrors[0];
     }
@@ -128,6 +128,7 @@ class ModelSolution extends Component {
 function mapStateToProps(state: State) {
   return {
     errors: state.form.errors,
+    showErrors: state.form.showErrors,
   };
 }
 

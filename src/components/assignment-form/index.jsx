@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import { addTestFieldAction, submitAction } from 'state/form';
+import { addTestFieldAction, submitButtonPressedAction } from 'state/form';
 import 'codemirror/mode/clike/clike';
 import Transition from 'react-motion-ui-pack';
 import { spring } from 'react-motion';
@@ -25,6 +25,7 @@ class AssignmentForm extends Component {
     onAddFieldClick: () => void,
     valid: boolean,
     sendingStatus: string,
+    showErrors: boolean,
   }
 
   render() {
@@ -77,7 +78,7 @@ class AssignmentForm extends Component {
         </div>
         <div className={prefixer('form-component')}>
           <button
-            disabled={!this.props.valid}
+            disabled={this.props.showErrors && !this.props.valid}
             className={prefixer('sender')}
             onClick={(e) => {
               e.preventDefault();
@@ -105,6 +106,7 @@ function mapStateToProps(state: State) {
     solutionRows: state.form.solutionRows,
     valid: state.form.valid,
     errors: state.form.errors,
+    showErrors: state.form.showErrors,
     sendingStatus: state.submission.sendingStatus,
   };
 }
@@ -112,7 +114,7 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
     handleSubmit() {
-      dispatch(submitAction());
+      dispatch(submitButtonPressedAction());
     },
     onAddFieldClick() {
       dispatch(addTestFieldAction());

@@ -11,6 +11,7 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
+  CHANGE_ERRORS_VISIBILITY,
 } from 'state/form';
 import type {
     AddTestFieldAction,
@@ -46,6 +47,7 @@ const initialState = {
   solutionRows: [],
   valid: false,
   errors: new Map(),
+  showErrors: false,
 };
 
 export default createReducer(initialState, {
@@ -181,6 +183,14 @@ export default createReducer(initialState, {
       ...state,
       ...{
         solutionRows: [...state.solutionRows.slice(0, i), ...state.solutionRows.slice(i + 1)],
+      },
+    };
+  },
+  [CHANGE_ERRORS_VISIBILITY](state: State): State {
+    return {
+      ...state,
+      ...{
+        showErrors: !state.showErrors,
       },
     };
   },

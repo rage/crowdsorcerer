@@ -43,7 +43,7 @@ class InputOutput extends Component {
                 }}
               />
               {IOErrors.map((error) => {
-                if (error.key === 'inputError' && error.index === this.props.index) {
+                if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
                   return (
                     <span
                       key={'input'.concat(this.props.index.toString())} className={prefixer('error')}
@@ -70,7 +70,7 @@ class InputOutput extends Component {
                 }}
               />
               {IOErrors.map((error) => {
-                if (error.key === 'outputError' && error.index === this.props.index) {
+                if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
                   return (
                     <span
                       key={'output'.concat(this.props.index.toString())}
@@ -99,6 +99,7 @@ class InputOutput extends Component {
 function mapStateToProps(state: State) {
   return {
     errors: state.form.errors,
+    showErrors: state.form.showErrors,
   };
 }
 
