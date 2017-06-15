@@ -67,11 +67,9 @@ class Assignment extends Component {
 
     e.preventDefault();
     this.props.onAssignmentChange(newstate);
-    // return newstate;
   }
 
   onClickMark = (e: Event, type: string) => {
-    // debugger;
     e.preventDefault();
     let state = this.props.editorState;
 
@@ -81,7 +79,6 @@ class Assignment extends Component {
       .apply();
 
     this.props.onAssignmentChange(state);
-    // this.setState(state);
   }
 
   onClickBlock = (e: Event, type: string) => {
@@ -126,7 +123,6 @@ class Assignment extends Component {
 
     state = transform.apply();
     this.props.onAssignmentChange(state);
-    // this.setState(state);
   }
 
   hasBlock = (type: string) => {
@@ -185,7 +181,7 @@ class Assignment extends Component {
     <Editor
       spellCheck={false}
       id="assignment"
-      placeholder={'Vähintään viisi sanaa.'}
+      placeholder={'Tämä on tarpeeksi pitkä tehtävänanto.'}
       schema={schema}
       state={this.props.editorState}
       onChange={(editorState) => {

@@ -218,7 +218,6 @@ $close-button-color: #e74c3c;
 .button {
   color: #ccc;
   cursor: pointer;
-  //margin-left: 0.25rem;
   margin-right: 0.25rem;
 }
 
@@ -322,3 +321,12 @@ $close-button-color: #e74c3c;
 //   text-decoration: none;
 //   cursor: pointer;
 // }
+
+blockquote {
+    border-left: 2px solid #ddd;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 10px;
+    color: #aaa;
+    font-style: italic;
+}
