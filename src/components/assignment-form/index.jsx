@@ -31,7 +31,7 @@ class AssignmentForm extends Component {
   render() {
     let statusDisplay = prefixer('sendingStatus');
     if (this.props.sendingStatus === 'NONE') {
-      statusDisplay = statusDisplay.concat(' ').concat(prefixer('sendingStatusHidden'));
+      statusDisplay += ` ${prefixer('sendingStatusHidden')}`;
     }
 
     const form = (

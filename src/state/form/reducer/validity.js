@@ -25,18 +25,11 @@ import type { State } from './index';
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
-const ASSIGNMENT_ERROR = 'Tehtävänannon tulee olla vähintään   '
-  .concat(MIN_ASSIGNMENT_WORD_AMOUNT.toString())
-  .concat(' sanaa pitkä.');
-const MODEL_SOLUTION_WORD_ERROR = 'Mallivastauksen tulee olla vähintään '
-  .concat(MIN_MODEL_SOLUTION_WORD_AMOUNT.toString())
-  .concat(' sanaa pitkä.');
-const MODEL_SOLUTION_LINE_ERROR = 'Mallivastauksen tulee olla vähintään '
-  .concat(MIN_MODEL_SOLUTION_LINE_AMOUNT.toString())
-  .concat(' riviä pitkä.');
-const MODEL_SOLUTION_LINE_AND_WORD_ERROR = 'Mallivastauksen tulee olla vähintään '
-  .concat(MIN_MODEL_SOLUTION_LINE_AMOUNT.toString())
-  .concat(' riviä ja ').concat(MIN_MODEL_SOLUTION_WORD_AMOUNT.toString()).concat(' sanaa pitkä.');
+const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT.toString()} sanaa pitkä.`;
+const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
+const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
+const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
+  MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const TEST_INPUT_ERROR = 'Syöte-kenttä ei voi olla tyhjä.';
 const TEST_OUTPUT_ERROR = 'Tulos-kenttä ei voi olla tyhjä.';
 

@@ -44,7 +44,7 @@ class InputOutput extends Component {
               if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
                 return (
                   <span
-                    key={'input'.concat(this.props.index.toString())} className={prefixer('error')}
+                    key={`input${this.props.index.toString()}`} className={prefixer('error')}
                   >
                     {error.msg}
                   </span>);
@@ -68,7 +68,7 @@ class InputOutput extends Component {
               if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
                 return (
                   <span
-                    key={'output'.concat(this.props.index.toString())}
+                    key={`output${this.props.index.toString()}`}
                     className={`${prefixer('error')} ${prefixer('output')}`}
                   > {error.msg}
                   </span>);

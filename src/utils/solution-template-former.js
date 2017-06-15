@@ -145,7 +145,7 @@ function fixTemplateWithStub(modelLines: Array<string>) {
       if (row >= 0) {
         const type = generateReturnValue(returnObject.returnType);
         if (modelLines[row - 1].includes(TEMPLATE_END_TAG)) {
-          modelLines.splice(row, 0, TEMPLATE_RETURN_STUB.concat(type).concat(';'));
+          modelLines.splice(row, 0, `${TEMPLATE_RETURN_STUB}${type};`);
         }
         row++;
       } else {
