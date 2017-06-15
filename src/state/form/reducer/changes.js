@@ -35,14 +35,14 @@ const initialState = {
         nodes: [
           {
             kind: 'text',
-            text: '',
+            text: 'Tämä on tarpeeksi pitkä tehtävänanto',
           },
         ],
       },
     ],
   }, { terse: true }),
-  modelSolution: '',
-  inputOutput: [new IO()],
+  modelSolution: 'Tämä\n on \n vastaus',
+  inputOutput: [new IO('testi', 'testi')],
   solutionRows: [],
   valid: false,
   errors: new Map(),

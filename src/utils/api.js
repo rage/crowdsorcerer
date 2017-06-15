@@ -6,11 +6,13 @@ import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
 
 const SERVER = 'http://localhost:3000';
-const SOCKET_SERVER = 'wss://localhost:3000/cable';
+const SOCKET_SERVER = 'ws://localhost:3000/cable';
 
 export default class Api {
 
   store: Store<any>;
+  cable: any;
+
   // App:
 
   // fetchNewShit(): Promise<{ zip_url: string }> {
@@ -34,16 +36,23 @@ export default class Api {
   }
 
   createSubscription(onUpdate: () => void) {
-    const cable = ActionCable.createConsumer(SOCKET_SERVER);
+    if (!this.cable) {
+      this.cable = ActionCable.createConsumer(SOCKET_SERVER);
 
-    const room = cable.subscriptions.create('SubmissionStatusChannel', {
-      connected() {
-        console.info('connected');
-      },
-      disconnected() {},
-      received() {},
-    });
-    onUpdate.call();
+      const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
+        connected() {
+          console.log('connected');
+        },
+        disconnected() {
+          this.cable = undefined;
+        },
+        received(data) {
+          console.log("Tähän pitäisi tulla dataa: ");
+          console.log(data);
+          onUpdate.call();
+        },
+      });
+    }
   }
 
   postForm(state: FormState): Promise<any> {

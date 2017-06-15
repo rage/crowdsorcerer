@@ -83,7 +83,7 @@ export function submitAction() {
       console.info(success);
     }
     , (error) => {
-      console.error(error);
+      console.error(`error: ${error}`);
       dispatch(sendFailAction());
     });
     api.createSubscription(() => {
