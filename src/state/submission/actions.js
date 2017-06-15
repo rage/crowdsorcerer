@@ -1,30 +1,50 @@
 // @flow
 
-export const START_SEND = 'START_SEND';
-export const SEND_SUCCESSFUL = 'SEND_SUCCESSFUL';
-export const SEND_FAIL = 'SEND_FAIL';
-export const SEND_RECEIVED = 'RECEIVED';
+export const POST_EXERCISE = 'POST_EXERCISE';
+export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';
+export const POST_UNSUCCESSFUL = 'POST_UNSUCCESSFUL';
+export const UPDATE_SUBMISSION_STATUS = 'UPDATE_SUBMISSION_STATUS';
 
 export function startSendAction() {
   return {
-    type: START_SEND,
+    type: POST_EXERCISE,
   };
 }
 
-export function sendSuccessfulAction() {
+export function postSuccessfulAction() {
   return {
-    type: SEND_SUCCESSFUL,
+    type: POST_SUCCESSFUL,
   };
 }
 
-export function sendFailAction() {
+export function postUnsuccessfulAction(message: string) {
   return {
-    type: SEND_FAIL,
+    message,
+    type: POST_UNSUCCESSFUL,
   };
 }
 
-export function sendReceivedAction() {
+export function updateSubmissionStatusAction(data: Object) {
   return {
-    type: SEND_RECEIVED,
+    data,
+    type: UPDATE_SUBMISSION_STATUS,
   };
 }
+
+export type StartSendAction = {
+  type: string
+};
+
+export type PostSuccessfulAction = {
+  type: string
+};
+
+export type PostUnsuccessfulAction = {
+  message: string,
+  type: string
+};
+
+export type UpdateSubmissionStatusAction = {
+  data: Object,
+  type: string
+};

@@ -24,16 +24,16 @@ class AssignmentForm extends Component {
     handleSubmit: () => void,
     onAddFieldClick: () => void,
     valid: boolean,
-    sendingStatus: string,
+    sendingStatusMessage: string,
+    sendingStatusProgress: number,
     showErrors: boolean,
   }
 
   render() {
-    let statusDisplay = prefixer('sendingStatus');
-    if (this.props.sendingStatus === 'NONE') {
-      statusDisplay += ` ${prefixer('sendingStatusHidden')}`;
+    let statusDisplay = prefixer('sendingStatusHidden');
+    if (this.props.sendingStatusMessage !== '') {
+      statusDisplay = prefixer('sendingStatus');
     }
-
     const form = (
       <form onSubmit={this.props.handleSubmit}>
         <Assignment />
@@ -90,7 +90,7 @@ class AssignmentForm extends Component {
         </div>
         <div className={statusDisplay}>
           <div className={prefixer('sendingInfo')}>
-            {this.props.sendingStatus}
+            {this.props.sendingStatusMessage}
           </div>
         </div>
       </form>
@@ -107,7 +107,8 @@ function mapStateToProps(state: State) {
     valid: state.form.valid,
     errors: state.form.errors,
     showErrors: state.form.showErrors,
-    sendingStatus: state.submission.sendingStatus,
+    sendingStatusMessage: state.submission.message,
+    sendingStatusProgress: state.submission.progress,
   };
 }
 

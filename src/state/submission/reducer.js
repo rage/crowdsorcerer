@@ -1,61 +1,73 @@
 // @flow
 import { createReducer } from 'redux-create-reducer';
 import {
-  START_SEND,
-  SEND_RECEIVED,
-  SEND_SUCCESSFUL,
-  SEND_FAIL,
+  POST_EXERCISE,
+  POST_SUCCESSFUL,
+  POST_UNSUCCESSFUL,
+  UPDATE_SUBMISSION_STATUS,
 } from 'state/submission';
 import type {
-    startSendAction,
-    sendSuccessfulAction,
-    sendFailAction,
+    StartSendAction,
+    PostSuccessfulAction,
+    PostUnsuccessfulAction,
+    UpdateSubmissionStatusAction,
 } from 'state/submission/actions';
 
 export type State = {
-  sendingStatus: string,
+  finished: boolean,
+  message: string,
+  progress: number,
+  error: boolean,
 }
 
-const SEND_STATUS_NONE = 'NONE';
-const SEND_STATUS_ONGOING = 'ONGOING';
-const SEND_STATUS_RECEIVED = 'RECEIVED';
-const SEND_STATUS_SUCCESSFUL = 'SUCCESSFUL';
-const SEND_STATUS_FAIL = 'FAIL';
+const POST_EXERCISE_MESSAGE = 'Lähetetään tietoja';
+const POST_SUCCESSFUL_MESSAGE = 'Tietojen lähetys onnistui';
+
 
 const initialState = {
-  sendingStatus: SEND_STATUS_NONE,
+  finished: false,
+  message: '',
+  progress: undefined,
+  error: false,
 };
 
 export default createReducer(initialState, {
-  [START_SEND](state: State, action: startSendAction): State {
+  [POST_EXERCISE](state: State, action: StartSendAction): State {
     return {
       ...state,
       ...{
-        sendingStatus: SEND_STATUS_ONGOING,
+        message: POST_EXERCISE_MESSAGE,
       },
     };
   },
-  [SEND_RECEIVED](state: State, action: startSendAction): State {
+  [POST_SUCCESSFUL](state: State, action: PostSuccessfulAction): State {
     return {
       ...state,
       ...{
-        sendingStatus: SEND_STATUS_RECEIVED,
+        message: POST_SUCCESSFUL_MESSAGE,
       },
     };
   },
-  [SEND_SUCCESSFUL](state: State, action: sendSuccessfulAction): State {
+  [POST_UNSUCCESSFUL](state: State, action: PostUnsuccessfulAction): State {
     return {
       ...state,
       ...{
-        sendingStatus: SEND_STATUS_SUCCESSFUL,
+        message: action.message,
+        error: true,
       },
     };
   },
-  [SEND_FAIL](state: State, action: sendFailAction): State {
+  [UPDATE_SUBMISSION_STATUS](state: State, action: UpdateSubmissionStatusAction): State {
+    let finished = false;
+    if (action.data.progress === 1) {
+      finished = true;
+    }
     return {
       ...state,
       ...{
-        sendingStatus: SEND_STATUS_FAIL,
+        message: action.data.message,
+        progress: action.data.progress,
+        finished,
       },
     };
   },

@@ -3,7 +3,7 @@ import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
 import type { Dispatch, GetState } from 'state/reducer';
-import { startSendAction, sendReceivedAction, sendFailAction } from 'state/submission';
+import { startSendAction, postSuccessfulAction, postUnsuccessfulAction, updateSubmissionStatusAction } from 'state/submission';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -85,16 +85,16 @@ export function submitAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
     api.postForm(getState().form)
-    .then((success) => {
-      dispatch(sendReceivedAction());
-      console.info(success);
+    .then(() => { // Tässä voi olla success eli HTTP vastauksen tiedot
+      dispatch(postSuccessfulAction());
+      api.createSubscription((data: Object) => {
+        console.info('Update submission status');
+        dispatch(updateSubmissionStatusAction(data));
+      });
     }
     , (error) => {
-      console.error(`error: ${error}`);
-      dispatch(sendFailAction());
-    });
-    api.createSubscription(() => {
-      console.info('dispatch action to change prosessing state');
+      console.error('Yhteys palvelimeen epäonnistui');
+      dispatch(postUnsuccessfulAction(error.message));
     });
   };
 }

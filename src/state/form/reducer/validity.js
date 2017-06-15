@@ -9,6 +9,7 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
+  CHANGE_ERRORS_VISIBILITY,
 } from 'state/form';
 import type {
   AddTestFieldAction,
@@ -19,6 +20,7 @@ import type {
     ModelSolutionChangeAction,
     AddHiddenRowAction,
     DeleteHiddenRowAction,
+    changeErrorVisibilityAction,
 } from 'state/form';
 import type { State } from './index';
 
@@ -47,7 +49,8 @@ function isFormAction(actionContainer: AnyAction) {
     action === CHANGE_TEST_INPUT ||
     action === CHANGE_TEST_OUTPUT ||
     action === ADD_HIDDEN_ROW ||
-    action === DELETE_HIDDEN_ROW;
+    action === DELETE_HIDDEN_ROW ||
+    action === CHANGE_ERRORS_VISIBILITY;
 }
 
 function isValidAssignment(state: State) {
