@@ -36,7 +36,7 @@ const initialState = {
         nodes: [
           {
             kind: 'text',
-            text: '',
+            text: 'Tämä on tarpeeksi pitkä tehtävänanto',
           },
         ],
       },

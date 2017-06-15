@@ -58,16 +58,12 @@ export default createReducer(initialState, {
     };
   },
   [UPDATE_SUBMISSION_STATUS](state: State, action: UpdateSubmissionStatusAction): State {
-    let finished = false;
-    if (action.data.progress === 1) {
-      finished = true;
-    }
     return {
       ...state,
       ...{
         message: action.data.message,
         progress: action.data.progress,
-        finished,
+        finished: action.data.finished,
       },
     };
   },

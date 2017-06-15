@@ -301,17 +301,52 @@ $close-button-color: #e74c3c;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.sendingStatusHidden {
+.hidden {
   display: none;
 }
 
 .sendingInfo {
-  background-color: #97defb;
+  background-color: #e4f9fb;
   margin: 50% auto;
-  padding: 2rem;
+  padding: 1rem;
   border: 1px solid #888;
   width: 80%;
   border-radius: 4px;
+}
+
+.finishButton {
+  border-radius: 0.4rem;
+  background-color: #9cdffb;
+  padding: 0.5rem 2rem;
+  color: #fff;
+}
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #333;
+  margin: 6rem auto;
+  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+  animation: sk-rotateplane 1.2s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-rotateplane {
+  0% { -webkit-transform: perspective(120px) }
+  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+}
+
+@keyframes sk-rotateplane {
+  0% {
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+  } 50% {
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+  } 100% {
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+  }
 }
 
 // .closeStatus {

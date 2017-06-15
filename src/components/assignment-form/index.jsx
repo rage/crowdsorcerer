@@ -27,12 +27,20 @@ class AssignmentForm extends Component {
     sendingStatusMessage: string,
     sendingStatusProgress: number,
     showErrors: boolean,
+    finished: boolean,
   }
 
+
   render() {
-    let statusDisplay = prefixer('sendingStatusHidden');
+    let statusDisplay = prefixer('hidden');
     if (this.props.sendingStatusMessage !== '') {
       statusDisplay = prefixer('sendingStatus');
+    }
+    let spinner = prefixer('spinner');
+    let finishButton = prefixer('hidden');
+    if (this.props.finished) {
+      spinner = '';
+      finishButton = prefixer('finishButton');
     }
     const form = (
       <form onSubmit={this.props.handleSubmit}>
@@ -91,6 +99,13 @@ class AssignmentForm extends Component {
         <div className={statusDisplay}>
           <div className={prefixer('sendingInfo')}>
             {this.props.sendingStatusMessage}
+            <div className={spinner} />
+            <button
+              className={finishButton}
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+            > OK </button>
           </div>
         </div>
       </form>
@@ -109,6 +124,7 @@ function mapStateToProps(state: State) {
     showErrors: state.form.showErrors,
     sendingStatusMessage: state.submission.message,
     sendingStatusProgress: state.submission.progress,
+    finished: state.submission.finished,
   };
 }
 
