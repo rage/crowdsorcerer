@@ -29,66 +29,60 @@ class InputOutput extends Component {
     return (
       <div >
         <div className={prefixer('field-container')}>
-          <span className={prefixer('same-line').concat(' ').concat(prefixer('test-field'))}>
-            <div>
-              <label htmlFor={`input ${this.props.index}`}>Syöte</label>
-              <br />
-              <input
-                className={prefixer('input-field')}
-                type="text"
-                name={`input ${this.props.index}`}
-                value={this.props.io.input}
-                onChange={(event) => {
-                  this.props.onTestInputChange(event.currentTarget.value, this.props.index);
-                }}
-              />
-              {IOErrors.map((error) => {
-                if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
-                  return (
-                    <span
-                      key={'input'.concat(this.props.index.toString())} className={prefixer('error')}
-                    >
-                      {error.msg}
-                    </span>);
-                }
-                return undefined;
-              })
+          <div className={prefixer('input-field-wrapper')}>
+            <input
+              className={prefixer('input-field')}
+              type="text"
+              placeholder="Input"
+              name={`input ${this.props.index}`}
+              value={this.props.io.input}
+              onChange={(event) => {
+                this.props.onTestInputChange(event.currentTarget.value, this.props.index);
+              }}
+            />
+            {IOErrors.map((error) => {
+              if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
+                return (
+                  <span
+                    key={'input'.concat(this.props.index.toString())} className={prefixer('error')}
+                  >
+                    {error.msg}
+                  </span>);
               }
-            </div>
-          </span>
-          <span className={(prefixer('test-field'))}>
-            <div>
-              <label htmlFor={`output ${this.props.index}`}>Tulos</label>
-              <br />
-              <input
-                className={prefixer('input-field')}
-                type="text"
-                name={`output ${this.props.index}`}
-                value={this.props.io.output}
-                onChange={(event) => {
-                  this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
-                }}
-              />
-              {IOErrors.map((error) => {
-                if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
-                  return (
-                    <span
-                      key={'output'.concat(this.props.index.toString())}
-                      className={prefixer('error').concat(' ').concat(prefixer('output'))}
-                    > {error.msg}
-                    </span>);
-                }
-                return undefined;
-              })
+              return undefined;
+            })
               }
-            </div>
-          </span>
+          </div>
+          <div className={prefixer('input-field-wrapper')}>
+            <input
+              className={prefixer('input-field')}
+              type="text"
+              placeholder="Output"
+              name={`output ${this.props.index}`}
+              value={this.props.io.output}
+              onChange={(event) => {
+                this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
+              }}
+            />
+            {IOErrors.map((error) => {
+              if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
+                return (
+                  <span
+                    key={'output'.concat(this.props.index.toString())}
+                    className={`${prefixer('error')} ${prefixer('output')}`}
+                  > {error.msg}
+                  </span>);
+              }
+              return undefined;
+            })
+              }
+          </div>
           <button
             role="button"
             className={prefixer('close-button')}
             onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
           >
-            &#10005;
+            &#10006;
           </button>
         </div>
       </div>

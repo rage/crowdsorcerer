@@ -37,8 +37,8 @@ const MODEL_SOLUTION_LINE_ERROR = 'Mallivastauksen tulee olla vähintään '
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = 'Mallivastauksen tulee olla vähintään '
   .concat(MIN_MODEL_SOLUTION_LINE_AMOUNT.toString())
   .concat(' riviä ja ').concat(MIN_MODEL_SOLUTION_WORD_AMOUNT.toString()).concat(' sanaa pitkä.');
-const TEST_INPUT_ERROR = 'Testin syöte-kenttä ei voi olla tyhjä.';
-const TEST_OUTPUT_ERROR = 'Testin tulos-kenttä ei voi olla tyhjä.';
+const TEST_INPUT_ERROR = 'Syöte-kenttä ei voi olla tyhjä.';
+const TEST_OUTPUT_ERROR = 'Tulos-kenttä ei voi olla tyhjä.';
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction

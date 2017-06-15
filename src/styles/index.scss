@@ -10,6 +10,7 @@
 .instructions {
   font-weight: bold;
   display: block;
+  margin-bottom: 1rem;
 }
 
 .assignment {
@@ -50,8 +51,9 @@ $close-button-color: #e74c3c;
   color: $close-button-color;
   cursor: pointer;
   font-weight: bold;
+  font-size: 1.25rem;
   transition: color 0.2s;
-  align-self: flex-start;
+  line-height: 2rem;
   &:hover {
     color: darken($close-button-color, 10%);
   }
@@ -66,14 +68,11 @@ $close-button-color: #e74c3c;
 }
 
 .error {
-  position:relative;
-  top: 0.1em;
   padding: 0.2em 0.4em 0.2em 0.4em;
-  margin: 5em 0 0 0;
-  color:#fff;
-  width: 48%;
-  background:#b74344;
+  color:#b74344;
   border-radius: 0.3em;
+  display: block;
+  font-weight: bold;
 }
 
 .sender {
@@ -98,14 +97,20 @@ $close-button-color: #e74c3c;
 }
 
 .test-field {
-  width: 48%;
-  padding: 5 0 0 0;
+  width: 100%;
+}
+
+.input-field-wrapper {
+  width: 100%;
+  margin-right: 1rem;
 }
 
 .input-field {
-  width: 95%;
+  width: 100%;
   border: 0.1rem solid #d0d0d0;
   border-radius: 0.15rem;
+  padding: .3rem;
+  mar
   &:focus {
     border: 0.15rem solid #a5cbff;
   }
@@ -116,7 +121,7 @@ $close-button-color: #e74c3c;
 }
 
 .add-field {
-  margin: 0.8em 0 0 0;
+  margin: 0;
   padding: 0.5rem 2rem;
   width: 100%;
   border: 0.1rem solid #d0d0d0;

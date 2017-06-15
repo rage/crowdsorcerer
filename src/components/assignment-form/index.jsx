@@ -49,13 +49,13 @@ class AssignmentForm extends Component {
             <Transition
               appear={{
                 opacity: 0,
-                height: 70,
+                height: 64,
                 translateY: 80,
                 translateX: 0,
               }}
               enter={{
                 overflow: 'hidden',
-                height: 95,
+                height: 64,
                 opacity: 1,
                 translateX: 0,
                 translateY: spring(0, { stiffness: 120, damping: 15 }),
