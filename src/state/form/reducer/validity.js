@@ -20,7 +20,6 @@ import type {
     ModelSolutionChangeAction,
     AddHiddenRowAction,
     DeleteHiddenRowAction,
-    changeErrorVisibilityAction,
 } from 'state/form';
 import type { State } from './index';
 

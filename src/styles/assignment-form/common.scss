@@ -1,0 +1,25 @@
+
+.instructions {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.error {
+  padding: 0.2em 0.4em 0.2em 0.4em;
+  color:#b74344;
+  border-radius: 0.3em;
+  display: block;
+  font-weight: bold;
+}
+
+.field-container {
+	display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.form-component {
+  padding: 15 0 15 0;
+}
+

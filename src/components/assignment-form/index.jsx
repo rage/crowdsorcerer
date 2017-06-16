@@ -11,6 +11,7 @@ import IO from 'domain/io';
 import InputOutput from './input-output';
 import ModelSolution from './model-solution';
 import Assignment from './assignment';
+import ProgressBar from '../progress-bar';
 
 class AssignmentForm extends Component {
 
@@ -99,13 +100,16 @@ class AssignmentForm extends Component {
         <div className={statusDisplay}>
           <div className={prefixer('sendingInfo')}>
             {this.props.sendingStatusMessage}
-            <div className={spinner} />
-            <button
-              className={finishButton}
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            > OK </button>
+            <ProgressBar max={1.0} progressPercent={this.props.sendingStatusProgress} />
+            <div className={prefixer('bottom-right')}>
+              <div className={spinner} />
+              <button
+                className={finishButton}
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              > OK </button>
+            </div>
           </div>
         </div>
       </form>
