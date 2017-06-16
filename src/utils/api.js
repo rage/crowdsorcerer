@@ -35,26 +35,30 @@ export default class Api {
     );
   }
 
-  createSubscription(onUpdate: (result: Object) => void) {
+  createSubscription(onUpdate: (result: Object) => void, onDisconnected: () => void) {
     if (!this.cable) {
       this.cable = ActionCable.createConsumer(SOCKET_SERVER);
-
-      const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
-        connected() {
-          // ask for current state from server in case socket open too late
-          room.send({ ping: true });
-        },
-        disconnected() {
-          this.cable = undefined;
-        },
-        received(data) {
-          const result = JSON.parse(data);
-          console.log('Tähän pitäisi tulla dataa: ');
-          console.log(data);
-          onUpdate(result);
-        },
-      });
+      this._subscribe(onUpdate, onDisconnected);
     }
+  }
+
+  _subscribe(onUpdate: (result: Object) => void, onDisconnected: () => void) {
+    const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
+      connected() {
+        // ask for current state from server in case socket open too late
+        room.send({ ping: true });
+      },
+      disconnected() {
+        this.cable = undefined;
+        onDisconnected();
+      },
+      received(data) {
+        const result = JSON.parse(data);
+        console.info('Tähän pitäisi tulla dataa: ');
+        console.info(data);
+        onUpdate(result);
+      },
+    });
   }
 
   postForm(state: FormState): Promise<any> {

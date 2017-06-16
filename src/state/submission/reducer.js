@@ -5,12 +5,16 @@ import {
   POST_SUCCESSFUL,
   POST_UNSUCCESSFUL,
   UPDATE_SUBMISSION_STATUS,
+  RESET_SUBMISSION_STATUS,
+  CONNECTION_TERMINATED_PREMATURELY,
 } from 'state/submission';
 import type {
     StartSendAction,
     PostSuccessfulAction,
     PostUnsuccessfulAction,
     UpdateSubmissionStatusAction,
+    ResetSubmissionStatusAction,
+    ConnectionTerminatedPrematurelyAction,
 } from 'state/submission/actions';
 
 export type State = {
@@ -54,6 +58,7 @@ export default createReducer(initialState, {
       ...{
         message: action.message,
         error: true,
+        finished: true,
       },
     };
   },
@@ -64,6 +69,24 @@ export default createReducer(initialState, {
         message: action.data.message,
         progress: action.data.progress,
         finished: action.data.finished,
+        error: action.data.error,
+      },
+    };
+  },
+  [RESET_SUBMISSION_STATUS](state: State, action: ResetSubmissionStatusAction): State {
+    return {
+      message: '',
+      progress: 0,
+      finished: false,
+      error: false,
+    };
+  },
+  [CONNECTION_TERMINATED_PREMATURELY](state: State, action: ConnectionTerminatedPrematurelyAction): State {
+    return {
+      ...state,
+      ...{
+        message: 'Connection terminated prematurely :(',
+        error: true,
       },
     };
   },

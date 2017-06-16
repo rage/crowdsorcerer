@@ -4,6 +4,7 @@ import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction, submitButtonPressedAction } from 'state/form';
+import { resetSubmissionStatusAction } from 'state/submission';
 import 'codemirror/mode/clike/clike';
 import Transition from 'react-motion-ui-pack';
 import { spring } from 'react-motion';
@@ -29,6 +30,7 @@ class AssignmentForm extends Component {
     sendingStatusProgress: number,
     showErrors: boolean,
     finished: boolean,
+    onOKButtonClick: () => void,
   }
 
 
@@ -107,6 +109,7 @@ class AssignmentForm extends Component {
                 className={finishButton}
                 onClick={(e) => {
                   e.preventDefault();
+                  this.props.onOKButtonClick();
                 }}
               > OK </button>
             </div>
@@ -139,6 +142,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onAddFieldClick() {
       dispatch(addTestFieldAction());
+    },
+    onOKButtonClick() {
+      dispatch(resetSubmissionStatusAction());
     },
   };
 }

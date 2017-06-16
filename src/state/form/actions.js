@@ -3,7 +3,12 @@ import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
 import type { Dispatch, GetState } from 'state/reducer';
-import { startSendAction, postSuccessfulAction, postUnsuccessfulAction, updateSubmissionStatusAction } from 'state/submission';
+import {
+  startSendAction,
+  postSuccessfulAction,
+  postUnsuccessfulAction,
+  updateSubmissionStatusAction, connectionTerminatedPrematurelyAction,
+} from 'state/submission';
 
 export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -90,6 +95,10 @@ export function submitAction() {
       api.createSubscription((data: Object) => {
         console.info('Update submission status');
         dispatch(updateSubmissionStatusAction(data));
+      }, () => {
+        if (!getState().submission.finished) {
+          dispatch(connectionTerminatedPrematurelyAction());
+        }
       });
     }
     , (error) => {
