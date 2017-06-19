@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
+import { STATUS_NONE, STATUS_FINISHED } from 'state/submission/reducer';
 import { addTestFieldAction, submitButtonPressedAction } from 'state/form';
 import { resetSubmissionStatusAction } from 'state/submission';
 import 'codemirror/mode/clike/clike';
@@ -25,25 +26,29 @@ class AssignmentForm extends Component {
     modelSolution: string,
     handleSubmit: () => void,
     onAddFieldClick: () => void,
+    onOKButtonClick: () => void,
     valid: boolean,
     sendingStatusMessage: string,
     sendingStatusProgress: number,
     showErrors: boolean,
-    finished: boolean,
-    onOKButtonClick: () => void,
+    status: string,
+    result: Object,
   }
-
 
   render() {
     let statusDisplay = prefixer('hidden');
-    if (this.props.sendingStatusMessage !== '') {
+    if (this.props.sendingStatusMessage !== STATUS_NONE) {
       statusDisplay = prefixer('sendingStatus');
     }
     let spinner = prefixer('spinner');
     let finishButton = prefixer('hidden');
-    if (this.props.finished) {
+    if (this.props.status === STATUS_FINISHED) {
       spinner = '';
       finishButton = prefixer('finishButton');
+    }
+    let errors = [];
+    if (this.props.result.error) {
+      errors = this.props.result.error;
     }
     const form = (
       <form onSubmit={this.props.handleSubmit}>
@@ -101,7 +106,14 @@ class AssignmentForm extends Component {
         </div>
         <div className={statusDisplay}>
           <div className={prefixer('sendingInfo')}>
-            {this.props.sendingStatusMessage}
+            <div className={prefixer('status-message')}>
+              {this.props.sendingStatusMessage}
+            </div>
+            <div className={prefixer('error-messages')}>
+              {errors.map((e, i) =>
+              (<div key={`${e}${i}`} className={prefixer('error-message')}>{e}</div>),
+            )}
+            </div>
             <ProgressBar max={1.0} progressPercent={this.props.sendingStatusProgress} />
             <div className={prefixer('bottom-right')}>
               <div className={spinner} />
@@ -131,7 +143,8 @@ function mapStateToProps(state: State) {
     showErrors: state.form.showErrors,
     sendingStatusMessage: state.submission.message,
     sendingStatusProgress: state.submission.progress,
-    finished: state.submission.finished,
+    status: state.submission.status,
+    result: state.submission.result,
   };
 }
 

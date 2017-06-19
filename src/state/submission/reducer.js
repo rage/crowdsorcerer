@@ -9,46 +9,48 @@ import {
   CONNECTION_TERMINATED_PREMATURELY,
 } from 'state/submission';
 import type {
-    StartSendAction,
-    PostSuccessfulAction,
     PostUnsuccessfulAction,
     UpdateSubmissionStatusAction,
-    ResetSubmissionStatusAction,
-    ConnectionTerminatedPrematurelyAction,
 } from 'state/submission/actions';
 
 export type State = {
-  finished: boolean,
+  status: string,
   message: string,
   progress: number,
-  error: boolean,
+  result: Object,
 }
 
-const POST_EXERCISE_MESSAGE = 'Lähetetään tietoja';
-const POST_SUCCESSFUL_MESSAGE = 'Tietojen lähetys onnistui';
+export const STATUS_FINISHED = 'finished';
+export const STATUS_ERROR = 'error';
+export const STATUS_PROGRESS = 'in progress';
+export const STATUS_NONE = '';
 
+const CONNECTION_POST_SENDING_MSG = 'Lähetetään tietoja';
+const CONNECTION_POST_SUCCESSFUL_MSG = 'Tietojen lähetys onnistui';
+const CONNECTION_TERMINATED_MSG = 'Yhteysvirhe';
 
 const initialState = {
-  finished: false,
+  status: STATUS_NONE,
   message: '',
   progress: undefined,
-  error: false,
+  result: {},
 };
 
 export default createReducer(initialState, {
-  [POST_EXERCISE](state: State, action: StartSendAction): State {
+  [POST_EXERCISE](state: State): State {
     return {
       ...state,
       ...{
-        message: POST_EXERCISE_MESSAGE,
+        message: CONNECTION_POST_SENDING_MSG,
       },
     };
   },
-  [POST_SUCCESSFUL](state: State, action: PostSuccessfulAction): State {
+  [POST_SUCCESSFUL](state: State): State {
     return {
       ...state,
       ...{
-        message: POST_SUCCESSFUL_MESSAGE,
+        message: CONNECTION_POST_SUCCESSFUL_MSG,
+        status: STATUS_PROGRESS,
       },
     };
   },
@@ -57,8 +59,7 @@ export default createReducer(initialState, {
       ...state,
       ...{
         message: action.message,
-        error: true,
-        finished: true,
+        status: STATUS_ERROR,
       },
     };
   },
@@ -68,25 +69,25 @@ export default createReducer(initialState, {
       ...{
         message: action.data.message,
         progress: action.data.progress,
-        finished: action.data.finished,
-        error: action.data.error,
+        status: action.data.status,
+        result: action.data.result,
       },
     };
   },
-  [RESET_SUBMISSION_STATUS](state: State, action: ResetSubmissionStatusAction): State {
+  [RESET_SUBMISSION_STATUS](): State {
     return {
       message: '',
       progress: 0,
-      finished: false,
-      error: false,
+      status: STATUS_NONE,
+      result: {},
     };
   },
-  [CONNECTION_TERMINATED_PREMATURELY](state: State, action: ConnectionTerminatedPrematurelyAction): State {
+  [CONNECTION_TERMINATED_PREMATURELY](state: State): State {
     return {
       ...state,
       ...{
-        message: 'Connection terminated prematurely :(',
-        error: true,
+        message: CONNECTION_TERMINATED_MSG,
+        status: STATUS_ERROR,
       },
     };
   },

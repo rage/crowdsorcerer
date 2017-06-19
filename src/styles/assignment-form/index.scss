@@ -53,18 +53,17 @@
 .sendingInfo {
   position: relative;
   background-color: #e4f9fb;
-  margin: 50% auto;
+  margin: 50% 25%;
   padding: 1rem;
   border: 1px solid #888;
-  width: 50%;
-  height: 10%;
+  min-height: 10%;
   border-radius: 4px;
 }
 
 .bottom-right {
   position: absolute;
-  bottom: 15%;
-  right: 3%;
+  bottom: 7%;
+  right: 2%;
 }
 
 .finishButton {
@@ -75,11 +74,10 @@
 }
 
 .spinner {
-  margin: 0.3em 1em;
+  margin: 0.2em 1em;
   width: 1.5rem;
   height: 1.5rem;
   background-color: #7ec0e0;
-  // margin: 6rem auto;
   animation: sk-rotateplane 1.2s infinite ease-in-out;
 }
 
@@ -93,3 +91,15 @@
   }
 }
 
+.status-message {
+  margin: 0.1em;
+  text-align: center;
+}
+
+.error-message {
+  font-style: italic;
+}
+
+.error-messages {
+  margin-bottom: 7%;
+}

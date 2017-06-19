@@ -33,7 +33,7 @@ class InputOutput extends Component {
             <input
               className={prefixer('input-field')}
               type="text"
-              placeholder="Input"
+              placeholder="Syöte"
               name={`input ${this.props.index}`}
               value={this.props.io.input}
               onChange={(event) => {
@@ -57,7 +57,7 @@ class InputOutput extends Component {
             <input
               className={prefixer('input-field')}
               type="text"
-              placeholder="Output"
+              placeholder="Tulos"
               name={`output ${this.props.index}`}
               value={this.props.io.output}
               onChange={(event) => {
