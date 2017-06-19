@@ -17,6 +17,7 @@
   padding: 0.5rem 2rem;
   color: #fff;
   cursor: pointer;
+  font-family: Roboto; // poista lopulliseen
   &:disabled {
     opacity: 0.65;
     cursor: not-allowed;
@@ -32,6 +33,7 @@
   background-color: #458faa;
   color: #fff;
   cursor: pointer;
+  font-family: Roboto; // poista lopulliseen
 }
 
 .sendingStatus {
@@ -56,7 +58,6 @@
   margin: 50% 25%;
   padding: 1rem;
   border: 1px solid #888;
-  min-height: 10%;
   border-radius: 4px;
 }
 
@@ -94,12 +95,26 @@
 .status-message {
   margin: 0.1em;
   text-align: center;
+  font-size: 18px;
 }
 
 .error-message {
-  font-style: italic;
+  margin: 0.05em;
 }
 
 .error-messages {
   margin-bottom: 7%;
+}
+
+.compile-error {
+  border: 2px solid #a52a2a;
+}
+
+.all-passed {
+  border: 2px solid #228b22;
+}
+
+.internal-error {
+  border: 2px solid #a52a2a;
+  background-color: #ff91a4;
 }

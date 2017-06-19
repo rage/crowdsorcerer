@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import { STATUS_NONE, STATUS_FINISHED } from 'state/submission/reducer';
+import { STATUS_NONE, STATUS_FINISHED, STATUS_ERROR, STATUS_IN_PROGRESS } from 'state/submission/reducer';
 import { addTestFieldAction, submitButtonPressedAction } from 'state/form';
 import { resetSubmissionStatusAction } from 'state/submission';
 import 'codemirror/mode/clike/clike';
@@ -42,13 +42,21 @@ class AssignmentForm extends Component {
     }
     let spinner = prefixer('spinner');
     let finishButton = prefixer('hidden');
-    if (this.props.status === STATUS_FINISHED) {
+    if (this.props.status !== STATUS_IN_PROGRESS) {
       spinner = '';
       finishButton = prefixer('finishButton');
     }
     let errors = [];
+    let sendingInfo = prefixer('sendingInfo');
     if (this.props.result.error) {
       errors = this.props.result.error;
+      sendingInfo = `${sendingInfo} ${prefixer('compile-error')}`;
+    }
+    if (this.props.status === STATUS_ERROR) {
+      sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
+    }
+    if (this.props.result.OK === true) {
+      sendingInfo = `${prefixer('sendingInfo')} ${prefixer('all-passed')} `;
     }
     const form = (
       <form onSubmit={this.props.handleSubmit}>
@@ -105,7 +113,7 @@ class AssignmentForm extends Component {
           </button>
         </div>
         <div className={statusDisplay}>
-          <div className={prefixer('sendingInfo')}>
+          <div className={sendingInfo}>
             <div className={prefixer('status-message')}>
               {this.props.sendingStatusMessage}
             </div>

@@ -93,7 +93,6 @@ export function submitAction() {
     .then(() => { // Tässä voi olla success eli HTTP vastauksen tiedot
       dispatch(postSuccessfulAction());
       api.createSubscription((data: Object) => {
-        console.info('Update submission status');
         dispatch(updateSubmissionStatusAction(data));
       }, () => {
         if (!getState().submission.finished) {

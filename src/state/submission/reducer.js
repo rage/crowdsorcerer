@@ -22,7 +22,7 @@ export type State = {
 
 export const STATUS_FINISHED = 'finished';
 export const STATUS_ERROR = 'error';
-export const STATUS_PROGRESS = 'in progress';
+export const STATUS_IN_PROGRESS = 'in progress';
 export const STATUS_NONE = '';
 
 const CONNECTION_POST_SENDING_MSG = 'Lähetetään tietoja';
@@ -42,6 +42,7 @@ export default createReducer(initialState, {
       ...state,
       ...{
         message: CONNECTION_POST_SENDING_MSG,
+        status: STATUS_IN_PROGRESS,
       },
     };
   },
@@ -50,7 +51,7 @@ export default createReducer(initialState, {
       ...state,
       ...{
         message: CONNECTION_POST_SUCCESSFUL_MSG,
-        status: STATUS_PROGRESS,
+        status: STATUS_IN_PROGRESS,
       },
     };
   },
