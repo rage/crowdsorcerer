@@ -7,6 +7,7 @@ import ActionCable from 'actioncable';
 
 const SERVER = 'http://localhost:3000';
 const SOCKET_SERVER = 'ws://localhost:3000/cable';
+const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
 export default class Api {
 
@@ -19,7 +20,7 @@ export default class Api {
   //   return Promise.resolve({ zip_url: 'https://example.com/lol.zip' });
   // }
 
-  createJSON(state: FormState) {
+  createJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
@@ -35,14 +36,14 @@ export default class Api {
     );
   }
 
-  createSubscription(onUpdate: (result: Object) => void, onDisconnected: () => void) {
+  createSubscription(onUpdate: (result: Object) => void, onDisconnected: () => void, onInvalidDataError: () => void): void {
     if (!this.cable) {
       this.cable = ActionCable.createConsumer(SOCKET_SERVER);
-      this._subscribe(onUpdate, onDisconnected);
+      this._subscribe(onUpdate, onDisconnected, onInvalidDataError);
     }
   }
 
-  _subscribe(onUpdate: (result: Object) => void, onDisconnected: () => void) {
+  _subscribe(onUpdate: (result: Object) => void, onDisconnected: () => void, onInvalidDataError: () => void): void {
     const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
       connected() {
         // ask for current state from server in case socket open too late
@@ -53,9 +54,17 @@ export default class Api {
         onDisconnected();
       },
       received(data) {
-        const result = JSON.parse(data);
-        console.info('Tähän pitäisi tulla dataa: ');
         console.info(data);
+        let result = {};
+        try {
+          result = JSON.parse(data);
+          if (!Api._correctJSON(result)) {
+            throw SyntaxError('Data väärässä muodossa');
+          }
+        } catch (error) {
+          console.error(`error: ${error}`);
+          onInvalidDataError();
+        }
         onUpdate(result);
       },
     });
@@ -79,5 +88,15 @@ export default class Api {
 
   syncStore(store: Store): void {
     this.store = store;
+  }
+
+  static _correctJSON(JSON: Object): boolean {
+    let valid = true;
+    JSON_FIELDS.forEach((field) => {
+      if (!Object.prototype.hasOwnProperty.call(JSON, field)) {
+        valid = false;
+      }
+    });
+    return valid;
   }
 }

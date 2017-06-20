@@ -7,6 +7,7 @@ import {
   UPDATE_SUBMISSION_STATUS,
   RESET_SUBMISSION_STATUS,
   CONNECTION_TERMINATED_PREMATURELY,
+  INVALID_DATA_ERROR,
 } from 'state/submission';
 import type {
     PostUnsuccessfulAction,
@@ -28,6 +29,7 @@ export const STATUS_NONE = '';
 const CONNECTION_POST_SENDING_MSG = 'Lähetetään tietoja';
 const CONNECTION_POST_SUCCESSFUL_MSG = 'Tietojen lähetys onnistui';
 const CONNECTION_TERMINATED_MSG = 'Yhteysvirhe';
+const INTERNAL_ERROR_MSG = 'Tapahtui sisäinen yhteysvirhe.';
 
 const initialState = {
   status: STATUS_NONE,
@@ -88,6 +90,15 @@ export default createReducer(initialState, {
       ...state,
       ...{
         message: CONNECTION_TERMINATED_MSG,
+        status: STATUS_ERROR,
+      },
+    };
+  },
+  [INVALID_DATA_ERROR](state: State): State {
+    return {
+      ...state,
+      ...{
+        message: INTERNAL_ERROR_MSG,
         status: STATUS_ERROR,
       },
     };

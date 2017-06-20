@@ -3,17 +3,15 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import { STATUS_NONE, STATUS_FINISHED, STATUS_ERROR, STATUS_IN_PROGRESS } from 'state/submission/reducer';
 import { addTestFieldAction, submitButtonPressedAction } from 'state/form';
-import { resetSubmissionStatusAction } from 'state/submission';
 import 'codemirror/mode/clike/clike';
 import Transition from 'react-motion-ui-pack';
 import { spring } from 'react-motion';
 import IO from 'domain/io';
+import StatusDisplay from '../status-display';
 import InputOutput from './input-output';
 import ModelSolution from './model-solution';
 import Assignment from './assignment';
-import ProgressBar from '../progress-bar';
 
 class AssignmentForm extends Component {
 
@@ -26,39 +24,12 @@ class AssignmentForm extends Component {
     modelSolution: string,
     handleSubmit: () => void,
     onAddFieldClick: () => void,
-    onOKButtonClick: () => void,
     valid: boolean,
-    sendingStatusMessage: string,
-    sendingStatusProgress: number,
     showErrors: boolean,
-    status: string,
-    result: Object,
   }
 
   render() {
-    let statusDisplay = prefixer('hidden');
-    if (this.props.sendingStatusMessage !== STATUS_NONE) {
-      statusDisplay = prefixer('sendingStatus');
-    }
-    let spinner = prefixer('spinner');
-    let finishButton = prefixer('hidden');
-    if (this.props.status !== STATUS_IN_PROGRESS) {
-      spinner = '';
-      finishButton = prefixer('finishButton');
-    }
-    let errors = [];
-    let sendingInfo = prefixer('sendingInfo');
-    if (this.props.result.error) {
-      errors = this.props.result.error;
-      sendingInfo = `${sendingInfo} ${prefixer('compile-error')}`;
-    }
-    if (this.props.status === STATUS_ERROR) {
-      sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
-    }
-    if (this.props.result.OK === true) {
-      sendingInfo = `${prefixer('sendingInfo')} ${prefixer('all-passed')} `;
-    }
-    const form = (
+    return (
       <form onSubmit={this.props.handleSubmit}>
         <Assignment />
         <ModelSolution
@@ -112,32 +83,9 @@ class AssignmentForm extends Component {
             Lähetä
           </button>
         </div>
-        <div className={statusDisplay}>
-          <div className={sendingInfo}>
-            <div className={prefixer('status-message')}>
-              {this.props.sendingStatusMessage}
-            </div>
-            <div className={prefixer('error-messages')}>
-              {errors.map((e, i) =>
-              (<div key={`${e}${i}`} className={prefixer('error-message')}>{e}</div>),
-            )}
-            </div>
-            <ProgressBar max={1.0} progressPercent={this.props.sendingStatusProgress} />
-            <div className={prefixer('bottom-right')}>
-              <div className={spinner} />
-              <button
-                className={finishButton}
-                onClick={(e) => {
-                  e.preventDefault();
-                  this.props.onOKButtonClick();
-                }}
-              > OK </button>
-            </div>
-          </div>
-        </div>
+        <StatusDisplay />
       </form>
     );
-    return form;
   }
 }
 
@@ -149,10 +97,6 @@ function mapStateToProps(state: State) {
     valid: state.form.valid,
     errors: state.form.errors,
     showErrors: state.form.showErrors,
-    sendingStatusMessage: state.submission.message,
-    sendingStatusProgress: state.submission.progress,
-    status: state.submission.status,
-    result: state.submission.result,
   };
 }
 
@@ -163,9 +107,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onAddFieldClick() {
       dispatch(addTestFieldAction());
-    },
-    onOKButtonClick() {
-      dispatch(resetSubmissionStatusAction());
     },
   };
 }

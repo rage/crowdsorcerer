@@ -8,6 +8,7 @@ import {
   postSuccessfulAction,
   postUnsuccessfulAction,
   updateSubmissionStatusAction, connectionTerminatedPrematurelyAction,
+  invalidDataErrorAction,
 } from 'state/submission';
 
 export const SUBMIT = 'SUBMIT';
@@ -93,15 +94,17 @@ export function submitAction() {
     .then(() => { // Tässä voi olla success eli HTTP vastauksen tiedot
       dispatch(postSuccessfulAction());
       api.createSubscription((data: Object) => {
+        debugger;
         dispatch(updateSubmissionStatusAction(data));
       }, () => {
         if (!getState().submission.finished) {
           dispatch(connectionTerminatedPrematurelyAction());
         }
+      }, () => {
+        dispatch(invalidDataErrorAction());
       });
     }
     , (error) => {
-      console.error('Yhteys palvelimeen epäonnistui');
       dispatch(postUnsuccessfulAction(error.message));
     });
   };
