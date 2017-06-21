@@ -10,7 +10,6 @@ export default class ProgressBar extends Component {
     this.state = { animationStart: 0, width: 300 };
   }
 
-
   state: {
     animationStart: number,
     width: number,

@@ -112,9 +112,9 @@ class ModelSolution extends Component {
           />
         </div>
         <Transition
-          appear={{ opacity: 0 }}
-          enter={{ opacity: 1 }}
-          leave={{ opacity: 0 }}
+          appear={{ opacity: 0, height: 0 }}
+          enter={{ opacity: 1, height: 16 }}
+          leave={{ opacity: 0, height: 0, translateY: -3 }}
         >
           <span key={errClass} className={errClass}>
             {errMessage}

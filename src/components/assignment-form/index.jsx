@@ -44,7 +44,7 @@ class AssignmentForm extends Component {
             <Transition
               appear={{
                 opacity: 0,
-                height: 64,
+                height: 0,
                 translateY: 80,
                 translateX: 0,
               }}

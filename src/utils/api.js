@@ -14,12 +14,6 @@ export default class Api {
   store: Store<any>;
   cable: any;
 
-  // App:
-
-  // fetchNewShit(): Promise<{ zip_url: string }> {
-  //   return Promise.resolve({ zip_url: 'https://example.com/lol.zip' });
-  // }
-
   createJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
@@ -36,18 +30,28 @@ export default class Api {
     );
   }
 
-  createSubscription(onUpdate: (result: Object) => void, onDisconnected: () => void, onInvalidDataError: () => void): void {
+  createSubscription(
+    onUpdate: (result: Object) => void,
+    onDisconnected: () => void,
+    onInvalidDataError: () => void,
+    sentExerciseId: number,
+    ): void {
     if (!this.cable) {
       this.cable = ActionCable.createConsumer(SOCKET_SERVER);
-      this._subscribe(onUpdate, onDisconnected, onInvalidDataError);
+      this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
     }
   }
 
-  _subscribe(onUpdate: (result: Object) => void, onDisconnected: () => void, onInvalidDataError: () => void): void {
+  _subscribe(
+    onUpdate: (result: Object) => void,
+    onDisconnected: () => void,
+    onInvalidDataError: () => void,
+    exerciseId: number,
+    ): void {
     const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
       connected() {
         // ask for current state from server in case socket open too late
-        room.send({ ping: true });
+        room.send({ ping: true, id: exerciseId });
       },
       disconnected() {
         this.cable = undefined;

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { STATUS_NONE, STATUS_ERROR, STATUS_IN_PROGRESS } from 'state/submission/reducer';
+import { STATUS_NONE, STATUS_ERROR, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
 import prefixer from 'utils/class-name-prefixer';
 import type { State, Dispatch } from 'state/reducer';
 import ProgressBar from './progress-bar';
@@ -30,7 +30,7 @@ class StatusDisplay extends Component {
     }
     let errors = [];
     let sendingInfo = prefixer('sendingInfo');
-    if (this.props.status === 'finished') {
+    if (this.props.status === STATUS_FINISHED) {
       if (this.props.result.OK) {
         sendingInfo = `${prefixer('sendingInfo')} ${prefixer('all-passed')} `;
       } else {
@@ -51,20 +51,24 @@ class StatusDisplay extends Component {
             {this.props.sendingStatusMessage}
           </div>
           <div className={prefixer('error-messages')}>
-            {errors.map((e, i) =>
-              (<div key={`${e}${i}`} className={prefixer('error-message')}>{e}</div>),
+            {errors.map(e =>
+              (<div key={`${e}`} className={prefixer('error-message')}>{e}</div>),
             )}
           </div>
-          <ProgressBar progressPercent={this.props.sendingStatusProgress} />
-          <div className={prefixer('bottom-right')}>
-            <div className={spinner} />
-            <button
-              className={finishButton}
-              onClick={(e) => {
-                e.preventDefault();
-                this.props.onOKButtonClick();
-              }}
-            > OK </button>
+          <div className={prefixer('status-bottom')}>
+            <div className={prefixer('progress-bar-container')}>
+              <ProgressBar progressPercent={this.props.sendingStatusProgress} />
+            </div>
+            <div>
+              <div className={spinner} />
+              <button
+                className={finishButton}
+                onClick={(e) => {
+                  e.preventDefault();
+                  this.props.onOKButtonClick();
+                }}
+              > OK </button>
+            </div>
           </div>
         </div>
       </div>

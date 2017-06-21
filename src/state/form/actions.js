@@ -91,10 +91,9 @@ export function submitAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
     api.postForm(getState().form)
-    .then(() => { // Tässä voi olla success eli HTTP vastauksen tiedot
+    .then((response) => {
       dispatch(postSuccessfulAction());
       api.createSubscription((data: Object) => {
-        debugger;
         dispatch(updateSubmissionStatusAction(data));
       }, () => {
         if (!getState().submission.finished) {
@@ -102,7 +101,7 @@ export function submitAction() {
         }
       }, () => {
         dispatch(invalidDataErrorAction());
-      });
+      }, response.exercise.id);
     }
     , (error) => {
       dispatch(postUnsuccessfulAction(error.message));

@@ -39,7 +39,7 @@ const schema = {
 
 class Assignment extends Component {
 
-  onKeyDown = (e: Event, data: Data, state: State) => {
+  onKeyDown = (e: Event, data: Data, state: sState) => {
     if (!data.isMod) return;
     let mark;
 
@@ -193,7 +193,7 @@ class Assignment extends Component {
 
   render() {
     let errMessage = '';
-    let errClass = prefixer('errorHide');
+    let errClass = prefixer('hidden');
     if (this.props.errors && this.props.showErrors) {
       const assignmentErrors = this.props.errors.get('assignmentError');
       if (assignmentErrors) {
@@ -214,9 +214,9 @@ class Assignment extends Component {
             {this.renderEditor()}
           </div>
           <Transition
-            appear={{ opacity: 0 }}
-            enter={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
+            appear={{ opacity: 0, height: 0 }}
+            enter={{ opacity: 1, height: 16 }}
+            leave={{ opacity: 0, height: 0, translateY: -3 }}
           >
             <span key={errClass} className={errClass}>
               {errMessage}
