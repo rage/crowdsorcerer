@@ -20,29 +20,29 @@ class StatusDisplay extends Component {
   render() {
     let statusDisplay = prefixer('hidden');
     if (this.props.sendingStatusMessage !== STATUS_NONE) {
-      statusDisplay = prefixer('sendingStatus');
+      statusDisplay = prefixer('sending-status');
     }
-    let spinner = prefixer('spinner');
+    let result = prefixer('spinner');
     let finishButton = prefixer('hidden');
-    if (this.props.status !== STATUS_IN_PROGRESS) {
-      spinner = '';
-      finishButton = prefixer('finishButton');
-    }
     let errors = [];
-    let sendingInfo = prefixer('sendingInfo');
-    if (this.props.status === STATUS_FINISHED) {
-      if (this.props.result.OK) {
-        sendingInfo = `${prefixer('sendingInfo')} ${prefixer('all-passed')} `;
-      } else {
-        if (this.props.result.ERROR) {
-          errors = this.props.result.ERROR;
-          console.info(errors);
-        }
-        sendingInfo = `${sendingInfo} ${prefixer('compile-error')}`;
+    let sendingInfo = prefixer('sending-info');
+    if (this.props.status !== STATUS_IN_PROGRESS) {
+      finishButton = prefixer('finish-button');
+      if (this.props.result.error) {
+        errors = this.props.result.error;
       }
-    }
-    if (this.props.status === STATUS_ERROR) {
-      sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
+      if (this.props.status === STATUS_FINISHED) {
+        if (this.props.result.OK) {
+          result = prefixer('check-mark');
+          sendingInfo += ` ${prefixer('all-passed')} `;
+        } else {
+          result = prefixer('sad-face');
+          sendingInfo += ` ${prefixer('compile-error')}`;
+        }
+      } else {
+        result = prefixer('sad-face');
+        sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
+      }
     }
     const form = (
       <div className={statusDisplay}>
@@ -56,19 +56,21 @@ class StatusDisplay extends Component {
             )}
           </div>
           <div className={prefixer('status-bottom')}>
-            <div className={prefixer('progress-bar-container')}>
-              <ProgressBar progressPercent={this.props.sendingStatusProgress} />
+            <div className={prefixer('result-container')}>
+              <div className={prefixer('progress-bar-container')}>
+                <ProgressBar progressPercent={this.props.sendingStatusProgress} />
+              </div>
+              <div className={prefixer('result')}>
+                <div className={result} />
+              </div>
             </div>
-            <div>
-              <div className={spinner} />
-              <button
-                className={finishButton}
-                onClick={(e) => {
-                  e.preventDefault();
-                  this.props.onOKButtonClick();
-                }}
-              > OK </button>
-            </div>
+            <button
+              className={finishButton}
+              onClick={(e) => {
+                e.preventDefault();
+                this.props.onOKButtonClick();
+              }}
+            > OK </button>
           </div>
         </div>
       </div>

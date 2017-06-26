@@ -1,6 +1,6 @@
 @import "progress-bar";
 
-.sendingStatus {
+.sending-status {
   position: fixed;
   z-index: 10;
   left: 0;
@@ -12,28 +12,28 @@
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.sendingInfo {
+.sending-info {
   position: relative;
   background-color: #fff;
   margin: 50% 27%;
-  padding: 1.5rem;
+  padding: 2rem;
   border: 1px solid #888;
   border-radius: 4px;
 }
 
-.finishButton {
+.finish-button {
   border-radius: 0.4rem;
-  background-color: #9cdffb;
-  padding: 01rem;
-  align-self: auto;
+  background-color: #7ec0e0;
+  padding: 0.5rem 2rem;
+  margin: 0.2rem;
   color: #fff;
+  align-self: center;
 }
 
 .spinner {
   margin: auto;
   width: 1.5rem;
   height: 1.5rem;
-  align-self: auto;
   background-color: #7ec0e0;
   animation: sk-rotateplane 1.2s infinite ease-in-out;
 }
@@ -59,7 +59,7 @@
 }
 
 .error-message {
-  margin: 0.05em;
+  margin: 0.2em;
   padding: 0.05em;
 }
 
@@ -82,11 +82,35 @@
 
 .status-bottom {
 	display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .progress-bar-container {
   width: 100%;
+}
+
+.result-container {
+  width: 100%;
+	display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: center;
+}
+
+
+.check-mark {
+  &:after {
+    content: "\2713";
+    font-size: 40px;
+    color: #228b22;
+  }
+}
+
+.sad-face {
+  &:after {
+    content: "\2639";
+    font-size: 40px;
+    color:  #a52a2a;
+  }
 }
