@@ -5,8 +5,19 @@ import type { State as FormState } from 'state/form';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
 
-const SERVER = 'http://localhost:3000';
-const SOCKET_SERVER = 'ws://localhost:3000/cable';
+let SERVER;
+let SOCKET_SERVER;
+
+/* eslint-disable no-const-assign */
+if (process.env.NODE_ENV === 'production') {
+  SERVER = 'https://crowdsorcerer.testmycode.io/';
+  SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
+} else {
+  SERVER = 'http://localhost:3000/';
+  SOCKET_SERVER = 'ws://localhost:3000/cable';
+}
+/* eslint-enable no-const-assign */
+
 const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
 export default class Api {
