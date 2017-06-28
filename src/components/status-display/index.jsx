@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { STATUS_NONE, STATUS_ERROR, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
+import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
 import prefixer from 'utils/class-name-prefixer';
 import type { State, Dispatch } from 'state/reducer';
 import ProgressBar from './progress-bar';
