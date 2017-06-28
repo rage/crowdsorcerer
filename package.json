@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "index.js",
   "author": "Henrik Nygren <nygrenh@gmail.com>",
-  "license": "MIT OR Apache 2",
+  "license": "MIT OR Apache-2.0",
   "scripts": {
     "start": "env NODE_ENV=development yarn run webpack-dev-server --  --progress --colors",
     "webpack": "env NODE_ENV=development node ./node_modules/.bin/webpack -p",
@@ -61,6 +61,7 @@
     "eslint-plugin-react": "^7.0.0",
     "extract-text-webpack-plugin": "^2.1.0",
     "flow-bin": "^0.45.0",
+    "html-webpack-plugin": "^2.29.0",
     "node-sass": "^4.5.1",
     "nyc": "^10.3.2",
     "postcss-class-prefix": "^0.3.0",

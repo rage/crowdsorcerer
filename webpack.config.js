@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -43,6 +44,22 @@ module.exports = {
     }),
     new ExtractTextPlugin('[name].css'),
     isDevelopment ? null : new webpack.optimize.UglifyJsPlugin({ minimize: true }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: 'index.html',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
     new BrowserSyncPlugin({
       host: 'localhost',
       port: 3001,
