@@ -3,7 +3,6 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import Api from 'utils/api';
 import rootReducer from './reducer';
-import * as storejs from 'store';
 
 export type ThunkArgument = {
   api: Api
