@@ -4,6 +4,7 @@ import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
+import * as storejs from 'store';
 
 let SERVER;
 let SOCKET_SERVER;
@@ -30,7 +31,7 @@ export default class Api {
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
     {
-      oauth_token: process.env.TMC_TOKEN,
+      oauth_token: this.oauthToken(),
       exercise: {
         assignment_id: 1,
         description: Raw.serialize(state.assignment),
@@ -48,7 +49,7 @@ export default class Api {
     sentExerciseId: number,
     ): void {
     if (!this.cable) {
-      this.cable = ActionCable.createConsumer(SOCKET_SERVER);
+      this.cable = ActionCable.createConsumer(this._addOauthTokenToUrl(SOCKET_SERVER));
       this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
     }
   }
@@ -113,5 +114,13 @@ export default class Api {
       }
     });
     return valid;
+  }
+
+  _addOauthTokenToUrl(url: string): string {
+    return `${url}?oauth_token=${this.oauthToken()}`;
+  }
+
+  oauthToken(): string {
+    return storejs.get('tmc.user').accessToken;
   }
 }

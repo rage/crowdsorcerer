@@ -5,7 +5,7 @@
   "author": "Henrik Nygren <nygrenh@gmail.com>",
   "license": "MIT OR Apache-2.0",
   "scripts": {
-    "start": "env NODE_ENV=development yarn run webpack-dev-server --  --progress --colors",
+    "start": "env NODE_ENV=development yarn run webpack-dev-server --  --progress --colors --port 3001",
     "webpack": "env NODE_ENV=development node ./node_modules/.bin/webpack -p",
     "build": "rm -rf dist && NODE_ENV=production node ./node_modules/.bin/webpack",
     "lint": "yarn run eslint -- --ext .js --ext .jsx",
@@ -34,6 +34,7 @@
     "redux-form": "^6.7.0",
     "redux-thunk": "^2.2.0",
     "slate": "^0.20.3",
+    "store": "^1.3.20",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.8",
     "whatwg-fetch": "^2.0.3"
