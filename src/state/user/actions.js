@@ -18,15 +18,16 @@ export type LoginStateChangedAction = {
 export function trackLoginStateAction() {
   return function tracker(dispatch: Dispatch) {
     window.addEventListener('storage', (event: Event) => {
-      console.log(`tääl mä kuuntelen eventtiä: ${JSON.stringify(event)}`);
       if (event.key !== 'tmc.user') {
         return;
       }
+      // $FlowFixMe
       const loggedIn = event.newValue !== undefined;
       dispatch(loginStateChangedAction(loggedIn));
     });
   };
 }
+
 
 export type TrackLoginStateAction = {
   (dispatch: Dispatch): void,
