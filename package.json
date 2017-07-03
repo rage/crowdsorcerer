@@ -7,7 +7,7 @@
   "scripts": {
     "start": "env NODE_ENV=development yarn run webpack-dev-server --  --progress --colors --port 3001",
     "webpack": "env NODE_ENV=development node ./node_modules/.bin/webpack -p",
-    "build": "rm -rf dist && NODE_ENV=production node ./node_modules/.bin/webpack",
+    "build": "rm -rf dist && NODE_ENV=production node ./node_modules/.bin/webpack -p",
     "lint": "yarn run eslint -- --ext .js --ext .jsx",
     "test": "yarn run nyc ava",
     "testrprt": "./node_modules/.bin/nyc report --reporter=html; google-chrome coverage/index.html",
