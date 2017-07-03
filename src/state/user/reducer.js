@@ -1,6 +1,5 @@
 // @flow
 
-import * as storejs from 'store';
 import { createReducer } from 'redux-create-reducer';
 import {
   LOGIN_STATE_CHANGED,
@@ -8,17 +7,10 @@ import {
 import type {
     LoginStateChangedAction,
 } from 'state/user/actions';
+import loggedIn from 'utils/logged-in';
 
 export type State = {
   loggedIn: boolean,
-}
-
-function loggedIn(): boolean {
-  const tmcUser = storejs.get('tmc.user');
-  if (tmcUser === undefined || !Object.prototype.hasOwnProperty.call(tmcUser, 'accessToken')) {
-    return false;
-  }
-  return tmcUser.accessToken.length > 0;
 }
 
 const initialState = {

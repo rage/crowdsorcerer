@@ -1,5 +1,6 @@
 // @flow
-import type { Dispatch } from 'state/reducer';
+import type { Dispatch, GetState } from 'state/reducer';
+import getLoggedIn from 'utils/logged-in';
 
 export const LOGIN_STATE_CHANGED = 'LOGIN_STATE_CHANGED';
 
@@ -11,24 +12,24 @@ export function loginStateChangedAction(loggedIn: boolean) {
 }
 
 export type LoginStateChangedAction = {
-    loggedIn: boolean,
-    type: string,
+  loggedIn: boolean,
+  type: string,
 };
 
 export function trackLoginStateAction() {
-  return function tracker(dispatch: Dispatch) {
-    window.addEventListener('storage', (event: Event) => {
-      if (event.key !== 'tmc.user') {
-        return;
+  return function tracker(dispatch: Dispatch, getState: GetState) {
+    setInterval(() => {
+      const state = getState();
+      const loggedIn = getLoggedIn();
+      const stateIn = state.user.loggedIn;
+      if (loggedIn !== stateIn) {
+        dispatch(loginStateChangedAction(loggedIn));
       }
-      // $FlowFixMe
-      const loggedIn = event.newValue !== undefined;
-      dispatch(loginStateChangedAction(loggedIn));
-    });
+    }, 500);
   };
 }
 
-
 export type TrackLoginStateAction = {
-  (dispatch: Dispatch): void,
+  (): Function,
 }
+
