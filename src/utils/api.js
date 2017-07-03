@@ -49,7 +49,7 @@ export default class Api {
     sentExerciseId: number,
     ): void {
     if (!this.cable) {
-      this.cable = ActionCable.createConsumer(this._addOauthTokenToUrl(SOCKET_SERVER));
+      this.cable = ActionCable.createConsumer(this._addExtraParamsToUrl(SOCKET_SERVER, sentExerciseId));
       this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
     }
   }
@@ -116,8 +116,8 @@ export default class Api {
     return valid;
   }
 
-  _addOauthTokenToUrl(url: string): string {
-    return `${url}?oauth_token=${this.oauthToken()}`;
+  _addExtraParamsToUrl(url: string, exerciseId: number): string {
+    return `${url}?oauth_token=${this.oauthToken()}&exercise_id=${exerciseId}`;
   }
 
   oauthToken(): string {

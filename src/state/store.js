@@ -3,6 +3,7 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import Api from 'utils/api';
 import rootReducer from './reducer';
+import { trackLoginStateAction } from './user';
 
 export type ThunkArgument = {
   api: Api
@@ -19,6 +20,7 @@ export default function makeStore(assignmentId: string) {
       applyMiddleware(thunk.withExtraArgument({ api })),
     ),
   );
+  store.dispatch(trackLoginStateAction());
   api.syncStore(store);
   return store;
 }
