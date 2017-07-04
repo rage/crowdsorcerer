@@ -7,6 +7,7 @@ export const UPDATE_SUBMISSION_STATUS = 'UPDATE_SUBMISSION_STATUS';
 export const RESET_SUBMISSION_STATUS = 'RESET_SUBMISSION_STATUS';
 export const CONNECTION_TERMINATED_PREMATURELY = 'CONNECTION_TERMINATED_PREMATURELY';
 export const INVALID_DATA_ERROR = 'INVALID_DATA_ERROR';
+export const AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR';
 
 export function startSendAction() {
   return {
@@ -20,10 +21,15 @@ export function postSuccessfulAction() {
   };
 }
 
-export function postUnsuccessfulAction(message: string) {
+export function postUnsuccessfulAction() {
   return {
-    message,
     type: POST_UNSUCCESSFUL,
+  };
+}
+
+export function authenticationError() {
+  return {
+    type: AUTHENTICATION_ERROR,
   };
 }
 
@@ -79,5 +85,9 @@ export type ConnectionTerminatedPrematurelyAction = {
 };
 
 export type InvalidDataErrorAction = {
+  type: string
+};
+
+export type AuthenticationErrorAction = {
   type: string
 };

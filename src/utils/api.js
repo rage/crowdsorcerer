@@ -97,7 +97,12 @@ export default class Api {
         },
         credentials: 'same-origin',
       })
-      .then(resp => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          return reject(resp.status);
+        }
+        return resp.json();
+      })
       .then(resolve, reject);
     });
   }

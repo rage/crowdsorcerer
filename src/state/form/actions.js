@@ -9,6 +9,7 @@ import {
   postUnsuccessfulAction,
   updateSubmissionStatusAction, connectionTerminatedPrematurelyAction,
   invalidDataErrorAction,
+  authenticationError,
 } from 'state/submission';
 
 export const SUBMIT = 'SUBMIT';
@@ -77,7 +78,7 @@ export function createSubmitAction(
   modelSolution: string,
   testIo: Array<Array<string>>,
   hiddenRows: Array<number>,
-  ) {
+) {
   return {
     assignment,
     modelSolution,
@@ -91,21 +92,27 @@ export function submitAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
     api.postForm(getState().form)
-    .then((response) => {
-      dispatch(postSuccessfulAction());
-      api.createSubscription((data: Object) => {
-        dispatch(updateSubmissionStatusAction(data));
-      }, () => {
-        if (!getState().submission.finished) {
-          dispatch(connectionTerminatedPrematurelyAction());
+    .then(
+      (response) => {
+        dispatch(postSuccessfulAction());
+        api.createSubscription((data: Object) => {
+          dispatch(updateSubmissionStatusAction(data));
+        }, () => {
+          if (!getState().submission.finished) {
+            dispatch(connectionTerminatedPrematurelyAction());
+          }
+        }, () => {
+          dispatch(invalidDataErrorAction());
+        }, response.exercise.id);
+      },
+      (error) => {
+        if (error === 403) {
+          dispatch(authenticationError());
+        } else {
+          dispatch(postUnsuccessfulAction());
         }
-      }, () => {
-        dispatch(invalidDataErrorAction());
-      }, response.exercise.id);
-    }
-    , (error) => {
-      dispatch(postUnsuccessfulAction(error.message));
-    });
+      },
+    );
   };
 }
 
