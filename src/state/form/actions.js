@@ -106,7 +106,7 @@ export function submitAction() {
         }, response.exercise.id);
       },
       (error) => {
-        if (error === 403) {
+        if (error === 401) {
           dispatch(authenticationError());
         } else {
           dispatch(postUnsuccessfulAction());
