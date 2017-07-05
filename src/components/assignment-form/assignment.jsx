@@ -139,6 +139,7 @@ class Assignment extends Component {
     editorState: sState,
     onAssignmentChange: (editorState: sState) => void,
     errors: Map<string, Array<Object>>,
+    readOnly: boolean,
   }
 
   renderMarkButton = (type: string, icon: string) => {
@@ -188,6 +189,7 @@ class Assignment extends Component {
         this.props.onAssignmentChange(editorState);
       }}
       onKeyDown={this.onKeyDown}
+      readOnly={this.props.readOnly}
     />
   )
 
@@ -208,7 +210,7 @@ class Assignment extends Component {
             Tehtävänanto
           </div>
           <div>
-            {this.renderToolbar()}
+            {this.props.readOnly ? undefined : this.renderToolbar()}
           </div>
           <div className={prefixer('assignment-editor')}>
             {this.renderEditor()}

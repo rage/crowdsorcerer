@@ -43,7 +43,7 @@ const initialState = {
     ],
   }, { terse: true }),
   modelSolution: 'System.out.println("moi"); \n return "Hello " + input;',
-  inputOutput: [new IO('testi', 'Hello asdf')],
+  inputOutput: [new IO('testi', 'Hello asdf'), new IO('asdfasdf', 'Hello asdfasdfasdfdf')],
   solutionRows: [],
   valid: false,
   errors: new Map(),

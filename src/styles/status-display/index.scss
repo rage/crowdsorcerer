@@ -1,4 +1,5 @@
 @import "progress-bar";
+@import "color-constants";
 
 .sending-status {
   position: fixed;
@@ -14,7 +15,7 @@
 
 .sending-info {
   position: relative;
-  background-color: #fff;
+  background-color: $white;
   margin: 50% 27%;
   padding: 2.5rem;
   border: 1px solid #888;
@@ -23,10 +24,10 @@
 
 .finish-button {
   border-radius: 0.4rem;
-  background-color: #7ec0e0;
+  background-color: $info-blue;
   padding: 0.5rem 2rem;
   margin: 0.2rem;
-  color: #fff;
+  color: $white;
   align-self: center;
 }
 
@@ -34,7 +35,7 @@
   margin: auto;
   width: 1.5rem;
   height: 1.5rem;
-  background-color: #7ec0e0;
+  background-color: $info-blue;
   animation: sk-rotateplane 1.2s infinite ease-in-out;
 }
 
@@ -68,16 +69,15 @@
 }
 
 .compile-error {
-  border: 2px solid #a52a2a;
+  border: 2px solid $error-red;
 }
 
 .all-passed {
-  border: 2px solid #228b22;
+  border: 2px solid $green;
 }
 
 .internal-error {
-  border: 2px solid #a52a2a;
-  background-color: #f5c4dc;
+  border: 2px solid $error-red;
 }
 
 .status-bottom {
@@ -103,7 +103,7 @@
   &:after {
     content: "\2713";
     font-size: 40px;
-    color: #228b22;
+    color: $green;
   }
 }
 
@@ -111,6 +111,6 @@
   &:after {
     content: "\2639";
     font-size: 40px;
-    color:  #a52a2a;
+    color:  $error-red;
   }
 }

@@ -77,6 +77,7 @@ class ModelSolution extends Component {
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
+    readOnly: boolean,
   };
 
   render() {
@@ -92,7 +93,7 @@ class ModelSolution extends Component {
         <div>
           <div className={prefixer('instructions')}>
             Malliratkaisu
-          </div >
+          </div>
         </div>
         <div>
           <CodeMirror
@@ -103,6 +104,7 @@ class ModelSolution extends Component {
               gutters: ['CodeMirror-linenumbers', 'modelsolution-lines'],
               tabSize: 4,
               indentUnit: 4,
+              readOnly: this.props.readOnly,
             }}
             value={this.props.value}
             onChange={(solution) => {
@@ -127,6 +129,8 @@ class ModelSolution extends Component {
 
 function mapStateToProps(state: State) {
   return {
+    modelSolution: state.form.modelSolution,
+    solutionRows: state.form.solutionRows,
     errors: state.form.errors,
     showErrors: state.form.showErrors,
   };

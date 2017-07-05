@@ -1,0 +1,28 @@
+@import "color-constants";
+
+.peer-review-info {
+  width: 100%;
+  border: 0.1rem solid $border-grey;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.peer-review-instructions {
+  margin: 0.5rem;
+}
+
+.zip-load-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center
+}
+
+.zip-load-button {
+  border-radius: 0.4rem;
+  border: 0.1rem solid $border-grey;
+  padding: 0.5rem 2rem;
+  color: $white;
+  background-color: $info-blue;
+  cursor: pointer;
+  font-family: Roboto; // poista lopulliseen
+}

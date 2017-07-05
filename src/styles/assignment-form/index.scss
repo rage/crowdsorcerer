@@ -1,7 +1,8 @@
 @import "./assignment";
 @import "./model-solution";
-@import "./input-output";
 @import "./common";
+@import "./test-fields";
+@import "color-constants";
 
 .container {
   max-width: 40rem;
@@ -12,10 +13,10 @@
   vertical-align: top;
   float: right;
   border-radius: 0.4rem;
-  border: 0.1rem solid #d0d0d0;
+  border: 0.1rem solid $border-grey;
   background-color: #3eba41;
   padding: 0.5rem 2rem;
-  color: #fff;
+  color: $white;
   cursor: pointer;
   font-family: Roboto; // poista lopulliseen
   &:disabled {
@@ -24,14 +25,3 @@
   }
 }
 
-.add-field {
-  margin: 0;
-  padding: 0.5rem 2rem;
-  width: 100%;
-  border: 0.1rem solid #d0d0d0;
-  border-radius: 0.4rem;
-  background-color: #458faa;
-  color: #fff;
-  cursor: pointer;
-  font-family: Roboto; // poista lopulliseen
-}

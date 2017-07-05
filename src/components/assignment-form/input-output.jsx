@@ -19,9 +19,10 @@ class InputOutput extends Component {
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
+    readOnly: boolean,
   };
 
-  render() {
+  renderEditable() {
     let IOErrors = this.props.errors.get('IOError');
     if (!IOErrors) {
       IOErrors = [];
@@ -87,6 +88,33 @@ class InputOutput extends Component {
         </div>
       </div>
     );
+  }
+
+  renderReadOnly() {
+    return (
+      <div >
+        <div className={prefixer('field-container')}>
+          <input
+            readOnly
+            className={prefixer('input-field')}
+            type="text"
+            value={this.props.io.input}
+          />
+          <div className={prefixer('test-field-arrow')}>&rarr;
+          </div>
+          <input
+            readOnly
+            className={prefixer('input-field')}
+            type="text"
+            value={this.props.io.output}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return this.props.readOnly ? this.renderReadOnly() : this.renderEditable();
   }
 }
 
