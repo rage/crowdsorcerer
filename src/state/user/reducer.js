@@ -1,5 +1,4 @@
 // @flow
-
 import { createReducer } from 'redux-create-reducer';
 import {
   LOGIN_STATE_CHANGED,

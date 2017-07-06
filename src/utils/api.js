@@ -26,7 +26,6 @@ export default class Api {
   store: Store<any>;
   cable: ActionCable.Cable;
   connection: ActionCable.Channel;
-  deleteSubscription: Function;
 
   createJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
@@ -44,7 +43,7 @@ export default class Api {
     );
   }
 
-  deleteSubscription() {
+  deleteSubscription(): void {
     this.connection.unsubscribe();
   }
 

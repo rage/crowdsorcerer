@@ -1,5 +1,4 @@
 // @flow
-
 import test from 'ava';
 import reducers from 'state/reducer';
 import { POST_EXERCISE, POST_UNSUCCESSFUL, RESET_SUBMISSION_STATUS, UPDATE_SUBMISSION_STATUS } from 'state/submission';
