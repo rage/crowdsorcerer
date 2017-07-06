@@ -24,7 +24,9 @@ const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 export default class Api {
 
   store: Store<any>;
-  cable: any;
+  cable: ActionCable.Cable;
+  connection: ActionCable.Channel;
+  deleteSubscription: Function;
 
   createJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
@@ -42,16 +44,18 @@ export default class Api {
     );
   }
 
+  deleteSubscription() {
+    this.connection.unsubscribe();
+  }
+
   createSubscription(
     onUpdate: (result: Object) => void,
     onDisconnected: () => void,
     onInvalidDataError: () => void,
     sentExerciseId: number,
     ): void {
-    if (!this.cable) {
-      this.cable = ActionCable.createConsumer(this._addExtraParamsToUrl(SOCKET_SERVER, sentExerciseId));
-      this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
-    }
+    this.cable = ActionCable.createConsumer(this._addExtraParamsToUrl(SOCKET_SERVER, sentExerciseId));
+    this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
   }
 
   _subscribe(
@@ -60,13 +64,12 @@ export default class Api {
     onInvalidDataError: () => void,
     exerciseId: number,
     ): void {
-    const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
+    const connection = this.cable.subscriptions.create('SubmissionStatusChannel', {
       connected() {
         // ask for current state from server in case socket open too late
-        room.send({ ping: true, id: exerciseId });
+        connection.send({ ping: true, id: exerciseId });
       },
       disconnected() {
-        this.cable = undefined;
         onDisconnected();
       },
       received(data) {
@@ -84,6 +87,7 @@ export default class Api {
         onUpdate(result);
       },
     });
+    this.connection = connection;
   }
 
   postForm(state: FormState): Promise<any> {

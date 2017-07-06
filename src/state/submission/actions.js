@@ -1,4 +1,5 @@
 // @flow
+import Api from 'utils/api';
 
 export const POST_EXERCISE = 'POST_EXERCISE';
 export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';
@@ -33,7 +34,10 @@ export function authenticationError() {
   };
 }
 
-export function updateSubmissionStatusAction(data: Object) {
+export function updateSubmissionStatusAction(data: Object, api: Api) {
+  if (data.status === 'finished') {
+    api.deleteSubscription();
+  }
   return {
     data,
     type: UPDATE_SUBMISSION_STATUS,

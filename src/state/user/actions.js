@@ -21,8 +21,8 @@ export function trackLoginStateAction() {
     setInterval(() => {
       const state = getState();
       const loggedIn = getLoggedIn();
-      const stateIn = state.user.loggedIn;
-      if (loggedIn !== stateIn) {
+      const stateLoggedIn = state.user.loggedIn;
+      if (loggedIn !== stateLoggedIn) {
         dispatch(loginStateChangedAction(loggedIn));
       }
     }, 500);

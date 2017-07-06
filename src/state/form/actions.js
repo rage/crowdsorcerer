@@ -96,7 +96,7 @@ export function submitAction() {
       (response) => {
         dispatch(postSuccessfulAction());
         api.createSubscription((data: Object) => {
-          dispatch(updateSubmissionStatusAction(data));
+          dispatch(updateSubmissionStatusAction(data, api));
         }, () => {
           if (!getState().submission.finished) {
             dispatch(connectionTerminatedPrematurelyAction());
