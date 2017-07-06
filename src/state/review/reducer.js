@@ -19,13 +19,10 @@ export default createReducer(initialState, {
   [GIVE_REVIEW](state: State, action: GiveReviewAction): State {
     const oldReviews = state.reviews;
     const reviews = new Map();
-    state.reviewQuestions.forEach((key: string, value: number) => {
-      if (oldReviews.has(key)) {
-        reviews.set(key, value);
-      } else if (key === action.question) {
-        reviews.set(action.question, action.value);
-      }
+    oldReviews.forEach((value: number, key: string) => {
+      reviews.set(key, value);
     });
+    reviews.set(action.question, action.value);
     return {
       ...state,
       ...{

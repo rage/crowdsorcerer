@@ -2,14 +2,27 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
-import type { State, Dispatch } from 'state/reducer';
-import { giveReviewAction } from 'state/review';
+import type { State } from 'state/reducer';
+import ReviewScale from './review-scale';
 
 class ReviewQuestions extends Component {
 
   render() {
     return (
-      <div />
+      <div className={prefixer('form-component')}>
+        <div className={prefixer('peer-review-title')}>Anna palautetta</div>
+        <div className={prefixer('peer-review-component')}>
+          {
+           this.props.reviewQuestions.map(
+            question => (
+              <div key={question} className={prefixer('review-question-scale-container')}>
+                <div>{question}</div>
+                <ReviewScale question={question} />
+              </div>
+            ))
+          }
+        </div>
+      </div>
     );
   }
 }
@@ -17,16 +30,7 @@ class ReviewQuestions extends Component {
 function mapStateToProps(state: State) {
   return {
     reviewQuestions: state.review.reviewQuestions,
-    reviews: state.review.reviewQuestions,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    giveReview(question: string, value: number) {
-      dispatch(giveReviewAction(question, value));
-    },
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewQuestions);
+export default connect(mapStateToProps, null)(ReviewQuestions);
