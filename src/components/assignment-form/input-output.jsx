@@ -78,7 +78,7 @@ class InputOutput extends Component {
               }
           </div>
           <button
-            role="button"
+            type="button"
             className={prefixer('close-button')}
             onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
           >

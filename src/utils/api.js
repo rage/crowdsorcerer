@@ -4,6 +4,7 @@ import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
+import * as storejs from 'store';
 
 let SERVER;
 let SOCKET_SERVER;
@@ -23,14 +24,15 @@ const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 export default class Api {
 
   store: Store<any>;
-  cable: any;
+  cable: ActionCable.Cable;
+  connection: ActionCable.Channel;
 
   createJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
     {
-      oauth_token: process.env.TMC_TOKEN,
+      oauth_token: this.oauthToken(),
       exercise: {
         assignment_id: 1,
         description: Raw.serialize(state.assignment),
@@ -41,16 +43,18 @@ export default class Api {
     );
   }
 
+  deleteSubscription(): void {
+    this.connection.unsubscribe();
+  }
+
   createSubscription(
     onUpdate: (result: Object) => void,
     onDisconnected: () => void,
     onInvalidDataError: () => void,
     sentExerciseId: number,
     ): void {
-    if (!this.cable) {
-      this.cable = ActionCable.createConsumer(SOCKET_SERVER);
-      this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
-    }
+    this.cable = ActionCable.createConsumer(this._addExtraParamsToUrl(SOCKET_SERVER, sentExerciseId));
+    this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
   }
 
   _subscribe(
@@ -59,13 +63,12 @@ export default class Api {
     onInvalidDataError: () => void,
     exerciseId: number,
     ): void {
-    const room = this.cable.subscriptions.create('SubmissionStatusChannel', {
+    const connection = this.cable.subscriptions.create('SubmissionStatusChannel', {
       connected() {
         // ask for current state from server in case socket open too late
-        room.send({ ping: true, id: exerciseId });
+        connection.send({ ping: true, id: exerciseId });
       },
       disconnected() {
-        this.cable = undefined;
         onDisconnected();
       },
       received(data) {
@@ -83,6 +86,7 @@ export default class Api {
         onUpdate(result);
       },
     });
+    this.connection = connection;
   }
 
   postForm(state: FormState): Promise<any> {
@@ -96,7 +100,12 @@ export default class Api {
         },
         credentials: 'same-origin',
       })
-      .then(resp => resp.json())
+      .then((resp) => {
+        if (!resp.ok) {
+          return reject(resp.status);
+        }
+        return resp.json();
+      })
       .then(resolve, reject);
     });
   }
@@ -113,5 +122,13 @@ export default class Api {
       }
     });
     return valid;
+  }
+
+  _addExtraParamsToUrl(url: string, exerciseId: number): string {
+    return `${url}?oauth_token=${this.oauthToken()}&exercise_id=${exerciseId}`;
+  }
+
+  oauthToken(): string {
+    return storejs.get('tmc.user').accessToken;
   }
 }

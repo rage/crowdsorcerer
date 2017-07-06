@@ -8,6 +8,7 @@ import {
   RESET_SUBMISSION_STATUS,
   CONNECTION_TERMINATED_PREMATURELY,
   INVALID_DATA_ERROR,
+  AUTHENTICATION_ERROR,
 } from 'state/submission';
 import type {
     UpdateSubmissionStatusAction,
@@ -30,6 +31,7 @@ const CONNECTION_POST_SUCCESSFUL_MSG = 'Tietojen lähetys onnistui';
 const CONNECTION_POST_UNSUCCESSFUL_MSG = 'Tietojen lähetys ei onnistunut. Yritä hetken päästä uudelleen.';
 const CONNECTION_TERMINATED_MSG = 'Yhteysvirhe';
 const INTERNAL_ERROR_MSG = 'Tapahtui sisäinen yhteysvirhe.';
+const AUTHENTICATION_ERROR_MSG = 'TMC-tunnuksesi ei kelpaa, ole hyvä ja kirjaudu sisään uudestaan.';
 
 const initialState = {
   status: STATUS_NONE,
@@ -62,6 +64,15 @@ export default createReducer(initialState, {
       ...state,
       ...{
         message: CONNECTION_POST_UNSUCCESSFUL_MSG,
+        status: STATUS_ERROR,
+      },
+    };
+  },
+  [AUTHENTICATION_ERROR](state: State): State {
+    return {
+      ...state,
+      ...{
+        message: AUTHENTICATION_ERROR_MSG,
         status: STATUS_ERROR,
       },
     };

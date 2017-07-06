@@ -1,14 +1,13 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
   watch: isDevelopment,
-  devtool: 'source-map',
+  devtool: isDevelopment ? 'source-map' : false,
   entry: {
     app: path.join(__dirname, 'src', 'index.jsx'),
   },
@@ -59,11 +58,6 @@ module.exports = {
         minifyCSS: true,
         minifyURLs: true,
       },
-    }),
-    new BrowserSyncPlugin({
-      host: 'localhost',
-      port: 3001,
-      proxy: 'http://localhost:51433/',
     }),
   ].filter(p => !!p),
   devServer: {

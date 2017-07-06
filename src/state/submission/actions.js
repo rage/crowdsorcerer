@@ -1,4 +1,5 @@
 // @flow
+import Api from 'utils/api';
 
 export const POST_EXERCISE = 'POST_EXERCISE';
 export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';
@@ -7,6 +8,7 @@ export const UPDATE_SUBMISSION_STATUS = 'UPDATE_SUBMISSION_STATUS';
 export const RESET_SUBMISSION_STATUS = 'RESET_SUBMISSION_STATUS';
 export const CONNECTION_TERMINATED_PREMATURELY = 'CONNECTION_TERMINATED_PREMATURELY';
 export const INVALID_DATA_ERROR = 'INVALID_DATA_ERROR';
+export const AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR';
 
 export function startSendAction() {
   return {
@@ -20,14 +22,22 @@ export function postSuccessfulAction() {
   };
 }
 
-export function postUnsuccessfulAction(message: string) {
+export function postUnsuccessfulAction() {
   return {
-    message,
     type: POST_UNSUCCESSFUL,
   };
 }
 
-export function updateSubmissionStatusAction(data: Object) {
+export function authenticationError() {
+  return {
+    type: AUTHENTICATION_ERROR,
+  };
+}
+
+export function updateSubmissionStatusAction(data: Object, api: Api) {
+  if (data.status === 'finished') {
+    api.deleteSubscription();
+  }
   return {
     data,
     type: UPDATE_SUBMISSION_STATUS,
@@ -79,5 +89,9 @@ export type ConnectionTerminatedPrematurelyAction = {
 };
 
 export type InvalidDataErrorAction = {
+  type: string
+};
+
+export type AuthenticationErrorAction = {
   type: string
 };

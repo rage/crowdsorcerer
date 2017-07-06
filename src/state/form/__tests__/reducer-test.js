@@ -51,30 +51,31 @@ const initialAssignment = Raw.deserialize({
 }, { terse: true });
 
 test('Add a single empty field to intial state test input/output array', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: '', inputOutput: [new IO()], solutionRows: [] },
     },
     { field: new IO(), type: ADD_TEST_FIELD },
   );
-
   t.deepEqual(state.form.inputOutput, [new IO(), new IO()]);
 });
 
 test('Add new test input to the first test input/output array', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: '', inputOutput: [new IO(), new IO()], solutionRows: [] },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
   );
-
   t.deepEqual(state.form.inputOutput[0].input, 'Test');
   t.deepEqual(state.form.inputOutput[0].output, '');
 });
 
 test('Add new test output to the first test input/output array', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: '', inputOutput: [new IO('Test', ''), new IO()], solutionRows: [] },
     },
@@ -87,7 +88,8 @@ test('Add new test output to the first test input/output array', (t) => {
 });
 
 test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: twoLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [] },
     },
@@ -98,7 +100,8 @@ test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
 });
 
 test('Delete hidden row from selection deletes form solutionRows in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
     {
       assignment: initialAssignment, modelSolution: twoLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [0, 1],
@@ -111,7 +114,8 @@ test('Delete hidden row from selection deletes form solutionRows in state', (t) 
 });
 
 test('Changing assigment changes assignment in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
     {
       assignment: initialAssignment, modelSolution: twoLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [0, 1],
@@ -124,7 +128,8 @@ test('Changing assigment changes assignment in state', (t) => {
 });
 
 test('Changing model solution changes model solution in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: '', inputOutput: [new IO(), new IO()], solutionRows: [0, 1] },
     },
@@ -135,7 +140,8 @@ test('Changing model solution changes model solution in state', (t) => {
 });
 
 test('Remove a one selected line from model solution changes model solution and selected solution rows in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
     {
       assignment: initialAssignment, modelSolution: threeLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [1, 2],
@@ -149,7 +155,8 @@ test('Remove a one selected line from model solution changes model solution and 
 });
 
 test('Remove two selected lines from model solution changes model solution and selected solution rows in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
     {
       assignment: initialAssignment, modelSolution: threeLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [1, 2],
@@ -163,7 +170,8 @@ test('Remove two selected lines from model solution changes model solution and s
 });
 
 test('Remove model solution changes model solution in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: oneLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [0] },
     },
@@ -174,7 +182,8 @@ test('Remove model solution changes model solution in state', (t) => {
 });
 
 test('Change model solution without selected rows changes model solution in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: twoLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [] },
     },
@@ -185,7 +194,8 @@ test('Change model solution without selected rows changes model solution in stat
 });
 
 test('Add new line to model solution changes model solution in state', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: twoLineSolution, inputOutput: [new IO(), new IO()], solutionRows: [0] },
     },
@@ -197,7 +207,8 @@ test('Add new line to model solution changes model solution in state', (t) => {
 });
 
 test('Remove a single empty field from intial state test input/output array', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: '', inputOutput: [new IO(), new IO()], solutionRows: [] },
     },
@@ -208,7 +219,8 @@ test('Remove a single empty field from intial state test input/output array', (t
 });
 
 test('Remove only field from intial state test input/output array', (t) => {
-  const state = reducers(
+  const reducer = reducers('1');
+  const state = reducer(
     { form:
       { assignment: initialAssignment, modelSolution: '', inputOutput: [new IO()], solutionRows: [] },
     },

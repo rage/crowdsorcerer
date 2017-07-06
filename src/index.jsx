@@ -5,18 +5,20 @@ import 'whatwg-fetch';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import createStore from 'state/store';
+import makeStore from 'state/store';
 
 import './styles';
 import App from './components/app';
 
-const store = createStore();
-
-const rootElement = document.getElementById('app');
-
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  rootElement,
-);
+window.initCrowdsorcerer = function initCrowdsorcerer() {
+  document.querySelectorAll('.crowdsorcerer-widget').forEach((e) => {
+    const assignmentId = e.dataset.assignment;
+    const store = makeStore(assignmentId);
+    render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      e,
+    );
+  });
+};

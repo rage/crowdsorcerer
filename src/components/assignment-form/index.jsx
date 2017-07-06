@@ -15,7 +15,6 @@ import Assignment from './assignment';
 
 class AssignmentForm extends Component {
 
-  handleAddNewHiddenRow: Function;
   wrapper: HTMLDivElement;
 
   props: {
@@ -30,7 +29,7 @@ class AssignmentForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.props.handleSubmit}>
+      <form onSubmit={this.props.handleSubmit} >
         <Assignment />
         <ModelSolution
           value={this.props.modelSolution}
@@ -65,6 +64,7 @@ class AssignmentForm extends Component {
             </Transition>
           </div>
           <button
+            type="button"
             className={prefixer('add-field')}
             onClick={(e) => { e.preventDefault(); this.props.onAddFieldClick(); }}
           >
@@ -73,6 +73,7 @@ class AssignmentForm extends Component {
         </div>
         <div className={prefixer('form-component')}>
           <button
+            type="submit"
             disabled={this.props.showErrors && !this.props.valid}
             className={prefixer('sender')}
             onClick={(e) => {
