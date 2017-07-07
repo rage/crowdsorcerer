@@ -1,16 +1,5 @@
 @import "color-constants";
 
-.peer-review-info {
-  width: 95%;
-  border: 0.1rem solid $border-grey;
-  padding: 1rem;
-  border-radius: 4px;
-}
-
-.peer-review-component {
-  margin: 0.5rem;
-}
-
 .zip-load-buttons {
   display: flex;
   flex-direction: row;
@@ -25,4 +14,8 @@
   background-color: $info-blue;
   cursor: pointer;
   font-family: Roboto; // poista lopulliseen
+}
+
+.peer-review-instructions {
+  margin: 0.5rem;
 }

@@ -11,7 +11,7 @@ export type State = {
 
 const initialState = {
   reviews: new Map(),
-  reviewQuestions: ['Tehtävä on mielekäs', 'Testit ovat kattavia', 'Tehtävänanto on selkeä'],
+  reviewQuestions: ['Tehtävänannon mielekkyys', 'Testien kattavuus', 'Tehtävänannon selkeys', 'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys'],
   comment: '',
 };
 

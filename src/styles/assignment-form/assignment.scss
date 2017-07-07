@@ -1,9 +1,10 @@
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+@import "color-constants";
 
 .assignment-editor {
   width: 99%;
   min-height: 3rem;
-  border: 1px solid rgba(0,0,0,.15);
+  border: 0.1rem solid $border-grey;
   border-radius: .25rem;
   padding: 0.25rem;
 }

@@ -14,17 +14,36 @@ class ReviewScale extends Component {
 
   props: {
     question: string,
+    reviews: Map<string, number>,
     giveReview: (string, number) => void,
   }
 
   render() {
+    const notChosen = prefixer('scale-icon');
+    const highlighted = `${notChosen}-highlighted`;
+    const answer = this.props.reviews.get(this.props.question);
     return (
       <div className={prefixer('scale')}>
-        <MdSentimentVeryDissatisfied onClick={() => this.props.giveReview(this.props.question, 1)} />
-        <MdSentimentDissatisfied onClick={() => this.props.giveReview(this.props.question, 2)} />
-        <MdSentimentNeutral onClick={() => this.props.giveReview(this.props.question, 3)} />
-        <MdSentimentSatisfied onClick={() => this.props.giveReview(this.props.question, 4)} />
-        <MdSentimentVerySatisfied onClick={() => this.props.giveReview(this.props.question, 5)} />
+        <MdSentimentVeryDissatisfied
+          className={answer === 1 ? highlighted : notChosen}
+          onClick={() => this.props.giveReview(this.props.question, 1)}
+        />
+        <MdSentimentDissatisfied
+          className={answer === 2 ? highlighted : notChosen}
+          onClick={() => this.props.giveReview(this.props.question, 2)}
+        />
+        <MdSentimentNeutral
+          className={answer === 3 ? highlighted : notChosen}
+          onClick={() => this.props.giveReview(this.props.question, 3)}
+        />
+        <MdSentimentSatisfied
+          className={answer === 4 ? highlighted : notChosen}
+          onClick={() => this.props.giveReview(this.props.question, 4)}
+        />
+        <MdSentimentVerySatisfied
+          className={answer === 5 ? highlighted : notChosen}
+          onClick={() => this.props.giveReview(this.props.question, 5)}
+        />
       </div>
     );
   }

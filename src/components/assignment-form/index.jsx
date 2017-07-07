@@ -23,7 +23,6 @@ class AssignmentForm extends Component {
   render() {
     return (
       <form onSubmit={this.props.handleSubmit} >
-        <StatusDisplay />
         <Assignment editorReadOnly={false} />
         <ModelSolution />
         <TestFields />
@@ -40,6 +39,7 @@ class AssignmentForm extends Component {
             Lähetä
           </button>
         </div>
+        <StatusDisplay />
       </form>
     );
   }

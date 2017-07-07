@@ -27,7 +27,7 @@ class StatusDisplay extends Component {
     let errors = [];
     let sendingInfo = prefixer('sending-info');
     if (this.props.status !== STATUS_IN_PROGRESS) {
-      finishButton = prefixer('finish-button');
+      finishButton = prefixer('info-button');
       if (this.props.result.error) {
         errors = this.props.result.error;
       }

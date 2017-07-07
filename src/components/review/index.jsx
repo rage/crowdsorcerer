@@ -19,15 +19,18 @@ class Review extends Component {
         <Assignment readOnly />
         <ModelSolution readOnly />
         <TestFields readOnly />
-        <ReviewQuestions />
-        <div className={prefixer('form-component')}>
-          <div className={prefixer('peer-review-title')} >Vapaita kommentteja tehtävästä:</div>
-          <textarea
-            className={prefixer('comment-field')}
-            value={this.props.comment}
-            onChange={event => this.props.changeComment(event.currentTarget.value)}
-          />
+        <div className={prefixer('peer-review-component')}>
+          <ReviewQuestions />
+          <div className={prefixer('peer-review-content')}>
+            <div className={prefixer('peer-review-title')} >Vapaita kommentteja tehtävästä</div>
+            <textarea
+              className={prefixer('comment-field')}
+              value={this.props.comment}
+              onChange={event => this.props.changeComment(event.currentTarget.value)}
+            />
+          </div>
         </div>
+        <button className={prefixer('sender')}>Lähetä </button>
       </div>
     );
   }

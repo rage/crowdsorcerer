@@ -3,4 +3,18 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  align-content: stretch;
+  margin: 0.5rem;
+}
+
+.peer-review-scale-line {
+  background-color: #a9a9c1;
+  height: 0.1rem;
+  border-radius: 0.2rem;
+  flex-grow: 2;
+}
+
+.peer-review-question {
+  margin: 0 0.4rem 0 0;
+  max-width: 60%;
 }

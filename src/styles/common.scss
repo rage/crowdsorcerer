@@ -1,0 +1,25 @@
+.info-button {
+  border-radius: 0.4rem;
+  background-color: $info-blue;
+  padding: 0.5rem 2rem;
+  margin: 0.2rem;
+  color: $white;
+  align-self: center;
+}
+
+.sender {
+  vertical-align: top;
+  float: right;
+  border-radius: 0.4rem;
+  border: 0.1rem solid $border-grey;
+  background-color: #3eba41;
+  padding: 0.5rem 2rem;
+  color: $white;
+  cursor: pointer;
+  font-family: Roboto; // poista lopulliseen
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+

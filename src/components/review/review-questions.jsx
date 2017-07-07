@@ -9,14 +9,15 @@ class ReviewQuestions extends Component {
 
   render() {
     return (
-      <div className={prefixer('form-component')}>
+      <div className={prefixer('peer-review-content')}>
         <div className={prefixer('peer-review-title')}>Anna palautetta</div>
-        <div className={prefixer('peer-review-component')}>
+        <div>
           {
            this.props.reviewQuestions.map(
             question => (
               <div key={question} className={prefixer('review-question-scale-container')}>
-                <div>{question}</div>
+                <div className={prefixer('peer-review-question')} >{question}</div>
+                <div className={prefixer('peer-review-scale-line')} />
                 <ReviewScale question={question} />
               </div>
             ))

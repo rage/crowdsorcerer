@@ -2,14 +2,12 @@
 @import "./review-info";
 @import "./review-questions";
 @import "./review-scale";
-
-.peer-review-title {
-    font-size: 22px;
-    font-style: bold;
-}
+@import "./common";
 
 .comment-field {
-  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
   margin: 15 0 0 0;
   min-height: 5rem;
 }
+
