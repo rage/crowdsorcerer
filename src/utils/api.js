@@ -2,6 +2,7 @@
 import { Raw } from 'slate';
 import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
+import type { State as ReviewState } from 'state/review';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
 import * as storejs from 'store';
@@ -27,7 +28,7 @@ export default class Api {
   cable: ActionCable.Cable;
   connection: ActionCable.Channel;
 
-  createJSON(state: FormState): Object {
+  createFormJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
@@ -45,6 +46,19 @@ export default class Api {
 
   deleteSubscription(): void {
     this.connection.unsubscribe();
+  }
+
+  createReviewJSON(state: ReviewState): Object {
+    return (
+    {
+      oauth_token: this.oauthToken(),
+      peer_review: {
+        user_id: 1,
+        exercise_id: 1,
+        comment: state.comment,
+      },
+    }
+    );
   }
 
   createSubscription(
@@ -91,8 +105,30 @@ export default class Api {
 
   postForm(state: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
-      const data = this.createJSON(state);
+      const data = this.createFormJSON(state);
       fetch(`${SERVER}/exercises`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      })
+      .then((resp) => {
+        if (!resp.ok) {
+          return reject(resp.status);
+        }
+        return resp.json();
+      })
+      .then(resolve, reject);
+    });
+  }
+
+  postReview(state: ReviewState): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const data = this.createReviewJSON(state);
+      console.info(`sending: ${JSON.stringify(data)}`);
+      fetch(`${SERVER}/peer_reviews`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

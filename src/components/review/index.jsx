@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import prefixer from 'utils/class-name-prefixer';
 import type { State, Dispatch } from 'state/reducer';
-import { changeCommentAction } from 'state/review';
+import { changeCommentAction, submitAction } from 'state/review';
 import Assignment from 'components/assignment-form/assignment';
 import ModelSolution from 'components/assignment-form/model-solution';
 import TestFields from 'components/assignment-form/test-fields';
@@ -30,7 +30,13 @@ class Review extends Component {
             />
           </div>
         </div>
-        <button className={prefixer('sender')}>Lähetä </button>
+        <button
+          className={prefixer('sender')}
+          onClick={(e) => {
+            e.preventDefault();
+            this.props.handleSubmit();
+          }}
+        >Lähetä </button>
       </div>
     );
   }
@@ -45,6 +51,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return {
     changeComment(comment: string) {
       dispatch(changeCommentAction(comment));
+    },
+    handleSubmit() {
+      dispatch(submitAction());
     },
   };
 }

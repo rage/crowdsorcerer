@@ -1,4 +1,7 @@
 // @flow
+import type { ThunkArgument } from 'state/store';
+import type { Dispatch, GetState } from 'state/reducer';
+
 export const GIVE_REVIEW = 'GIVE_REVIEW';
 export const CHANGE_COMMENT = 'CHANGE_COMMENT';
 
@@ -14,6 +17,15 @@ export function changeCommentAction(comment: string) {
   return {
     comment,
     type: CHANGE_COMMENT,
+  };
+}
+
+export function submitAction() {
+  return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    // dispatch(startSendAction());
+    console.info('submit');
+    api.postReview(getState().review)
+    .then(resp => console.info(resp));
   };
 }
 
