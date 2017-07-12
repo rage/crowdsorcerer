@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import { submitButtonPressedAction } from 'state/form';
+import { formSubmitButtonPressedAction } from 'state/form';
 import 'codemirror/mode/clike/clike';
 import StatusDisplay from '../status-display';
 import ModelSolution from './model-solution';
@@ -23,7 +23,7 @@ class AssignmentForm extends Component {
   render() {
     return (
       <form onSubmit={this.props.handleSubmit} >
-        <Assignment editorReadOnly={false} />
+        <Assignment />
         <ModelSolution />
         <TestFields />
         <div className={prefixer('form-component')}>
@@ -39,7 +39,7 @@ class AssignmentForm extends Component {
             Lähetä
           </button>
         </div>
-        <StatusDisplay />
+        <StatusDisplay showProgress />
       </form>
     );
   }
@@ -48,7 +48,6 @@ class AssignmentForm extends Component {
 function mapStateToProps(state: State) {
   return {
     valid: state.form.valid,
-    errors: state.form.errors,
     showErrors: state.form.showErrors,
   };
 }
@@ -56,7 +55,7 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
     handleSubmit() {
-      dispatch(submitButtonPressedAction());
+      dispatch(formSubmitButtonPressedAction());
     },
   };
 }

@@ -1,11 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
-import prefixer from 'utils/class-name-prefixer';
+import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
+import prefixer from 'utils/class-name-prefixer';
+import { resetSubmissionStatusAction } from 'state/submission';
 import ProgressBar from './progress-bar';
-import { resetSubmissionStatusAction } from '../../state/submission';
 
 class StatusDisplay extends Component {
 
@@ -14,7 +14,19 @@ class StatusDisplay extends Component {
     sendingStatusMessage: string,
     sendingStatusProgress: number,
     status: string,
-    result: Object,
+    result: { OK: boolean, errors: Array<string> },
+    showProgress: boolean,
+  }
+
+  renderProgress() {
+    if (!this.props.showProgress) {
+      return undefined;
+    }
+    return (
+      <div className={prefixer('progress-bar-container')}>
+        <ProgressBar progressPercent={this.props.sendingStatusProgress} />
+      </div>
+    );
   }
 
   render() {
@@ -28,23 +40,19 @@ class StatusDisplay extends Component {
     let sendingInfo = prefixer('sending-info');
     if (this.props.status !== STATUS_IN_PROGRESS) {
       finishButton = prefixer('info-button');
-      if (this.props.result.error) {
-        errors = this.props.result.error;
-      }
+      errors = this.props.result.errors ? this.props.result.errors : errors;
       if (this.props.status === STATUS_FINISHED) {
-        if (this.props.result.OK) {
-          result = prefixer('check-mark');
-          sendingInfo += ` ${prefixer('all-passed')} `;
-        } else {
-          result = prefixer('sad-face');
-          sendingInfo += ` ${prefixer('compile-error')}`;
+        if (this.props.result) {
+          result = this.props.result.OK ? prefixer('check-mark') : prefixer('sad-face');
+          const resultInfo = this.props.result.OK ? prefixer('all-passed') : prefixer('compile-error');
+          sendingInfo += ` ${resultInfo}`;
         }
       } else {
         result = prefixer('sad-face');
         sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
       }
     }
-    const form = (
+    return (
       <div className={statusDisplay}>
         <div className={sendingInfo}>
           <div className={prefixer('status-message')}>
@@ -57,9 +65,7 @@ class StatusDisplay extends Component {
           </div>
           <div className={prefixer('status-bottom')}>
             <div className={prefixer('result-container')}>
-              <div className={prefixer('progress-bar-container')}>
-                <ProgressBar progressPercent={this.props.sendingStatusProgress} />
-              </div>
+              {this.renderProgress()}
               <div className={prefixer('result')}>
                 <div className={result} />
               </div>
@@ -75,14 +81,14 @@ class StatusDisplay extends Component {
         </div>
       </div>
     );
-    return form;
   }
 }
+
 function mapStateToProps(state: State) {
   return {
     sendingStatusMessage: state.submission.message,
-    sendingStatusProgress: state.submission.progress,
     status: state.submission.status,
+    sendingStatusProgress: state.submission.progress,
     result: state.submission.result,
   };
 }

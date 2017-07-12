@@ -9,6 +9,7 @@ import {
   testOutputChangeAction,
   removeTestFieldAction,
 } from 'state/form';
+import Transition from 'react-motion-ui-pack';
 
 class InputOutput extends Component {
 
@@ -20,6 +21,7 @@ class InputOutput extends Component {
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
     readOnly: boolean,
+    showErrors: boolean,
   };
 
   renderEditable() {
@@ -41,18 +43,22 @@ class InputOutput extends Component {
                 this.props.onTestInputChange(event.currentTarget.value, this.props.index);
               }}
             />
-            {IOErrors.map((error) => {
-              if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
-                return (
-                  <span
-                    key={`input${this.props.index.toString()}`} className={prefixer('error')}
-                  >
-                    {error.msg}
-                  </span>);
-              }
-              return undefined;
-            })
-              }
+            <Transition
+              enter={{ opacity: 1, height: 16 }}
+              leave={{ opacity: 0, height: 0, transitionY: -3 }}
+            >
+              {IOErrors.map((error) => {
+                if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
+                  return (
+                    <span
+                      key={`input${this.props.index.toString()}`} className={prefixer('error')}
+                    >
+                      {error.msg}
+                    </span>);
+                }
+                return undefined;
+              })}
+            </Transition>
           </div>
           <div className={prefixer('input-field-wrapper')}>
             <input
@@ -65,18 +71,22 @@ class InputOutput extends Component {
                 this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
               }}
             />
-            {IOErrors.map((error) => {
-              if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
-                return (
-                  <span
-                    key={`output${this.props.index.toString()}`}
-                    className={`${prefixer('error')} ${prefixer('output')}`}
-                  > {error.msg}
-                  </span>);
-              }
-              return undefined;
-            })
-              }
+            <Transition
+              enter={{ opacity: 1, height: 16 }}
+              leave={{ opacity: 0, height: 0, transitionY: -3 }}
+            >
+              {IOErrors.map((error) => {
+                if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
+                  return (
+                    <span
+                      key={`output${this.props.index.toString()}`}
+                      className={`${prefixer('error')} ${prefixer('output')}`}
+                    > {error.msg}
+                    </span>);
+                }
+                return undefined;
+              })}
+            </Transition>
           </div>
           <button
             type="button"

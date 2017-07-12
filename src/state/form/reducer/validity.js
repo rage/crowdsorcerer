@@ -9,10 +9,10 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
-  CHANGE_ERRORS_VISIBILITY,
+  CHANGE_FORM_ERRORS_VISIBILITY,
 } from 'state/form';
 import type {
-  AddTestFieldAction,
+    AddTestFieldAction,
     RemoveTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
@@ -20,6 +20,7 @@ import type {
     ModelSolutionChangeAction,
     AddHiddenRowAction,
     DeleteHiddenRowAction,
+    ChangeErrorsVisibilityAction,
 } from 'state/form';
 import type { State } from './index';
 
@@ -37,7 +38,7 @@ const TEST_OUTPUT_ERROR = 'Tulos-kenttä ei voi olla tyhjä.';
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
   | AssignmentChangeAction | ModelSolutionChangeAction
-  | AddHiddenRowAction | DeleteHiddenRowAction;
+  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction;
 
 function isFormAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
@@ -49,10 +50,10 @@ function isFormAction(actionContainer: AnyAction) {
     action === CHANGE_TEST_OUTPUT ||
     action === ADD_HIDDEN_ROW ||
     action === DELETE_HIDDEN_ROW ||
-    action === CHANGE_ERRORS_VISIBILITY;
+    action === CHANGE_FORM_ERRORS_VISIBILITY;
 }
 
-function isValidAssignment(state: State) {
+function validateAssignment(state: State) {
   const words = Plain.serialize(state.assignment).split(/[ \n]+/).filter(Boolean);
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
     return {
@@ -64,7 +65,7 @@ function isValidAssignment(state: State) {
 }
 
 
-function isValidModelSolution(state: State) {
+function validateModelSolution(state: State) {
   const words = state.modelSolution.split(/[ \n]+/).filter(Boolean);
   const lines = state.modelSolution.split('\n').filter(Boolean);
   let errorMessage;
@@ -85,7 +86,7 @@ function isValidModelSolution(state: State) {
   return undefined;
 }
 
-function isValidTestInputOutput(state: State) {
+function validateTestInputOutput(state: State) {
   const errors = [];
   for (let i = 0; i < state.inputOutput.length; i++) {
     if (state.inputOutput[i].input.length === 0) {
@@ -110,7 +111,7 @@ function isValidTestInputOutput(state: State) {
 }
 
 export default function (state: State, action: AnyAction) {
-  const validityFunctions = [isValidAssignment, isValidModelSolution, isValidTestInputOutput];
+  const validityFunctions = [validateAssignment, validateModelSolution, validateTestInputOutput];
   if (isFormAction(action)) {
     let valid = false;
     const errors = new Map();

@@ -8,7 +8,7 @@
 .field-container {
 	display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .input-field {
@@ -30,11 +30,4 @@
   &:hover {
     color: darken($close-button-color, 10%);
   }
-}
-
-.test-field-arrow {
-  font-size: 40px;
-  position: relative;
-  top: -0.2rem;
-  text-align: center;
 }

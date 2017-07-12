@@ -133,6 +133,7 @@ function mapStateToProps(state: State) {
     solutionRows: state.form.solutionRows,
     errors: state.form.errors,
     showErrors: state.form.showErrors,
+    value: state.form.modelSolution,
   };
 }
 

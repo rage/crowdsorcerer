@@ -72,8 +72,8 @@ class TestFields extends Component {
       <div className={prefixer('form-component')}>
         <div className={prefixer('instructions')}>
           Testit
-          {this.props.readOnly ? this.renderReadOnly() : this.renderEditable()}
         </div>
+        {this.props.readOnly ? this.renderReadOnly() : this.renderEditable()}
       </div>
     );
   }

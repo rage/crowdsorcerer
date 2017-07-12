@@ -11,7 +11,7 @@ import {
   CHANGE_TEST_OUTPUT,
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
-  CHANGE_ERRORS_VISIBILITY,
+  CHANGE_FORM_ERRORS_VISIBILITY,
 } from 'state/form';
 import type {
     AddTestFieldAction,
@@ -186,7 +186,7 @@ export default createReducer(initialState, {
       },
     };
   },
-  [CHANGE_ERRORS_VISIBILITY](state: State): State {
+  [CHANGE_FORM_ERRORS_VISIBILITY](state: State): State {
     return {
       ...state,
       ...{

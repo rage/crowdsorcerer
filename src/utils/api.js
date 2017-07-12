@@ -6,6 +6,7 @@ import type { State as ReviewState } from 'state/review';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
 import * as storejs from 'store';
+import mapToObject from 'utils/map-to-object';
 
 let SERVER;
 let SOCKET_SERVER;
@@ -49,13 +50,16 @@ export default class Api {
   }
 
   createReviewJSON(state: ReviewState): Object {
+    const answers = mapToObject(state.reviews);
     return (
     {
       oauth_token: this.oauthToken(),
+      exercise: {
+        assignment_id: 1,
+      },
       peer_review: {
-        user_id: 1,
-        exercise_id: 1,
         comment: state.comment,
+        answers,
       },
     }
     );
@@ -116,7 +120,7 @@ export default class Api {
       })
       .then((resp) => {
         if (!resp.ok) {
-          return reject(resp.status);
+          return reject(resp);
         }
         return resp.json();
       })

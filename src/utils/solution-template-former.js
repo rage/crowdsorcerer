@@ -159,9 +159,5 @@ export default function formSolutionTemplate(modelSolution: string, solutionRows
   let finalLines = [];
   finalLines = addTemplateTags(modelSolution, solutionRows);
   fixTemplateWithStub(finalLines);
-
-  // const final = finalLines.join('\n');
-  // console.log('fixed template: \n '.concat(final));
-
   return finalLines.join('\n');
 }

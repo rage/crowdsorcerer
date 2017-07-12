@@ -12,7 +12,6 @@ import {
   authenticationError,
 } from 'state/submission';
 
-export const SUBMIT = 'SUBMIT';
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
 export const REMOVE_TEST_FIELD = 'REMOVE_TEST_FIELD';
 export const CHANGE_ASSIGNMENT = 'CHANGE_ASSIGNMENT';
@@ -21,7 +20,7 @@ export const CHANGE_TEST_INPUT = 'CHANGE_TEST_INPUT';
 export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
-export const CHANGE_ERRORS_VISIBILITY = 'CHANGE_ERRORS_VISIBILITY';
+export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
 
 export function addTestFieldAction() {
   return {
@@ -67,28 +66,13 @@ export function testOutputChangeAction(testOutput: string, index: number) {
   };
 }
 
-export function changeErrorVisibilityAction() {
+export function changeFormErrorVisibilityAction() {
   return {
-    type: CHANGE_ERRORS_VISIBILITY,
+    type: CHANGE_FORM_ERRORS_VISIBILITY,
   };
 }
 
-export function createSubmitAction(
-  assignment: sState,
-  modelSolution: string,
-  testIo: Array<Array<string>>,
-  hiddenRows: Array<number>,
-) {
-  return {
-    assignment,
-    modelSolution,
-    testIo,
-    hiddenRows,
-    type: SUBMIT,
-  };
-}
-
-export function submitAction() {
+export function submitFormAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
     api.postForm(getState().form)
@@ -106,7 +90,7 @@ export function submitAction() {
         }, response.exercise.id);
       },
       (error) => {
-        if (error === 401) {
+        if (error.status === 403) {
           dispatch(authenticationError());
         } else {
           dispatch(postUnsuccessfulAction());
@@ -117,14 +101,14 @@ export function submitAction() {
 }
 
 
-export function submitButtonPressedAction() {
+export function formSubmitButtonPressedAction() {
   return function submitter(dispatch: Dispatch, getState: GetState) {
-    dispatch(changeErrorVisibilityAction());
+    dispatch(changeFormErrorVisibilityAction());
     const state = getState();
     if (!state.form.valid) {
       return;
     }
-    dispatch(submitAction());
+    dispatch(submitFormAction());
   };
 }
 
@@ -169,14 +153,6 @@ export type TestInputChangeAction = {
 
 export type TestOutputChangeAction = {
   testOutput: string,
-  type: string
-};
-
-export type SubmitAction = {
-  assignment: sState,
-  modelSolution: string,
-  testIo: Array<IO>,
-  hiddenRows: Array<number>,
   type: string
 };
 

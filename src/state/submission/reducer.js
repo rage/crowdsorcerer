@@ -9,6 +9,7 @@ import {
   CONNECTION_TERMINATED_PREMATURELY,
   INVALID_DATA_ERROR,
   AUTHENTICATION_ERROR,
+  FINISH,
 } from 'state/submission';
 import type {
     UpdateSubmissionStatusAction,
@@ -19,7 +20,7 @@ export type State = {
   message: string,
   progress: number,
   result: Object,
-}
+};
 
 export const STATUS_FINISHED = 'finished';
 export const STATUS_ERROR = 'error';
@@ -30,7 +31,7 @@ const CONNECTION_POST_SENDING_MSG = 'Lähetetään tietoja';
 const CONNECTION_POST_SUCCESSFUL_MSG = 'Tietojen lähetys onnistui';
 const CONNECTION_POST_UNSUCCESSFUL_MSG = 'Tietojen lähetys ei onnistunut. Yritä hetken päästä uudelleen.';
 const CONNECTION_TERMINATED_MSG = 'Yhteysvirhe';
-const INTERNAL_ERROR_MSG = 'Tapahtui sisäinen yhteysvirhe.';
+const INTERNAL_ERROR_MSG = 'Tapahtui sisäinen virhe.';
 const AUTHENTICATION_ERROR_MSG = 'TMC-tunnuksesi ei kelpaa, ole hyvä ja kirjaudu sisään uudestaan.';
 
 const initialState = {
@@ -45,6 +46,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
+        progress: 0,
         message: CONNECTION_POST_SENDING_MSG,
         status: STATUS_IN_PROGRESS,
       },
@@ -88,12 +90,24 @@ export default createReducer(initialState, {
       },
     };
   },
-  [RESET_SUBMISSION_STATUS](): State {
+  [FINISH](state: State): State {
     return {
-      message: '',
-      progress: 0,
-      status: STATUS_NONE,
-      result: {},
+      ...state,
+      ...{
+        result: { OK: true },
+        status: STATUS_FINISHED,
+      },
+    };
+  },
+  [RESET_SUBMISSION_STATUS](state: State): State {
+    return {
+      ...state,
+      ...{
+        message: '',
+        progress: undefined,
+        status: STATUS_NONE,
+        result: {},
+      },
     };
   },
   [CONNECTION_TERMINATED_PREMATURELY](state: State): State {
