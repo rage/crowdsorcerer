@@ -12,6 +12,7 @@ class ReviewQuestions extends Component {
     errors: Map<string, Array<Object>>,
     reviewQuestions: Array<string>,
     showErrors: boolean,
+    reviews: Map<string, number>
   }
 
   render() {
@@ -24,10 +25,10 @@ class ReviewQuestions extends Component {
            this.props.reviewQuestions.map(
             question => (
               <div key={question} className={prefixer('review-question-scale-error-container')}>
-                <div key={question} className={prefixer('review-question-scale-container')}>
-                  <div className={prefixer('peer-review-question')} >{question}</div>
+                <div aria-required key={question} className={prefixer('review-question-scale-container')}>
+                  <div className={prefixer('peer-review-question')}>{question}</div>
                   <div className={prefixer('peer-review-scale-line')} />
-                  <ReviewScale question={question} />
+                  <ReviewScale answer={this.props.reviews.get(question)} question={question} />
                 </div>
                 <Transition
                   enter={{ opacity: 1, height: 16 }}
@@ -56,6 +57,7 @@ class ReviewQuestions extends Component {
 function mapStateToProps(state: State) {
   return {
     reviewQuestions: state.review.reviewQuestions,
+    reviews: state.review.reviews,
     errors: state.review.errors,
     showErrors: state.review.showErrors,
   };

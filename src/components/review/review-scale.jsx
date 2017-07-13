@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import type { State, Dispatch } from 'state/reducer';
+import type { Dispatch } from 'state/reducer';
 import prefixer from 'utils/class-name-prefixer';
 import { giveReviewAction } from 'state/review';
 import MdSentimentVeryDissatisfied from 'react-icons/lib/md/sentiment-very-dissatisfied';
@@ -12,47 +12,104 @@ import MdSentimentVerySatisfied from 'react-icons/lib/md/sentiment-very-satisfie
 
 class ReviewScale extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.focusables = [];
+  }
+
+  componentDidMount() {
+    this.focusables[1] = document.getElementById('välttävä');
+    this.focusables[2] = document.getElementById('tyydyttävä');
+    this.focusables[3] = document.getElementById('hyvä');
+    this.focusables[4] = document.getElementById('kiitettävä');
+    this.focusables[5] = document.getElementById('erinomainen');
+  }
+
+  focusables: Array<any>
+
   props: {
     question: string,
-    reviews: Map<string, number>,
+    answer: number,
     giveReview: (string, number) => void,
+  }
+
+  radioOnKeyDown(e: KeyboardEvent) {
+    let answer = !this.props.answer ? 0 : this.props.answer;
+    switch (e.keyCode) {
+      case 40:
+      case 39:
+        answer = (answer + 1 <= 5) ? (answer + 1) : 1;
+        this.props.giveReview(this.props.question, answer);
+        break;
+      case 37:
+      case 38:
+        answer = (answer - 1 >= 1) ? (answer - 1) : 5;
+        this.props.giveReview(this.props.question, answer);
+        break;
+      default:
+    }
+    this.focusables[answer].focus();
   }
 
   render() {
     const notChosen = prefixer('scale-icon');
     const highlighted = `${notChosen}-highlighted`;
-    const answer = this.props.reviews.get(this.props.question);
     return (
-      <div className={prefixer('scale')}>
+      <div
+        className={prefixer('scale')}
+        role="radiogroup"
+        aria-label={`${this.props.question}`}
+        tabIndex="0"
+      >
         <MdSentimentVeryDissatisfied
-          className={answer === 1 ? highlighted : notChosen}
+          className={this.props.answer === 1 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 1)}
+          id="välttävä"
+          role="radio"
+          aria-checked={this.props.answer === 1}
+          onKeyDown={e => this.radioOnKeyDown(e)}
+          tabIndex="0"
         />
         <MdSentimentDissatisfied
-          className={answer === 2 ? highlighted : notChosen}
+          className={this.props.answer === 2 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 2)}
+          id="tyydyttävä"
+          role="radio"
+          aria-checked={this.props.answer === 2}
+          tabIndex="-1"
+          onKeyDown={e => this.radioOnKeyDown(e)}
         />
         <MdSentimentNeutral
-          className={answer === 3 ? highlighted : notChosen}
+          className={this.props.answer === 3 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 3)}
+          id="hyvä"
+          role="radio"
+          aria-checked={this.props.answer === 3}
+          tabIndex="-1"
+          onKeyDown={e => this.radioOnKeyDown(e)}
         />
         <MdSentimentSatisfied
-          className={answer === 4 ? highlighted : notChosen}
+          className={this.props.answer === 4 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 4)}
+          id="kiitettävä"
+          role="radio"
+          aria-checked={this.props.answer === 4}
+          tabIndex="-1"
+          onKeyDown={e => this.radioOnKeyDown(e)}
         />
         <MdSentimentVerySatisfied
-          className={answer === 5 ? highlighted : notChosen}
+          className={this.props.answer === 5 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 5)}
+          id="erinomainen"
+          role="radio"
+          aria-checked={this.props.answer === 5}
+          tabIndex="-1"
+          onKeyDown={e => this.radioOnKeyDown(e)}
         />
       </div>
     );
   }
-}
-
-function mapStateToProps(state: State) {
-  return {
-    reviews: state.review.reviews,
-  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
@@ -63,4 +120,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewScale);
+export default connect(null, mapDispatchToProps)(ReviewScale);

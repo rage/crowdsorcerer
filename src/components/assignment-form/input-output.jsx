@@ -34,6 +34,8 @@ class InputOutput extends Component {
         <div className={prefixer('field-container')}>
           <div className={prefixer('input-field-wrapper')}>
             <input
+              aria-label="testisyöte"
+              aria-required
               className={prefixer('input-field')}
               type="text"
               placeholder="Syöte"
@@ -62,6 +64,8 @@ class InputOutput extends Component {
           </div>
           <div className={prefixer('input-field-wrapper')}>
             <input
+              aria-required
+              aria-label="testituloste"
               className={prefixer('input-field')}
               type="text"
               placeholder="Tulos"
@@ -106,6 +110,7 @@ class InputOutput extends Component {
         <div className={prefixer('field-container')}>
           <input
             readOnly
+            aria-label="testisyöte"
             className={prefixer('input-field')}
             type="text"
             value={this.props.io.input}
@@ -114,6 +119,7 @@ class InputOutput extends Component {
           </div>
           <input
             readOnly
+            aria-label="testituloste"
             className={prefixer('input-field')}
             type="text"
             value={this.props.io.output}

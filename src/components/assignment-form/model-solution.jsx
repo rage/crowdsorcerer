@@ -90,13 +90,12 @@ class ModelSolution extends Component {
     }
     return (
       <div className={prefixer('form-component')}>
-        <div>
-          <div className={prefixer('instructions')}>
+        <div id="malliratkaisu" className={prefixer('instructions')}>
             Malliratkaisu
           </div>
-        </div>
-        <div>
+        <div tabIndex="0">
           <CodeMirror
+            aria-labelledby="malliratkaisu"
             className={prefixer('model-solution')}
             options={{
               mode: 'text/x-java',
@@ -111,6 +110,7 @@ class ModelSolution extends Component {
               this.props.onModelSolutionChange(solution);
             }}
             ref={(input) => { this.textInput = input; }}
+            aria-required
           />
         </div>
         <Transition

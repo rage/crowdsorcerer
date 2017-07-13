@@ -206,13 +206,17 @@ class Assignment extends Component {
     return (
       <div className={prefixer('form-component')}>
         <div>
-          <div className={prefixer('instructions')}>
+          <div id="tehtävänanto" className={prefixer('instructions')}>
             Tehtävänanto
           </div>
           <div>
             {this.props.readOnly ? undefined : this.renderToolbar()}
           </div>
-          <div className={prefixer('assignment-editor')}>
+          <div
+            className={prefixer('assignment-editor')}
+            aria-required
+            aria-labelledby="tehtävänanto"
+          >
             {this.renderEditor()}
           </div>
           <Transition

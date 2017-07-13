@@ -29,7 +29,9 @@ export default createReducer(initialState, {
     const oldReviews = state.reviews;
     const reviews = new Map();
     oldReviews.forEach((value: number, key: string) => {
-      reviews.set(key, value);
+      let reviewValue = value > 5 ? 5 : value;
+      reviewValue = value < 1 ? 1 : value;
+      reviews.set(key, reviewValue);
     });
     reviews.set(action.question, action.value);
     return {

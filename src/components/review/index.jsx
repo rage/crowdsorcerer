@@ -39,6 +39,7 @@ class Review extends Component {
           <div className={prefixer('peer-review-content')}>
             <div className={prefixer('peer-review-title')} >Vapaita kommentteja tehtävästä</div>
             <textarea
+              aria-required
               className={prefixer('comment-field')}
               value={this.props.comment}
               onChange={event => this.props.changeComment(event.currentTarget.value)}

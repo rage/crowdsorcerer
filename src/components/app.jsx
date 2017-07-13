@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import prefixer from 'utils/class-name-prefixer';
 import type { State } from 'state/reducer';
-import Form from './assignment-form';
-// import Review from './review';
+// import Form from './assignment-form';
+import Review from './review';
 
 class App extends Component {
 
@@ -12,7 +12,7 @@ class App extends Component {
     if (this.props.loggedIn) {
       return (
         <div className={prefixer('container')}>
-          <Form />
+          <Review />
         </div>
       );
     }
