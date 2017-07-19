@@ -45,10 +45,10 @@ class StatusDisplay extends Component {
             {this.props.sendingStatusMessage}
           </div>
           <div className={prefixer('error-messages')}>
-            {errors.map((e) => {
+            {errors.map((e, i) => {
               let error = JSON.stringify(e);
               error = error.substring(1, error.length - 1);
-              return <div key={`${e}`} className={prefixer('error-message')}>{error}</div>;
+              return <div key={`${e} ${i}`} className={prefixer('error-message')}>{error}</div>;
             },
             )}
           </div>
