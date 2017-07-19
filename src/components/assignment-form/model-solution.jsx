@@ -90,12 +90,12 @@ class ModelSolution extends Component {
     }
     return (
       <div className={prefixer('form-component')}>
-        <div id="malliratkaisu" className={prefixer('instructions')}>
+        <div id="modelSolution" className={prefixer('instructions')}>
             Malliratkaisu
           </div>
         <div tabIndex="0">
           <CodeMirror
-            aria-labelledby="malliratkaisu"
+            aria-labelledby="modelSolution"
             className={prefixer('model-solution')}
             options={{
               mode: 'text/x-java',

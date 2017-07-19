@@ -60,8 +60,8 @@ test('resetting state works correctly', (t) => {
   );
   t.deepEqual(state.submission.status, STATUS_NONE);
   t.deepEqual(state.submission.message, '');
-  t.deepEqual(state.submission.progress, 0);
-  t.deepEqual(state.submission.result, {});
+  t.deepEqual(state.submission.progress, undefined);
+  t.deepEqual(state.submission.result, { OK: false, error: [] });
 });
 
 test('update changes state accordign to data', (t) => {

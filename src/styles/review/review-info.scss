@@ -13,9 +13,14 @@
   color: $white;
   background-color: $info-blue;
   cursor: pointer;
-  font-family: Roboto; // poista lopulliseen
+  font-family: Roboto; //TODO: remvoe to production
 }
 
 .peer-review-instructions {
   margin: 0.5rem;
+}
+
+.zip-load-buttons a {
+  text-decoration: none;
+  font-size: 13.3333;
 }

@@ -22,6 +22,7 @@ const initialState = {
   valid: false,
   showErrors: false,
   errors: new Map(),
+  reviewable: 2,
 };
 
 export default createReducer(initialState, {

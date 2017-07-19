@@ -206,7 +206,7 @@ class Assignment extends Component {
     return (
       <div className={prefixer('form-component')}>
         <div>
-          <div id="tehtävänanto" className={prefixer('instructions')}>
+          <div id="assignment" className={prefixer('instructions')}>
             Tehtävänanto
           </div>
           <div>
@@ -215,7 +215,7 @@ class Assignment extends Component {
           <div
             className={prefixer('assignment-editor')}
             aria-required
-            aria-labelledby="tehtävänanto"
+            aria-labelledby="assignment"
           >
             {this.renderEditor()}
           </div>

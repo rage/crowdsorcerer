@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'production') {
   SOCKET_SERVER = 'ws://localhost:3000/cable';
 }
 /* eslint-enable no-const-assign */
+export const SERVER_ADDR = SERVER;
 
 const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
@@ -36,7 +37,7 @@ export default class Api {
     {
       oauth_token: this.oauthToken(),
       exercise: {
-        assignment_id: 2,
+        assignment_id: 1,
         description: Raw.serialize(state.assignment),
         code: parsedForm,
         testIO: IOArray,

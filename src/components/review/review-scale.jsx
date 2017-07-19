@@ -24,11 +24,11 @@ class ReviewScale extends Component {
   }
 
   componentDidMount() {
-    this.focusables[1] = document.getElementById('välttävä');
-    this.focusables[2] = document.getElementById('tyydyttävä');
-    this.focusables[3] = document.getElementById('hyvä');
-    this.focusables[4] = document.getElementById('kiitettävä');
-    this.focusables[5] = document.getElementById('erinomainen');
+    this.focusables[1] = document.getElementById('veryDissatisfied');
+    this.focusables[2] = document.getElementById('dissatisfied');
+    this.focusables[3] = document.getElementById('neutral');
+    this.focusables[4] = document.getElementById('satisfied');
+    this.focusables[5] = document.getElementById('verySatisfied');
   }
 
   focusables: Array<HTMLElement | null>
@@ -72,7 +72,7 @@ class ReviewScale extends Component {
         <MdSentimentVeryDissatisfied
           className={this.props.answer === 1 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 1)}
-          id="välttävä"
+          id="veryDissatisfied"
           role="radio"
           aria-checked={this.props.answer === 1}
           onKeyDown={e => this.radioOnKeyDown(e)}
@@ -81,7 +81,7 @@ class ReviewScale extends Component {
         <MdSentimentDissatisfied
           className={this.props.answer === 2 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 2)}
-          id="tyydyttävä"
+          id="dissatisfied"
           role="radio"
           aria-checked={this.props.answer === 2}
           tabIndex="-1"
@@ -90,7 +90,7 @@ class ReviewScale extends Component {
         <MdSentimentNeutral
           className={this.props.answer === 3 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 3)}
-          id="hyvä"
+          id="neutral"
           role="radio"
           aria-checked={this.props.answer === 3}
           tabIndex="-1"
@@ -99,7 +99,7 @@ class ReviewScale extends Component {
         <MdSentimentSatisfied
           className={this.props.answer === 4 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 4)}
-          id="kiitettävä"
+          id="satisfied"
           role="radio"
           aria-checked={this.props.answer === 4}
           tabIndex="-1"
@@ -108,7 +108,7 @@ class ReviewScale extends Component {
         <MdSentimentVerySatisfied
           className={this.props.answer === 5 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 5)}
-          id="erinomainen"
+          id="verySatisfied"
           role="radio"
           aria-checked={this.props.answer === 5}
           tabIndex="-1"

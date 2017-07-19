@@ -1,8 +1,15 @@
 // @flow
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import prefixer from 'utils/class-name-prefixer';
+import type { State } from 'state/reducer';
+import ZipLoadButton from './zip-load-button';
 
-export default class ReviewInfo extends Component {
+class ReviewInfo extends Component {
+
+  props: {
+    exerciseId: number,
+  }
 
   render() {
     return (
@@ -12,10 +19,27 @@ export default class ReviewInfo extends Component {
           Quisque dignissim quam eu mi lobortis, sed rutrum arcu sollicitudin. Aliquam hendrerit libero eu aliquet cursus.
         </div>
         <div className={prefixer('zip-load-buttons')}>
-          <button className={prefixer('info-button')}>Lataa mallivastauksen ZIP </button>
-          <button className={prefixer('info-button')}>Lataa tehtäväpohjan ZIP </button>
+          <ZipLoadButton
+            exerciseId={this.props.exerciseId}
+            zipType="model"
+            message="Lataa mallivastauksen ZIP"
+          />
+          <ZipLoadButton
+            exerciseId={this.props.exerciseId}
+            zipType="stub"
+            message="Lataa tehtäväpohjan ZIP"
+          />
         </div>
       </div>
     );
   }
 }
+
+function mapStateToProps(state: State) {
+  return {
+    exerciseId: state.review.reviewable,
+  };
+}
+
+export default connect(mapStateToProps, null)(ReviewInfo);
+

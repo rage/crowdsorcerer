@@ -11,6 +11,7 @@ export type State = {
   valid: boolean,
   errors: Map<string, Array<Object>>,
   showErrors: boolean,
+  reviewable: number,
 }
 
 export default reduceReducers(changes, validity);
