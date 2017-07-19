@@ -24,7 +24,7 @@ class InputOutput extends Component {
     showErrors: boolean,
   };
 
-  renderEditable() {
+  render() {
     let IOErrors = this.props.errors.get('IOError');
     if (!IOErrors) {
       IOErrors = [];
@@ -36,6 +36,7 @@ class InputOutput extends Component {
             <input
               aria-label="testisyöte"
               aria-required
+              readOnly={this.props.readOnly}
               className={prefixer('input-field')}
               type="text"
               placeholder="Syöte"
@@ -62,10 +63,12 @@ class InputOutput extends Component {
               })}
             </Transition>
           </div>
+          {this.props.readOnly ? <div className={prefixer('test-field-arrow')}>&rarr;</div> : undefined}
           <div className={prefixer('input-field-wrapper')}>
             <input
-              aria-required
               aria-label="testituloste"
+              aria-required
+              readOnly={this.props.readOnly}
               className={prefixer('input-field')}
               type="text"
               placeholder="Tulos"
@@ -92,45 +95,16 @@ class InputOutput extends Component {
               })}
             </Transition>
           </div>
-          <button
+          {!this.props.readOnly && <button
             type="button"
             className={prefixer('close-button')}
             onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
           >
             &#10006;
-          </button>
+          </button>}
         </div>
       </div>
     );
-  }
-
-  renderReadOnly() {
-    return (
-      <div >
-        <div className={prefixer('field-container')}>
-          <input
-            readOnly
-            aria-label="testisyöte"
-            className={prefixer('input-field')}
-            type="text"
-            value={this.props.io.input}
-          />
-          <div className={prefixer('test-field-arrow')}>&rarr;
-          </div>
-          <input
-            readOnly
-            aria-label="testituloste"
-            className={prefixer('input-field')}
-            type="text"
-            value={this.props.io.output}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    return this.props.readOnly ? this.renderReadOnly() : this.renderEditable();
   }
 }
 

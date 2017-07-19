@@ -15,11 +15,15 @@ import type {
     UpdateSubmissionStatusAction,
 } from 'state/submission/actions';
 
+export type ResultType = {
+  OK: boolean, error: Array<string>,
+}
+
 export type State = {
   status: string,
   message: string,
   progress: number,
-  result: Object,
+  result: ResultType,
 };
 
 export const STATUS_FINISHED = 'finished';
@@ -38,7 +42,7 @@ const initialState = {
   status: STATUS_NONE,
   message: '',
   progress: undefined,
-  result: {},
+  result: { OK: false, error: [] },
 };
 
 export default createReducer(initialState, {
@@ -94,7 +98,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        result: { OK: true },
+        result: { OK: true, error: [] },
         status: STATUS_FINISHED,
       },
     };
@@ -106,7 +110,7 @@ export default createReducer(initialState, {
         message: '',
         progress: undefined,
         status: STATUS_NONE,
-        result: {},
+        result: { OK: false, error: [] },
       },
     };
   },

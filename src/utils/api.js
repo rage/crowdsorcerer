@@ -36,7 +36,7 @@ export default class Api {
     {
       oauth_token: this.oauthToken(),
       exercise: {
-        assignment_id: 1,
+        assignment_id: 2,
         description: Raw.serialize(state.assignment),
         code: parsedForm,
         testIO: IOArray,
@@ -55,7 +55,7 @@ export default class Api {
     {
       oauth_token: this.oauthToken(),
       exercise: {
-        assignment_id: 1,
+        exercise_id: 1,
       },
       peer_review: {
         comment: state.comment,

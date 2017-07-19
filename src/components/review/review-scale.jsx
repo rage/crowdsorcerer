@@ -10,6 +10,11 @@ import MdSentimentNeutral from 'react-icons/lib/md/sentiment-neutral';
 import MdSentimentSatisfied from 'react-icons/lib/md/sentiment-satisfied';
 import MdSentimentVerySatisfied from 'react-icons/lib/md/sentiment-very-satisfied';
 
+const KEY_LEFT = 37;
+const KEY_RIGHT = 39;
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+
 class ReviewScale extends Component {
 
   constructor(props) {
@@ -26,7 +31,7 @@ class ReviewScale extends Component {
     this.focusables[5] = document.getElementById('erinomainen');
   }
 
-  focusables: Array<any>
+  focusables: Array<HTMLElement | null>
 
   props: {
     question: string,
@@ -37,19 +42,21 @@ class ReviewScale extends Component {
   radioOnKeyDown(e: KeyboardEvent) {
     let answer = !this.props.answer ? 0 : this.props.answer;
     switch (e.keyCode) {
-      case 40:
-      case 39:
+      case KEY_DOWN:
+      case KEY_RIGHT:
         answer = (answer + 1 <= 5) ? (answer + 1) : 1;
         this.props.giveReview(this.props.question, answer);
         break;
-      case 37:
-      case 38:
+      case KEY_LEFT:
+      case KEY_UP:
         answer = (answer - 1 >= 1) ? (answer - 1) : 5;
         this.props.giveReview(this.props.question, answer);
         break;
       default:
     }
-    this.focusables[answer].focus();
+    if (this.focusables[answer]) {
+      this.focusables[answer].focus();
+    }
   }
 
   render() {

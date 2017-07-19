@@ -24,6 +24,7 @@ export default class ProgressBar extends Component {
 
   props: {
     progressPercent: number,
+    showProgress: boolean,
   }
 
   scale(n: number): number {
@@ -32,16 +33,21 @@ export default class ProgressBar extends Component {
   }
 
   render() {
+    if (!this.props.showProgress) {
+      return undefined;
+    }
     const progressValue = this.scale(this.props.progressPercent);
     return (
-      <div className={prefixer('progress-bar')} ref={(e) => { this.progressBar = e; }}>
-        <Transition
-          appear={{ width: this.scale(this.state.animationStart) }}
-          enter={{ width: progressValue }}
-          leave={{ width: progressValue }}
-        >
-          <div key={progressValue.toString()} className={prefixer('progress')} />
-        </Transition>
+      <div className={prefixer('progress-bar-container')}>
+        <div className={prefixer('progress-bar')} ref={(e) => { this.progressBar = e; }}>
+          <Transition
+            appear={{ width: this.scale(this.state.animationStart) }}
+            enter={{ width: progressValue }}
+            leave={{ width: progressValue }}
+          >
+            <div key={progressValue.toString()} className={prefixer('progress')} />
+          </Transition>
+        </div>
       </div>
     );
   }

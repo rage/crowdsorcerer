@@ -13,10 +13,11 @@ import App from './components/app';
 window.initCrowdsorcerer = function initCrowdsorcerer() {
   document.querySelectorAll('.crowdsorcerer-widget').forEach((e) => {
     const assignmentId = e.dataset.assignment;
-    const store = makeStore(assignmentId);
+    const review = e.getAttribute('peer-review') !== null;
+    const store = makeStore(assignmentId, review);
     render(
       <Provider store={store}>
-        <App />
+        <App review={review} />
       </Provider>,
       e,
     );

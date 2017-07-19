@@ -12,26 +12,17 @@ import InputOutput from './input-output';
 class TestFields extends Component {
 
   props: {
+    readOnly: boolean,
     inputOutput: Array<IO>,
     onAddFieldClick: () => void,
-    readOnly: boolean,
   };
 
-  renderReadOnly() {
+  render() {
     return (
-      <div>
-        {this.props.inputOutput.map((io: IO, index: number) =>
-          (<div key={io.hash()}>
-            {<InputOutput index={index} io={io} readOnly />}
-          </div>),
-        )}
-      </div>
-    );
-  }
-
-  renderEditable() {
-    return (
-      <div>
+      <div className={prefixer('form-component')}>
+        <div className={prefixer('instructions')}>
+          Testit
+        </div>
         <div className={prefixer('io-component')}>
           <Transition
             appear={{
@@ -51,29 +42,19 @@ class TestFields extends Component {
           >
             {this.props.inputOutput.map((io: IO, index: number) =>
               (<div key={io.hash()}>
-                {<InputOutput index={index} io={io} />}
+                {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
               </div>),
             )}
           </Transition>
         </div>
-        <button
+        {!this.props.readOnly && <button
           type="button"
           className={prefixer('add-field')}
           onClick={(e) => { e.preventDefault(); this.props.onAddFieldClick(); }}
         >
-          + Lisää kenttä
-      </button>
-      </div>
-    );
-  }
-
-  render() {
-    return (
-      <div className={prefixer('form-component')}>
-        <div className={prefixer('instructions')}>
-          Testit
-        </div>
-        {this.props.readOnly ? this.renderReadOnly() : this.renderEditable()}
+        + Lisää kenttä
+        </button>
+        }
       </div>
     );
   }
