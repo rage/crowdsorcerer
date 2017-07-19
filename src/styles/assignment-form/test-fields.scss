@@ -1,0 +1,14 @@
+@import "./input-output";
+@import "color-constants";
+
+.add-field {
+  margin: 0;
+  padding: 0.5rem 2rem;
+  width: 100%;
+  border: 0.1rem solid $border-grey;
+  border-radius: 0.4rem;
+  background-color: $deep-blue;
+  color: $white;
+  cursor: pointer;
+  font-family: Roboto; // poista lopulliseen
+}

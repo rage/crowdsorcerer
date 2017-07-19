@@ -1,18 +1,17 @@
 // @flow
 import reduceReducers from 'reduce-reducers';
-import IO from 'domain/io';
-import { State as sState } from 'slate';
 import changes from './changes';
 import validity from './validity';
 
 export type State = {
-  assignment: sState,
-  modelSolution: string,
-  inputOutput: Array<IO>,
-  solutionRows: Array<number>,
+  reviews: Map<string, number>,
+  reviewQuestions: Array<string>,
+  comment: string,
+  sendingStatus: string,
   valid: boolean,
   errors: Map<string, Array<Object>>,
   showErrors: boolean,
+  reviewable: number,
 }
 
 export default reduceReducers(changes, validity);

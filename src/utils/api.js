@@ -2,9 +2,11 @@
 import { Raw } from 'slate';
 import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
+import type { State as ReviewState } from 'state/review';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
 import * as storejs from 'store';
+import mapToObject from 'utils/map-to-object';
 
 let SERVER;
 let SOCKET_SERVER;
@@ -18,6 +20,7 @@ if (process.env.NODE_ENV === 'production') {
   SOCKET_SERVER = 'ws://localhost:3000/cable';
 }
 /* eslint-enable no-const-assign */
+export const SERVER_ADDR = SERVER;
 
 const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
@@ -27,7 +30,7 @@ export default class Api {
   cable: ActionCable.Cable;
   connection: ActionCable.Channel;
 
-  createJSON(state: FormState): Object {
+  createFormJSON(state: FormState): Object {
     const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
@@ -45,6 +48,22 @@ export default class Api {
 
   deleteSubscription(): void {
     this.connection.unsubscribe();
+  }
+
+  createReviewJSON(state: ReviewState): Object {
+    const answers = mapToObject(state.reviews);
+    return (
+    {
+      oauth_token: this.oauthToken(),
+      exercise: {
+        exercise_id: 1,
+      },
+      peer_review: {
+        comment: state.comment,
+        answers,
+      },
+    }
+    );
   }
 
   createSubscription(
@@ -91,8 +110,30 @@ export default class Api {
 
   postForm(state: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
-      const data = this.createJSON(state);
+      const data = this.createFormJSON(state);
       fetch(`${SERVER}/exercises`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      })
+      .then((resp) => {
+        if (!resp.ok) {
+          return reject(resp);
+        }
+        return resp.json();
+      })
+      .then(resolve, reject);
+    });
+  }
+
+  postReview(state: ReviewState): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const data = this.createReviewJSON(state);
+      console.info(`sending: ${JSON.stringify(data)}`);
+      fetch(`${SERVER}/peer_reviews`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

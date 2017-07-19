@@ -77,6 +77,7 @@ class ModelSolution extends Component {
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
+    readOnly: boolean,
   };
 
   render() {
@@ -89,13 +90,12 @@ class ModelSolution extends Component {
     }
     return (
       <div className={prefixer('form-component')}>
-        <div>
-          <div className={prefixer('instructions')}>
+        <div id="modelSolution" className={prefixer('instructions')}>
             Malliratkaisu
-          </div >
-        </div>
-        <div>
+          </div>
+        <div tabIndex="0">
           <CodeMirror
+            aria-labelledby="modelSolution"
             className={prefixer('model-solution')}
             options={{
               mode: 'text/x-java',
@@ -103,12 +103,14 @@ class ModelSolution extends Component {
               gutters: ['CodeMirror-linenumbers', 'modelsolution-lines'],
               tabSize: 4,
               indentUnit: 4,
+              readOnly: this.props.readOnly,
             }}
             value={this.props.value}
             onChange={(solution) => {
               this.props.onModelSolutionChange(solution);
             }}
             ref={(input) => { this.textInput = input; }}
+            aria-required
           />
         </div>
         <Transition
@@ -127,8 +129,11 @@ class ModelSolution extends Component {
 
 function mapStateToProps(state: State) {
   return {
+    modelSolution: state.form.modelSolution,
+    solutionRows: state.form.solutionRows,
     errors: state.form.errors,
     showErrors: state.form.showErrors,
+    value: state.form.modelSolution,
   };
 }
 

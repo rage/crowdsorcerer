@@ -1,0 +1,26 @@
+@import "color-constants";
+
+.zip-load-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center
+}
+
+.zip-load-button {
+  border-radius: 0.4rem;
+  border: 0.1rem solid $border-grey;
+  padding: 0.5rem 2rem;
+  color: $white;
+  background-color: $info-blue;
+  cursor: pointer;
+  font-family: Roboto; //TODO: remvoe to production
+}
+
+.peer-review-instructions {
+  margin: 0.5rem;
+}
+
+.zip-load-buttons a {
+  text-decoration: none;
+  font-size: 13.3333;
+}

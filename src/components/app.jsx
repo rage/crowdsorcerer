@@ -4,14 +4,20 @@ import { connect } from 'react-redux';
 import prefixer from 'utils/class-name-prefixer';
 import type { State } from 'state/reducer';
 import Form from './assignment-form';
+import Review from './review';
 
 class App extends Component {
+
+  props: {
+    review: boolean,
+    loggedIn: () => void,
+  }
 
   render() {
     if (this.props.loggedIn) {
       return (
         <div className={prefixer('container')}>
-          <Form />
+          {this.props.review ? <Review /> : <Form />}
         </div>
       );
     }

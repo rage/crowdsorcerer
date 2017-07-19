@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
-import prefixer from 'utils/class-name-prefixer';
+import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
+import type { ResultType } from 'state/submission/reducer';
+import prefixer from 'utils/class-name-prefixer';
+import { resetSubmissionStatusAction } from 'state/submission';
 import ProgressBar from './progress-bar';
-import { resetSubmissionStatusAction } from '../../state/submission';
+import ResultIcon from './result-icon';
 
 class StatusDisplay extends Component {
 
@@ -14,7 +16,8 @@ class StatusDisplay extends Component {
     sendingStatusMessage: string,
     sendingStatusProgress: number,
     status: string,
-    result: Object,
+    result: ResultType,
+    showProgress: boolean,
   }
 
   render() {
@@ -22,47 +25,39 @@ class StatusDisplay extends Component {
     if (this.props.sendingStatusMessage !== STATUS_NONE) {
       statusDisplay = prefixer('sending-status');
     }
-    let result = prefixer('spinner');
     let finishButton = prefixer('hidden');
     let errors = [];
     let sendingInfo = prefixer('sending-info');
     if (this.props.status !== STATUS_IN_PROGRESS) {
-      finishButton = prefixer('finish-button');
-      if (this.props.result.error) {
-        errors = this.props.result.error;
-      }
+      finishButton = prefixer('info-button');
+      errors = this.props.result.error ? this.props.result.error : errors;
       if (this.props.status === STATUS_FINISHED) {
-        if (this.props.result.OK) {
-          result = prefixer('check-mark');
-          sendingInfo += ` ${prefixer('all-passed')} `;
-        } else {
-          result = prefixer('sad-face');
-          sendingInfo += ` ${prefixer('compile-error')}`;
-        }
+        const resultInfo = this.props.result.OK ? prefixer('all-passed') : prefixer('compile-error');
+        sendingInfo += ` ${resultInfo}`;
       } else {
-        result = prefixer('sad-face');
         sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
       }
     }
-    const form = (
+    let errorKey = '';
+    return (
       <div className={statusDisplay}>
         <div className={sendingInfo}>
           <div className={prefixer('status-message')}>
             {this.props.sendingStatusMessage}
           </div>
           <div className={prefixer('error-messages')}>
-            {errors.map(e =>
-              (<div key={`${e}`} className={prefixer('error-message')}>{e}</div>),
+            {errors.map((e) => {
+              errorKey = errorKey.concat(e);
+              let error = JSON.stringify(e);
+              error = error.substring(1, error.length - 1);
+              return <div key={`${errorKey}`} className={prefixer('error-message')}>{error}</div>;
+            },
             )}
           </div>
           <div className={prefixer('status-bottom')}>
             <div className={prefixer('result-container')}>
-              <div className={prefixer('progress-bar-container')}>
-                <ProgressBar progressPercent={this.props.sendingStatusProgress} />
-              </div>
-              <div className={prefixer('result')}>
-                <div className={result} />
-              </div>
+              <ProgressBar progressPercent={this.props.sendingStatusProgress} showProgress={this.props.showProgress} />
+              <ResultIcon status={this.props.status} result={this.props.result} />
             </div>
             <button
               className={finishButton}
@@ -75,14 +70,14 @@ class StatusDisplay extends Component {
         </div>
       </div>
     );
-    return form;
   }
 }
+
 function mapStateToProps(state: State) {
   return {
     sendingStatusMessage: state.submission.message,
-    sendingStatusProgress: state.submission.progress,
     status: state.submission.status,
+    sendingStatusProgress: state.submission.progress,
     result: state.submission.result,
   };
 }

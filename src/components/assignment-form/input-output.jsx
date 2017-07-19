@@ -9,6 +9,7 @@ import {
   testOutputChangeAction,
   removeTestFieldAction,
 } from 'state/form';
+import Transition from 'react-motion-ui-pack';
 
 class InputOutput extends Component {
 
@@ -19,6 +20,8 @@ class InputOutput extends Component {
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
+    readOnly: boolean,
+    showErrors: boolean,
   };
 
   render() {
@@ -31,6 +34,9 @@ class InputOutput extends Component {
         <div className={prefixer('field-container')}>
           <div className={prefixer('input-field-wrapper')}>
             <input
+              aria-label="testisyöte"
+              aria-required
+              readOnly={this.props.readOnly}
               className={prefixer('input-field')}
               type="text"
               placeholder="Syöte"
@@ -40,21 +46,29 @@ class InputOutput extends Component {
                 this.props.onTestInputChange(event.currentTarget.value, this.props.index);
               }}
             />
-            {IOErrors.map((error) => {
-              if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
-                return (
-                  <span
-                    key={`input${this.props.index.toString()}`} className={prefixer('error')}
-                  >
-                    {error.msg}
-                  </span>);
-              }
-              return undefined;
-            })
-              }
+            <Transition
+              enter={{ opacity: 1, height: 16 }}
+              leave={{ opacity: 0, height: 0, transitionY: -3 }}
+            >
+              {IOErrors.map((error) => {
+                if (error.key === 'inputError' && error.index === this.props.index && this.props.showErrors) {
+                  return (
+                    <span
+                      key={`input${this.props.index.toString()}`} className={prefixer('error')}
+                    >
+                      {error.msg}
+                    </span>);
+                }
+                return undefined;
+              })}
+            </Transition>
           </div>
+          {this.props.readOnly ? <div className={prefixer('test-field-arrow')}>&rarr;</div> : undefined}
           <div className={prefixer('input-field-wrapper')}>
             <input
+              aria-label="testituloste"
+              aria-required
+              readOnly={this.props.readOnly}
               className={prefixer('input-field')}
               type="text"
               placeholder="Tulos"
@@ -64,26 +78,30 @@ class InputOutput extends Component {
                 this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
               }}
             />
-            {IOErrors.map((error) => {
-              if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
-                return (
-                  <span
-                    key={`output${this.props.index.toString()}`}
-                    className={`${prefixer('error')} ${prefixer('output')}`}
-                  > {error.msg}
-                  </span>);
-              }
-              return undefined;
-            })
-              }
+            <Transition
+              enter={{ opacity: 1, height: 16 }}
+              leave={{ opacity: 0, height: 0, transitionY: -3 }}
+            >
+              {IOErrors.map((error) => {
+                if (error.key === 'outputError' && error.index === this.props.index && this.props.showErrors) {
+                  return (
+                    <span
+                      key={`output${this.props.index.toString()}`}
+                      className={`${prefixer('error')} ${prefixer('output')}`}
+                    > {error.msg}
+                    </span>);
+                }
+                return undefined;
+              })}
+            </Transition>
           </div>
-          <button
+          {!this.props.readOnly && <button
             type="button"
             className={prefixer('close-button')}
             onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
           >
             &#10006;
-          </button>
+          </button>}
         </div>
       </div>
     );

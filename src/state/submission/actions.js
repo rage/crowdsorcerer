@@ -9,6 +9,7 @@ export const RESET_SUBMISSION_STATUS = 'RESET_SUBMISSION_STATUS';
 export const CONNECTION_TERMINATED_PREMATURELY = 'CONNECTION_TERMINATED_PREMATURELY';
 export const INVALID_DATA_ERROR = 'INVALID_DATA_ERROR';
 export const AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR';
+export const FINISH = 'FINISH';
 
 export function startSendAction() {
   return {
@@ -25,6 +26,13 @@ export function postSuccessfulAction() {
 export function postUnsuccessfulAction() {
   return {
     type: POST_UNSUCCESSFUL,
+  };
+}
+
+
+export function finishAction() {
+  return {
+    type: FINISH,
   };
 }
 
@@ -93,5 +101,9 @@ export type InvalidDataErrorAction = {
 };
 
 export type AuthenticationErrorAction = {
+  type: string
+};
+
+export type Finish = {
   type: string
 };
