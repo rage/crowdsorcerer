@@ -5,6 +5,10 @@ import { State as sState } from 'slate';
 import changes from './changes';
 import validity from './validity';
 
+export type TagType = {
+  name: string,
+};
+
 export type State = {
   assignment: sState,
   modelSolution: string,
@@ -13,6 +17,8 @@ export type State = {
   valid: boolean,
   errors: Map<string, Array<Object>>,
   showErrors: boolean,
-}
+  tags: Array<string>,
+  tagSuggestions: Array<string>,
+};
 
 export default reduceReducers(changes, validity);

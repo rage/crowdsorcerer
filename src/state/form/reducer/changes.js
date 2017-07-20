@@ -12,6 +12,8 @@ import {
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
   CHANGE_FORM_ERRORS_VISIBILITY,
+  REMOVE_TAG,
+  ADD_TAG,
 } from 'state/form';
 import type {
     AddTestFieldAction,
@@ -22,6 +24,8 @@ import type {
     ModelSolutionChangeAction,
     AddHiddenRowAction,
     DeleteHiddenRowAction,
+    AddTagAction,
+    RemoveTagAction,
 } from 'state/form';
 import { Raw } from 'slate';
 
@@ -48,6 +52,8 @@ const initialState = {
   valid: false,
   errors: new Map(),
   showErrors: false,
+  tagSuggestions: ['for-each', 'while', 'for-loop', 'java', 'javascript'],
+  tags: ['oon tägi'],
 };
 
 export default createReducer(initialState, {
@@ -191,6 +197,26 @@ export default createReducer(initialState, {
       ...state,
       ...{
         showErrors: !state.showErrors,
+      },
+    };
+  },
+  [ADD_TAG](state: State, action: AddTagAction): State {
+    const newTag = action.tag.trim().toLowerCase();
+    if (newTag === '' || state.tags.includes(newTag)) {
+      return state;
+    }
+    return {
+      ...state,
+      ...{
+        tags: [...state.tags, newTag],
+      },
+    };
+  },
+  [REMOVE_TAG](state: State, action: RemoveTagAction): State {
+    return {
+      ...state,
+      ...{
+        tags: [...state.tags.slice(0, action.tagIndex), ...state.tags.slice(action.tagIndex + 1)],
       },
     };
   },

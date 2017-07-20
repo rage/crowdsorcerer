@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { formSubmitButtonPressedAction } from 'state/form';
 import 'codemirror/mode/clike/clike';
+import ExerciseTags from 'components/tag-input';
 import StatusDisplay from '../status-display';
 import ModelSolution from './model-solution';
 import Assignment from './assignment';
@@ -26,6 +27,7 @@ class AssignmentForm extends Component {
         <Assignment />
         <ModelSolution />
         <TestFields />
+        <ExerciseTags />
         <div className={prefixer('form-component')}>
           <button
             type="submit"
