@@ -21,6 +21,8 @@ export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
 export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
+export const ADD_TAG = 'ADD_TAG';
+export const REMOVE_TAG = 'REMOVE_TAG';
 
 export function addTestFieldAction() {
   return {
@@ -126,6 +128,20 @@ export function deleteHiddenRow(row: number) {
   };
 }
 
+export function addTagAction(tag: string) {
+  return {
+    tag,
+    type: ADD_TAG,
+  };
+}
+
+export function removeTagAction(tagIndex: number) {
+  return {
+    tagIndex,
+    type: REMOVE_TAG,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -168,4 +184,14 @@ export type DeleteHiddenRowAction = {
 
 export type ChangeErrorsVisibilityAction = {
   type: string
+};
+
+export type AddTagAction = {
+  tag: string,
+  type: string,
+};
+
+export type RemoveTagAction = {
+  tagIndex: number,
+  type: string,
 };

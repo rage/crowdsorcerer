@@ -41,6 +41,7 @@ export default class Api {
         description: Raw.serialize(state.assignment),
         code: parsedForm,
         testIO: IOArray,
+        tags: state.tags,
       },
     }
     );
