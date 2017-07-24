@@ -64,7 +64,7 @@ test('resetting state works correctly', (t) => {
   t.deepEqual(state.submission.result, { OK: false, error: [] });
 });
 
-test('update changes state accordign to data', (t) => {
+test('update changes state according to data', (t) => {
   const reducer = reducers('1');
   const data = {
     message: 'message',
