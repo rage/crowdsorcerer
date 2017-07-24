@@ -13,10 +13,10 @@ let SOCKET_SERVER;
 
 /* eslint-disable no-const-assign */
 if (process.env.NODE_ENV === 'production') {
-  SERVER = 'https://crowdsorcerer.testmycode.io/';
+  SERVER = 'https://crowdsorcerer.testmycode.io';
   SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
 } else {
-  SERVER = 'http://localhost:3000/';
+  SERVER = 'http://localhost:3000';
   SOCKET_SERVER = 'ws://localhost:3000/cable';
 }
 /* eslint-enable no-const-assign */
@@ -30,42 +30,8 @@ export default class Api {
   cable: ActionCable.Cable;
   connection: ActionCable.Channel;
 
-  createFormJSON(state: FormState): Object {
-    const IOArray = state.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
-    const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
-    return (
-    {
-      oauth_token: this.oauthToken(),
-      exercise: {
-        assignment_id: 1,
-        description: Raw.serialize(state.assignment.get()),
-        code: parsedForm,
-        testIO: IOArray,
-        tags: state.tags,
-      },
-    }
-    );
-  }
-
   deleteSubscription(): void {
     this.connection.unsubscribe();
-  }
-
-  _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {
-    const answers = formValueToObject(reviewState.reviews);
-    return (
-    {
-      oauth_token: this.oauthToken(),
-      exercise: {
-        exercise_id: 1,
-        tags: formState.tags.get(),
-      },
-      peer_review: {
-        comment: reviewState.comment.get(),
-        answers,
-      },
-    }
-    );
   }
 
   createSubscription(
@@ -78,41 +44,9 @@ export default class Api {
     this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
   }
 
-  _subscribe(
-    onUpdate: (result: Object) => void,
-    onDisconnected: () => void,
-    onInvalidDataError: () => void,
-    exerciseId: number,
-    ): void {
-    const connection = this.cable.subscriptions.create('SubmissionStatusChannel', {
-      connected() {
-        // ask for current state from server in case socket open too late
-        connection.send({ ping: true, id: exerciseId });
-      },
-      disconnected() {
-        onDisconnected();
-      },
-      received(data) {
-        console.info(data);
-        let result = {};
-        try {
-          result = JSON.parse(data);
-          if (!Api._correctJSON(result)) {
-            throw SyntaxError('Data väärässä muodossa');
-          }
-        } catch (error) {
-          console.error(`error: ${error}`);
-          onInvalidDataError();
-        }
-        onUpdate(result);
-      },
-    });
-    this.connection = connection;
-  }
-
   postForm(state: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
-      const data = this.createFormJSON(state);
+      const data = this._createFormJSON(state);
       fetch(`${SERVER}/exercises`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -155,6 +89,76 @@ export default class Api {
 
   syncStore(store: Store): void {
     this.store = store;
+  }
+
+  _createFormJSON(state: FormState): Object {
+    const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
+    const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
+    return (
+    {
+      oauth_token: this.oauthToken(),
+      exercise: {
+        assignment_id: 1,
+        description: Raw.serialize(state.assignment.get()),
+        code: parsedForm,
+        testIO: IOArray,
+        tags: state.tags,
+      },
+    }
+    );
+  }
+
+  deleteSubscription(): void {
+    this.connection.unsubscribe();
+  }
+
+  _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {
+    const answers = formValueToObject(reviewState.reviews);
+    return (
+    {
+      oauth_token: this.oauthToken(),
+      exercise: {
+        exercise_id: 1,
+        tags: formState.tags.get(),
+      },
+      peer_review: {
+        comment: reviewState.comment.get(),
+        answers,
+      },
+    }
+    );
+  }
+
+  _subscribe(
+    onUpdate: (result: Object) => void,
+    onDisconnected: () => void,
+    onInvalidDataError: () => void,
+    exerciseId: number,
+    ): void {
+    const connection = this.cable.subscriptions.create('SubmissionStatusChannel', {
+      connected() {
+        // ask for current state from server in case socket open too late
+        connection.send({ ping: true, id: exerciseId });
+      },
+      disconnected() {
+        onDisconnected();
+      },
+      received(data) {
+        console.info(data);
+        let result = {};
+        try {
+          result = JSON.parse(data);
+          if (!Api._correctJSON(result)) {
+            throw SyntaxError('Data väärässä muodossa');
+          }
+        } catch (error) {
+          console.error(`error: ${error}`);
+          onInvalidDataError();
+        }
+        onUpdate(result);
+      },
+    });
+    this.connection = connection;
   }
 
   static _correctJSON(JSON: Object): boolean {

@@ -24,11 +24,11 @@ class ReviewScale extends Component {
   }
 
   componentDidMount() {
-    this.focusables[1] = document.getElementById('veryDissatisfied');
-    this.focusables[2] = document.getElementById('dissatisfied');
-    this.focusables[3] = document.getElementById('neutral');
-    this.focusables[4] = document.getElementById('satisfied');
-    this.focusables[5] = document.getElementById('verySatisfied');
+    this.focusables[1] = document.getElementById(`${this.props.question}-veryDissatisfied`);
+    this.focusables[2] = document.getElementById(`${this.props.question}-dissatisfied`);
+    this.focusables[3] = document.getElementById(`${this.props.question}-neutral`);
+    this.focusables[4] = document.getElementById(`${this.props.question}-satisfied`);
+    this.focusables[5] = document.getElementById(`${this.props.question}-verySatisfied`);
   }
 
   focusables: Array<HTMLElement | null>
@@ -41,22 +41,23 @@ class ReviewScale extends Component {
 
   radioOnKeyDown(e: KeyboardEvent) {
     let answer = !this.props.answer ? 0 : this.props.answer;
+    let reviewKeyPressed = false;
     switch (e.keyCode) {
-      case KEY_DOWN:
+      case KEY_UP:
       case KEY_RIGHT:
         answer = (answer + 1 <= 5) ? (answer + 1) : 1;
         this.props.giveReview(this.props.question, answer);
+        reviewKeyPressed = true;
         break;
+      case KEY_DOWN:
       case KEY_LEFT:
-      case KEY_UP:
         answer = (answer - 1 >= 1) ? (answer - 1) : 5;
         this.props.giveReview(this.props.question, answer);
+        reviewKeyPressed = true;
         break;
       default:
     }
-    if (this.focusables[answer]) {
-      this.focusables[answer].focus();
-    }
+    if (reviewKeyPressed && this.focusables[answer]) { this.focusables[answer].focus(); }
   }
 
   render() {
@@ -72,46 +73,46 @@ class ReviewScale extends Component {
         <MdSentimentVeryDissatisfied
           className={this.props.answer === 1 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 1)}
-          id="veryDissatisfied"
+          id={`${this.props.question}-veryDissatisfied`}
           role="radio"
           aria-checked={this.props.answer === 1}
           onKeyDown={e => this.radioOnKeyDown(e)}
-          tabIndex="0"
+          tabIndex={this.props.answer === 1 || this.props.answer === undefined ? '0' : '-1'}
         />
         <MdSentimentDissatisfied
           className={this.props.answer === 2 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 2)}
-          id="dissatisfied"
+          id={`${this.props.question}-dissatisfied`}
           role="radio"
           aria-checked={this.props.answer === 2}
-          tabIndex="-1"
+          tabIndex={this.props.answer === 2 ? '0' : '-1'}
           onKeyDown={e => this.radioOnKeyDown(e)}
         />
         <MdSentimentNeutral
           className={this.props.answer === 3 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 3)}
-          id="neutral"
+          id={`${this.props.question}-neutral`}
           role="radio"
           aria-checked={this.props.answer === 3}
-          tabIndex="-1"
+          tabIndex={this.props.answer === 3 ? '0' : '-1'}
           onKeyDown={e => this.radioOnKeyDown(e)}
         />
         <MdSentimentSatisfied
           className={this.props.answer === 4 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 4)}
-          id="satisfied"
+          id={`${this.props.question}-satisfied`}
           role="radio"
           aria-checked={this.props.answer === 4}
-          tabIndex="-1"
+          tabIndex={this.props.answer === 4 ? '0' : '-1'}
           onKeyDown={e => this.radioOnKeyDown(e)}
         />
         <MdSentimentVerySatisfied
           className={this.props.answer === 5 ? highlighted : notChosen}
           onClick={() => this.props.giveReview(this.props.question, 5)}
-          id="verySatisfied"
+          id={`${this.props.question}-verySatisfied`}
           role="radio"
           aria-checked={this.props.answer === 5}
-          tabIndex="-1"
+          tabIndex={this.props.answer === 5 ? '0' : '-1'}
           onKeyDown={e => this.radioOnKeyDown(e)}
         />
       </div>
@@ -128,3 +129,4 @@ function mapDispatchToProps(dispatch: Dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(ReviewScale);
+
