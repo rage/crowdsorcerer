@@ -328,15 +328,35 @@ test('form not valid without assignment', (t) => {
   t.deepEqual(state.form.valid, false);
 });
 
+<<<<<<< 1fa943eaf5cdd933e1e6658c251ccac86623ec1a
+=======
+test('form not valid without assignment', (t) => {
+  const reducer = reducers('1');
+  const state = reducer(
+    { form:
+    {
+      assignment: initialAssignment, modelSolution: 'asdf \n asf asdf', inputOutput: [new IO('asdf', 'asdf')], solutionRows: [],
+    },
+    },
+    { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
+  );
+  t.deepEqual(state.form.valid, false);
+});
+
+>>>>>>> Fix review validationa and add tests
 test('form not valid without model solution', (t) => {
   const reducer = reducers('1');
   const state = reducer(
     { form:
     {
+<<<<<<< 1fa943eaf5cdd933e1e6658c251ccac86623ec1a
       assignment: new FormValue(assignmentWithContent),
       modelSolution: new FormValue(''),
       inputOutput: [new IO('asdf', 'asdf')],
       solutionRows: [],
+=======
+      assignment: assignmentWithContent, modelSolution: '', inputOutput: [new IO('asdf', 'asdf')], solutionRows: [],
+>>>>>>> Fix review validationa and add tests
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -349,10 +369,14 @@ test('form not valid without tests', (t) => {
   const state = reducer(
     { form:
     {
+<<<<<<< 1fa943eaf5cdd933e1e6658c251ccac86623ec1a
       assignment: new FormValue(assignmentWithContent),
       modelSolution: new FormValue('asdf \n asf asdf'),
       inputOutput: [],
       solutionRows: [],
+=======
+      assignment: assignmentWithContent, modelSolution: 'asdf \n asf asdf', inputOutput: [], solutionRows: [],
+>>>>>>> Fix review validationa and add tests
     },
     },
     { modelSolution: oneLineSolution, type: CHANGE_MODEL_SOLUTION },
