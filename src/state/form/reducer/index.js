@@ -13,7 +13,7 @@ export type TagType = {
 export type State = {
   assignment: FormValue<sState>,
   modelSolution: FormValue<string>,
-  inputOutput: Array<FormValue<IO>>,
+  inputOutput: Array<IO>,
   solutionRows: Array<number>,
   valid: boolean,
   showErrors: boolean,

@@ -4,12 +4,15 @@ import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from 'react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
+import FormValue from 'domain/form-value';
+
 import {
   modelSolutionChangeAction,
   addHiddenRow,
   deleteHiddenRow,
 } from 'state/form';
 import Transition from 'react-motion-ui-pack';
+import Error from './error';
 
 class ModelSolution extends Component {
 
@@ -71,9 +74,8 @@ class ModelSolution extends Component {
   handleAddNewHiddenRow: Function;
 
   props: {
-    value: string,
+    value: FormValue<string>,
     solutionRows: Array<number>,
-    errors: Map<string, Array<Object>>,
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
@@ -81,12 +83,9 @@ class ModelSolution extends Component {
   };
 
   render() {
-    let errMessage = '';
-    let errClass = prefixer('errorHide');
-    const modelSolutionErrors = this.props.errors.get('modelSolutionError');
-    if (modelSolutionErrors && this.props.showErrors) {
-      errClass = prefixer('error');
-      errMessage = modelSolutionErrors[0];
+    let errors = <div />;
+    if (this.props.showErrors) {
+      errors = this.props.value.errors.map(e => <Error value={e} />);
     }
     return (
       <div className={prefixer('form-component')}>
@@ -105,7 +104,7 @@ class ModelSolution extends Component {
               indentUnit: 4,
               readOnly: this.props.readOnly,
             }}
-            value={this.props.value}
+            value={this.props.value.get()}
             onChange={(solution) => {
               this.props.onModelSolutionChange(solution);
             }}
@@ -118,9 +117,7 @@ class ModelSolution extends Component {
           enter={{ opacity: 1, height: 16 }}
           leave={{ opacity: 0, height: 0, translateY: -3 }}
         >
-          <span key={errClass} className={errClass}>
-            {errMessage}
-          </span>
+          { errors }
         </Transition>
       </div>
     );
@@ -131,7 +128,6 @@ function mapStateToProps(state: State) {
   return {
     modelSolution: state.form.modelSolution,
     solutionRows: state.form.solutionRows,
-    errors: state.form.errors,
     showErrors: state.form.showErrors,
     value: state.form.modelSolution,
   };

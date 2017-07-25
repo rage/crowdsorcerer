@@ -1,16 +1,18 @@
 // @flow
+import FormValue from 'domain/form-value';
 
 let counter = 0;
 
 export default class IO {
 
-  input: string;
-  output: string;
-  hashCode: string;
+  input: FormValue<string>;
+  output: FormValue<string>;
+  hashCode: ?string;
 
-  constructor(input: string = '', output: string = '') {
-    this.input = input;
-    this.output = output;
+  constructor(input: string = '', output: string = '', hashCode: ?string) {
+    this.input = new FormValue(input);
+    this.output = new FormValue(output);
+    this.hashCode = hashCode;
   }
 
   hash(): string {
@@ -22,16 +24,15 @@ export default class IO {
     return this.hashCode;
   }
 
-  changeInput(input: string) {
-    const newIO = new IO(input, this.output);
+  _changeInput(input: string) {
+    const newIO = new IO(input, this.output.get());
     newIO.hashCode = this.hashCode;
     return newIO;
   }
 
-  changeOutput(output: string) {
-    const newIO = new IO(this.input, output);
+  _changeOutput(output: string) {
+    const newIO = new IO(this.input.get(), output);
     newIO.hashCode = this.hashCode;
     return newIO;
   }
-
 }

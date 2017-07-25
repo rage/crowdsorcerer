@@ -1,6 +1,5 @@
 // @flow
 import { Plain } from 'slate';
-import IO from 'domain/io';
 
 import {
   ADD_TEST_FIELD,
@@ -25,6 +24,7 @@ import type {
   ChangeErrorsVisibilityAction,
 } from 'state/form';
 import type { State } from './index';
+import FormValue from 'domain/form-value';
 
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
@@ -34,8 +34,7 @@ const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN
 const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
   MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
-const TEST_INPUT_ERROR = 'Syöte-kenttä ei voi olla tyhjä.';
-const TEST_OUTPUT_ERROR = 'Tulos-kenttä ei voi olla tyhjä.';
+const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
@@ -84,13 +83,10 @@ function modelSolutionErrors(state: State): Array<string> {
   return errors;
 }
 
-function inputOutputErrors(io: IO): Array<string> {
+function inputOutputErrors(ioValue: string): Array<string> {
   const errors = [];
-  if (io.input.length === 0) {
-    errors.push(TEST_INPUT_ERROR);
-  }
-  if (io.output.length === 0) {
-    errors.push(TEST_OUTPUT_ERROR);
+  if (ioValue.length === 0) {
+    errors.push(CANNOT_BE_BLANK_ERROR);
   }
   return errors;
 }
@@ -100,8 +96,7 @@ export default function (state: State, action: AnyAction) {
     return state;
   }
   const validationResults = [];
-  // Mutation is fine here since the previous reducer just initialized the changed objects
-  /* eslint-disable no-underscore-dangle */
+
   const assignmentErrs = assignmentErrors(state);
   state.assignment._setErrors(assignmentErrs);
   validationResults.push(assignmentErrors.length === 0);
@@ -110,12 +105,14 @@ export default function (state: State, action: AnyAction) {
   state.modelSolution._setErrors(modelSolutionErrs);
   validationResults.push(modelSolutionErrors.length === 0);
 
-  state.inputOutput.forEach((ioValue) => {
-    const errors = inputOutputErrors(ioValue.get());
-    ioValue._setErrors(errors);
-    validationResults.push(errors.length === 0);
+  state.inputOutput.forEach((io) => {
+    const input = io.input;
+    const errors = inputOutputErrors(input.get());
+    input._setErrors(errors);
+    const output = io.output;
+    const outputErrors = inputOutputErrors(output.get());
+    output._setErrors(outputErrors);
   });
-  /* eslint-enable no-underscore-dangle */
 
   const valid = validationResults.every(o => o);
 

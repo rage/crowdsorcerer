@@ -3,7 +3,7 @@ export default class FormValue<T> {
   value: T
   errors: Array<string>
 
-  constuctor(value: T, errors : Array<string> = []) {
+  constructor(value: T, errors : Array<string> = []) {
     this.value = value;
     this.errors = errors;
   }

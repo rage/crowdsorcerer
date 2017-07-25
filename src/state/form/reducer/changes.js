@@ -32,8 +32,8 @@ import { Raw } from 'slate';
 
 import type { State } from './index';
 
-const initialState = {
-  assignment: Raw.deserialize({
+const initialState: State = {
+  assignment: new FormValue(Raw.deserialize({
     nodes: [
       {
         kind: 'block',
@@ -46,8 +46,8 @@ const initialState = {
         ],
       },
     ],
-  }, { terse: true }),
-  modelSolution: 'System.out.println("moi"); \n return "Hello " + input;',
+  }, { terse: true })),
+  modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
   inputOutput: [new IO('testi', 'Hello asdf'), new IO('asdfasdf', 'Hello asdfasdfasdfdf')],
   solutionRows: [],
   valid: false,
@@ -62,7 +62,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        inputOutput: [...state.inputOutput, new FormValue(action.field)],
+        inputOutput: [...state.inputOutput, action.field],
       },
     };
   },
@@ -70,7 +70,7 @@ export default createReducer(initialState, {
   [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
     let inputOutput;
     if (state.inputOutput.length === 1) {
-      inputOutput = [new FormValue(new IO())];
+      inputOutput = [new IO()];
     } else {
       inputOutput = [
         ...state.inputOutput.slice(0, action.index),
@@ -150,14 +150,12 @@ export default createReducer(initialState, {
   },
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
     const newInputOutput = state.inputOutput
-      .map(o => o.get())
       .map((io, i) => {
         if (i === action.index) {
-          return io.changeInput(action.testInput);
+          return new IO(action.testInput, io.output.get(), io.hash());
         }
         return io;
-      })
-      .map(o => new FormValue(o));
+      });
     return {
       ...state,
       ...{
@@ -167,14 +165,12 @@ export default createReducer(initialState, {
   },
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
     const newInputOutput = state.inputOutput
-      .map(o => o.get())
       .map((io, i) => {
         if (i === action.index) {
-          return io.changeOutput(action.testOutput);
+          return new IO(io.input.get(), action.testOutput, io.hash());
         }
         return io;
-      })
-      .map(o => new FormValue(o));
+      });
     return {
       ...state,
       ...{

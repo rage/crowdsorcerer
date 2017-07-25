@@ -7,13 +7,14 @@ import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction } from 'state/form';
 import IO from 'domain/io';
+import FormValue from 'domain/form-value';
 import InputOutput from './input-output';
 
 class TestFields extends Component {
 
   props: {
     readOnly: boolean,
-    inputOutput: Array<IO>,
+    inputOutput: Array<FormValue<IO>>,
     onAddFieldClick: () => void,
   };
 
