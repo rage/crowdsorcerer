@@ -16,7 +16,7 @@ export default class IO {
   }
 
   hash(): string {
-    if (this.hashCode !== undefined) {
+    if (this.hashCode !== undefined && this.hashCode != null) {
       return this.hashCode;
     }
     const currentCount = counter++;
@@ -25,14 +25,12 @@ export default class IO {
   }
 
   _changeInput(input: string) {
-    const newIO = new IO(input, this.output.get());
-    newIO.hashCode = this.hashCode;
+    const newIO = new IO(input, this.output.get(), this.hashCode);
     return newIO;
   }
 
   _changeOutput(output: string) {
-    const newIO = new IO(this.input.get(), output);
-    newIO.hashCode = this.hashCode;
+    const newIO = new IO(this.input.get(), output, this.hashCode);
     return newIO;
   }
 }

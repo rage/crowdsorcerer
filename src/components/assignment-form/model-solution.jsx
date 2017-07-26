@@ -5,14 +5,13 @@ import CodeMirror, { TextMarker } from 'react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import FormValue from 'domain/form-value';
-
 import {
   modelSolutionChangeAction,
   addHiddenRow,
   deleteHiddenRow,
 } from 'state/form';
-import Transition from 'react-motion-ui-pack';
-import Error from './error';
+import Errors from 'components/errors';
+
 
 class ModelSolution extends Component {
 
@@ -80,13 +79,10 @@ class ModelSolution extends Component {
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
     readOnly: boolean,
+    showErrors: boolean,
   };
 
   render() {
-    let errors = <div />;
-    if (this.props.showErrors) {
-      errors = this.props.value.errors.map(e => <Error value={e} />);
-    }
     return (
       <div className={prefixer('form-component')}>
         <div id="modelSolution" className={prefixer('instructions')}>
@@ -112,13 +108,7 @@ class ModelSolution extends Component {
             aria-required
           />
         </div>
-        <Transition
-          appear={{ opacity: 0, height: 0 }}
-          enter={{ opacity: 1, height: 16 }}
-          leave={{ opacity: 0, height: 0, translateY: -3 }}
-        >
-          { errors }
-        </Transition>
+        <Errors errors={this.props.value.errors} keyBase="" show={this.props.showErrors} />
       </div>
     );
   }

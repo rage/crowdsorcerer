@@ -7,14 +7,13 @@ import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction } from 'state/form';
 import IO from 'domain/io';
-import FormValue from 'domain/form-value';
 import InputOutput from './input-output';
 
 class TestFields extends Component {
 
   props: {
     readOnly: boolean,
-    inputOutput: Array<FormValue<IO>>,
+    inputOutput: Array<IO>,
     onAddFieldClick: () => void,
   };
 
@@ -42,9 +41,11 @@ class TestFields extends Component {
             leave={{ opacity: 0, height: 0 }}
           >
             {this.props.inputOutput.map((io: IO, index: number) =>
-              (<div key={io.hash()}>
-                {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
-              </div>),
+              (
+                <div key={io.hash()}>
+                  {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
+                </div>
+              ),
             )}
           </Transition>
         </div>

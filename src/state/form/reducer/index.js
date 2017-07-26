@@ -17,7 +17,7 @@ export type State = {
   solutionRows: Array<number>,
   valid: boolean,
   showErrors: boolean,
-  tags: Array<string>,
+  tags: FormValue<Array<string>>,
   tagSuggestions: Array<string>,
 };
 

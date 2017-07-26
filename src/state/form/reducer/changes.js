@@ -48,13 +48,12 @@ const initialState: State = {
     ],
   }, { terse: true })),
   modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
-  inputOutput: [new IO('testi', 'Hello asdf'), new IO('asdfasdf', 'Hello asdfasdfasdfdf')],
+  inputOutput: [new IO(), new IO(), new IO()],
   solutionRows: [],
   valid: false,
-  errors: new Map(),
   showErrors: false,
   tagSuggestions: ['for-each', 'while', 'for-loop', 'java', 'javascript'],
-  tags: ['oon tägi'],
+  tags: new FormValue(['oon tägi']),
 };
 
 export default createReducer(initialState, {
@@ -144,7 +143,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        assignment: action.assignment,
+        assignment: new FormValue(action.assignment),
       },
     };
   },
@@ -205,13 +204,13 @@ export default createReducer(initialState, {
   },
   [ADD_TAG](state: State, action: AddTagAction): State {
     const newTag = action.tag.trim().toLowerCase();
-    if (newTag === '' || state.tags.includes(newTag)) {
+    if (newTag === '' || state.tags.get().includes(newTag)) {
       return state;
     }
     return {
       ...state,
       ...{
-        tags: [...state.tags, newTag],
+        tags: new FormValue([...state.tags.get(), newTag]),
       },
     };
   },
@@ -219,7 +218,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        tags: [...state.tags.slice(0, action.tagIndex), ...state.tags.slice(action.tagIndex + 1)],
+        tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
       },
     };
   },

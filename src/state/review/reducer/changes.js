@@ -9,32 +9,39 @@ import type {
   GiveReviewAction,
   ChangeCommentAction,
 } from 'state/review';
+import FormValue from 'domain/form-value';
 import type { State } from './index';
 
 const initialState = {
-  reviews: new Map(),
-  reviewQuestions:
-  ['Tehtävänannon mielekkyys',
-    'Testien kattavuus',
-    'Tehtävänannon selkeys',
-    'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys'],
-  comment: '',
+  reviews: [
+    new FormValue({ question: 'Tehtävänannon mielekkyys', review: undefined }),
+    new FormValue({ question: 'Testien kattavuus', review: undefined }),
+    new FormValue({
+      question: 'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys', review: undefined,
+    }),
+  ],
+  comment: new FormValue(''),
   valid: false,
   showErrors: false,
-  errors: new Map(),
   reviewable: 2,
 };
 
 export default createReducer(initialState, {
   [GIVE_REVIEW](state: State, action: GiveReviewAction): State {
     const oldReviews = state.reviews;
-    const reviews = new Map();
-    oldReviews.forEach((value: number, key: string) => {
-      let reviewValue = value > 5 ? 5 : value;
-      reviewValue = value < 1 ? 1 : value;
-      reviews.set(key, reviewValue);
+    const reviews = [];
+    oldReviews.forEach((fVal) => {
+      const question = fVal.get().question;
+      let review = fVal.get().review;
+      if (question === action.question) {
+        review = action.value;
+        review = review > 5 ? 5 : review;
+        review = review < 1 ? 1 : review;
+        reviews.push(new FormValue({ question, review }));
+      } else {
+        reviews.push(new FormValue({ question, review }));
+      }
     });
-    reviews.set(action.question, action.value);
     return {
       ...state,
       ...{
@@ -46,7 +53,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        comment: action.comment,
+        comment: new FormValue(action.comment),
       },
     };
   },

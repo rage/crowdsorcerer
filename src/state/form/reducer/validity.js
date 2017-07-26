@@ -1,6 +1,7 @@
 // @flow
-import { Plain } from 'slate';
-
+import { Plain, State as sState } from 'slate';
+import FormValue from 'domain/form-value';
+import validator from 'utils/validator';
 import {
   ADD_TEST_FIELD,
   REMOVE_TEST_FIELD,
@@ -11,6 +12,8 @@ import {
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
   CHANGE_FORM_ERRORS_VISIBILITY,
+  ADD_TAG,
+  REMOVE_TAG,
 } from 'state/form';
 import type {
   AddTestFieldAction,
@@ -22,9 +25,10 @@ import type {
   AddHiddenRowAction,
   DeleteHiddenRowAction,
   ChangeErrorsVisibilityAction,
+  AddTagAction,
+  RemoveTagAction,
 } from 'state/form';
 import type { State } from './index';
-import FormValue from 'domain/form-value';
 
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
@@ -39,7 +43,7 @@ const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
   | AssignmentChangeAction | ModelSolutionChangeAction
-  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction;
+  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction ;
 
 function isFormAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
@@ -51,12 +55,14 @@ function isFormAction(actionContainer: AnyAction) {
     action === CHANGE_TEST_OUTPUT ||
     action === ADD_HIDDEN_ROW ||
     action === DELETE_HIDDEN_ROW ||
-    action === CHANGE_FORM_ERRORS_VISIBILITY;
+    action === CHANGE_FORM_ERRORS_VISIBILITY ||
+    action === ADD_TAG ||
+    action === REMOVE_TAG;
 }
 
-function assignmentErrors(state: State): Array<string> {
+function assignmentErrors(assignment: FormValue<sState>): Array<string> {
   const errors = [];
-  const words = Plain.serialize(state.assignment.get()).split(/[ \n]+/).filter(Boolean);
+  const words = Plain.serialize(assignment.get()).split(/[ \n]+/).filter(Boolean);
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
     errors.push(ASSIGNMENT_ERROR);
   }
@@ -64,10 +70,10 @@ function assignmentErrors(state: State): Array<string> {
 }
 
 
-function modelSolutionErrors(state: State): Array<string> {
+function modelSolutionErrors(modelSolution: FormValue<*>): Array<string> {
   const errors = [];
-  const words = state.modelSolution.get().split(/[ \n]+/).filter(Boolean);
-  const lines = state.modelSolution.get().split('\n').filter(Boolean);
+  const words = modelSolution.get().split(/[ \n]+/).filter(Boolean);
+  const lines = modelSolution.get().split('\n').filter(Boolean);
   let errorMessage;
   if (words.length < MIN_MODEL_SOLUTION_WORD_AMOUNT &&
     lines.length < MIN_MODEL_SOLUTION_LINE_AMOUNT) {
@@ -83,9 +89,9 @@ function modelSolutionErrors(state: State): Array<string> {
   return errors;
 }
 
-function inputOutputErrors(ioValue: string): Array<string> {
+function checkNotBlank(formValue: FormValue<*>): Array<string> {
   const errors = [];
-  if (ioValue.length === 0) {
+  if (formValue.get().length === 0) {
     errors.push(CANNOT_BE_BLANK_ERROR);
   }
   return errors;
@@ -95,26 +101,13 @@ export default function (state: State, action: AnyAction) {
   if (!isFormAction(action)) {
     return state;
   }
-  const validationResults = [];
+  const validators = [
+    { field: 'assignment', validator: assignmentErrors },
+    { field: 'modelSolution', validator: modelSolutionErrors },
+    { field: 'tags', validator: checkNotBlank },
+    { field: 'inputOutput', validator: checkNotBlank },
+  ];
 
-  const assignmentErrs = assignmentErrors(state);
-  state.assignment._setErrors(assignmentErrs);
-  validationResults.push(assignmentErrors.length === 0);
-
-  const modelSolutionErrs = modelSolutionErrors(state);
-  state.modelSolution._setErrors(modelSolutionErrs);
-  validationResults.push(modelSolutionErrors.length === 0);
-
-  state.inputOutput.forEach((io) => {
-    const input = io.input;
-    const errors = inputOutputErrors(input.get());
-    input._setErrors(errors);
-    const output = io.output;
-    const outputErrors = inputOutputErrors(output.get());
-    output._setErrors(outputErrors);
-  });
-
-  const valid = validationResults.every(o => o);
-
+  const valid = validator(validators, state);
   return { ...state, ...{ valid } };
 }

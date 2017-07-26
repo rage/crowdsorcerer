@@ -9,8 +9,7 @@ import {
   testOutputChangeAction,
   removeTestFieldAction,
 } from 'state/form';
-import Transition from 'react-motion-ui-pack';
-import Errors from './errors';
+import Errors from 'components/errors';
 
 class InputOutput extends Component {
 
@@ -44,7 +43,7 @@ class InputOutput extends Component {
             />
             <Errors
               errors={this.props.io.input.errors}
-              keyBase={`input${this.props.index.toString()}`}
+              keyBase={`${this.props.io.hash()} input`}
               show={this.props.showErrors}
             />
           </div>
@@ -65,7 +64,7 @@ class InputOutput extends Component {
             />
             <Errors
               errors={this.props.io.output.errors}
-              keyBase={`output${this.props.index.toString()}`}
+              keyBase={`${this.props.io.hash()} output`}
               show={this.props.showErrors}
             />
           </div>

@@ -4,10 +4,9 @@ import prefixer from 'utils/class-name-prefixer';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import { assignmentChangeAction } from 'state/form';
-import Transition from 'react-motion-ui-pack';
 import { Editor, State as sState, Data } from 'slate';
 import FormValue from 'domain/form-value';
-import Error from './error';
+import Errors from 'components/errors';
 
 const DEFAULT_NODE = 'paragraph';
 
@@ -140,7 +139,7 @@ class Assignment extends Component {
   props: {
     assignment: FormValue<sState>,
     onAssignmentChange: (editorState: sState) => void,
-    errors: Map<string, Array<Object>>,
+    showErrors: boolean,
     readOnly: boolean,
   }
 
@@ -184,7 +183,7 @@ class Assignment extends Component {
     <Editor
       spellCheck={false}
       id="assignment"
-      placeholder={'Tämä on tarpeeksi pitkä tehtävänanto.'}
+      placeholder={'Kirjoita tähän tehtävänanto'}
       schema={schema}
       state={this.props.assignment.get()}
       onChange={(editorState) => {
@@ -196,10 +195,6 @@ class Assignment extends Component {
   )
 
   render() {
-    let errors = <div />;
-    if (this.props.showErrors) {
-      errors = this.props.assignment.errors.map(error => <Error value={error} />);
-    }
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -216,13 +211,7 @@ class Assignment extends Component {
           >
             {this.renderEditor()}
           </div>
-          <Transition
-            appear={{ opacity: 0, height: 0 }}
-            enter={{ opacity: 1, height: 16 }}
-            leave={{ opacity: 0, height: 0, translateY: -3 }}
-          >
-            { errors }
-          </Transition>
+          <Errors errors={this.props.assignment.errors} keyBase="" show={this.props.showErrors} />
         </div >
       </div >
     );
