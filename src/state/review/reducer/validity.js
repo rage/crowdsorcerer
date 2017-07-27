@@ -9,7 +9,9 @@ import type {
   ChangeCommentAction,
   ChangeReviewErrorVisibility,
 } from 'state/review';
-import type { State } from './index';
+import FormValue from 'domain/form-value';
+import validator from 'utils/validator';
+import type { State, Review } from './index';
 
 type AnyAction = GiveReviewAction | ChangeCommentAction | ChangeReviewErrorVisibility;
 
@@ -24,48 +26,31 @@ function isReviewAction(actionContainer: AnyAction) {
     action === CHANGE_REVIEW_ERRORS_VISIBILITY;
 }
 
-function validateComment(state: State) {
-  const words = state.comment.split(' ').filter(Boolean);
+function validateComment(comment: FormValue<*>) {
+  const errors = [];
+  const words = comment.get().split(' ').filter(Boolean);
   if (words.length < MIN_COMMENT_WORD_AMOUNT) {
-    return {
-      key: 'commentError',
-      errors: [COMMENT_ERROR],
-    };
+    errors.push(COMMENT_ERROR);
   }
-  return undefined;
+  return errors;
 }
 
-function validateReviews(state: State) {
+function validateReview(fVal: FormValue<Review>) {
   const errors = [];
-  state.reviewQuestions.forEach((question) => {
-    if (state.reviews.get(question) === undefined) {
-      errors.push({
-        msg: REVIEW_ERROR,
-        question,
-      });
-    }
-  });
-  if (errors.length === 0) {
-    return undefined;
+  if (fVal.get().review === undefined) {
+    errors.push(REVIEW_ERROR);
   }
-  return { key: 'reviewError', errors };
+  return errors;
 }
 
 export default function (state: State, action: AnyAction) {
-  const validityFunctions = [validateComment, validateReviews];
-  if (isReviewAction(action)) {
-    let valid = false;
-    const errors = new Map();
-    validityFunctions.forEach((func) => {
-      const error = func(state);
-      if (error) {
-        errors.set(error.key, error.errors);
-      }
-    });
-    if (errors.size === 0) {
-      valid = true;
-    }
-    return { ...state, ...{ valid, errors } };
+  if (!isReviewAction(action)) {
+    return state;
   }
-  return state;
+  const validators = [
+    { field: 'comment', validator: validateComment },
+    { field: 'reviews', validator: validateReview },
+  ];
+  const valid = validator(validators, state);
+  return { ...state, ...{ valid } };
 }

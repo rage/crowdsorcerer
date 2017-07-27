@@ -1,5 +1,6 @@
 // @flow
 import { createReducer } from 'redux-create-reducer';
+import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 
 import {
@@ -31,8 +32,8 @@ import { Raw } from 'slate';
 
 import type { State } from './index';
 
-const initialState = {
-  assignment: Raw.deserialize({
+const initialState: State = {
+  assignment: new FormValue(Raw.deserialize({
     nodes: [
       {
         kind: 'block',
@@ -45,15 +46,14 @@ const initialState = {
         ],
       },
     ],
-  }, { terse: true }),
-  modelSolution: 'System.out.println("moi"); \n return "Hello " + input;',
-  inputOutput: [new IO('testi', 'Hello asdf'), new IO('asdfasdf', 'Hello asdfasdfasdfdf')],
+  }, { terse: true })),
+  modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
+  inputOutput: [new IO(), new IO(), new IO()],
   solutionRows: [],
   valid: false,
-  errors: new Map(),
   showErrors: false,
   tagSuggestions: ['for-each', 'while', 'for-loop', 'java', 'javascript'],
-  tags: ['oon tägi'],
+  tags: new FormValue(['oon tägi']),
 };
 
 export default createReducer(initialState, {
@@ -84,7 +84,7 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
-    const previousSolution = state.modelSolution.split('\n');
+    const previousSolution = state.modelSolution.get().split('\n');
     const newSolution = action.modelSolution.split('\n');
     let newSolutionRows = state.solutionRows;
     let newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
@@ -134,7 +134,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        modelSolution: action.modelSolution,
+        modelSolution: new FormValue(action.modelSolution),
         solutionRows: newSolutionRows,
       },
     };
@@ -143,17 +143,18 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        assignment: action.assignment,
+        assignment: new FormValue(action.assignment),
       },
     };
   },
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
-    const newInputOutput = state.inputOutput.map((io, i) => {
-      if (i === action.index) {
-        return io.changeInput(action.testInput);
-      }
-      return io;
-    });
+    const newInputOutput = state.inputOutput
+      .map((io, i) => {
+        if (i === action.index) {
+          return new IO(action.testInput, io.output.get(), io.hash());
+        }
+        return io;
+      });
     return {
       ...state,
       ...{
@@ -162,12 +163,13 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
-    const newInputOutput = state.inputOutput.map((io, i) => {
-      if (i === action.index) {
-        return io.changeOutput(action.testOutput);
-      }
-      return io;
-    });
+    const newInputOutput = state.inputOutput
+      .map((io, i) => {
+        if (i === action.index) {
+          return new IO(io.input.get(), action.testOutput, io.hash());
+        }
+        return io;
+      });
     return {
       ...state,
       ...{
@@ -202,13 +204,13 @@ export default createReducer(initialState, {
   },
   [ADD_TAG](state: State, action: AddTagAction): State {
     const newTag = action.tag.trim().toLowerCase();
-    if (newTag === '' || state.tags.includes(newTag)) {
+    if (newTag === '' || state.tags.get().includes(newTag)) {
       return state;
     }
     return {
       ...state,
       ...{
-        tags: [...state.tags, newTag],
+        tags: new FormValue([...state.tags.get(), newTag]),
       },
     };
   },
@@ -216,7 +218,7 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        tags: [...state.tags.slice(0, action.tagIndex), ...state.tags.slice(action.tagIndex + 1)],
+        tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
       },
     };
   },

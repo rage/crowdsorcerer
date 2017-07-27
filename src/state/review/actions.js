@@ -36,7 +36,7 @@ export function changeReviewErrorVisibilityAction() {
 export function submitReviewAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
-    api.postReview(getState().review)
+    api.postReview(getState().review, getState().form)
     .then((resp) => {
       console.info(resp);
       dispatch(postSuccessfulAction());

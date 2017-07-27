@@ -41,9 +41,11 @@ class TestFields extends Component {
             leave={{ opacity: 0, height: 0 }}
           >
             {this.props.inputOutput.map((io: IO, index: number) =>
-              (<div key={io.hash()}>
-                {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
-              </div>),
+              (
+                <div key={io.hash()}>
+                  {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
+                </div>
+              ),
             )}
           </Transition>
         </div>

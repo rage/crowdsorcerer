@@ -6,18 +6,21 @@ import type { State, Dispatch } from 'state/reducer';
 import type { TagType } from 'state/form/reducer';
 import { addTagAction, removeTagAction } from 'state/form/actions';
 import prefixer from 'utils/class-name-prefixer';
+import FormValue from 'domain/form-value';
+import Errors from 'components/errors';
 
 class ExerciseTags extends Component {
 
   props: {
-    tags: Array<string>,
+    tags: FormValue<Array<string>>,
     tagSuggestions: Array<string>,
     handleAddTag: (TagType) => void,
     handleRemoveTag: (string) => void,
+    showErrors: boolean,
   }
 
   render() {
-    const tags = this.props.tags.map(tag => ({ name: tag }));
+    const tags = this.props.tags.get().map(tag => ({ name: tag }));
     const tagSuggestions = this.props.tagSuggestions.map(tag => ({ name: tag }));
     return (
       <div className={prefixer('form-component')}>
@@ -30,6 +33,7 @@ class ExerciseTags extends Component {
           autofocus={false}
           placeholder="Lisää uusi tagi"
         />
+        <Errors errors={this.props.tags.errors} show={this.props.showErrors} />
       </div>
     );
   }

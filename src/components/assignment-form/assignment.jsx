@@ -4,8 +4,9 @@ import prefixer from 'utils/class-name-prefixer';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import { assignmentChangeAction } from 'state/form';
-import Transition from 'react-motion-ui-pack';
 import { Editor, State as sState, Data } from 'slate';
+import FormValue from 'domain/form-value';
+import Errors from 'components/errors';
 
 const DEFAULT_NODE = 'paragraph';
 
@@ -71,7 +72,7 @@ class Assignment extends Component {
 
   onClickMark = (e: Event, type: string) => {
     e.preventDefault();
-    let state = this.props.editorState;
+    let state = this.props.assignment.get();
 
     state = state
       .transform()
@@ -83,7 +84,7 @@ class Assignment extends Component {
 
   onClickBlock = (e: Event, type: string) => {
     e.preventDefault();
-    let state = this.props.editorState;
+    let state = this.props.assignment.get();
     const transform = state.transform();
     const { document } = state;
 
@@ -126,19 +127,19 @@ class Assignment extends Component {
   }
 
   hasBlock = (type: string) => {
-    const state = this.props.editorState;
+    const state = this.props.assignment.get();
     return state.blocks.some(node => node.type === type);
   }
 
   hasMark = (type: string) => {
-    const state = this.props.editorState;
+    const state = this.props.assignment.get();
     return state.marks.some(mark => mark.type === type);
   }
 
   props: {
-    editorState: sState,
+    assignment: FormValue<sState>,
     onAssignmentChange: (editorState: sState) => void,
-    errors: Map<string, Array<Object>>,
+    showErrors: boolean,
     readOnly: boolean,
   }
 
@@ -182,9 +183,9 @@ class Assignment extends Component {
     <Editor
       spellCheck={false}
       id="assignment"
-      placeholder={'Tämä on tarpeeksi pitkä tehtävänanto.'}
+      placeholder={'Kirjoita tähän tehtävänanto'}
       schema={schema}
-      state={this.props.editorState}
+      state={this.props.assignment.get()}
       onChange={(editorState) => {
         this.props.onAssignmentChange(editorState);
       }}
@@ -194,15 +195,6 @@ class Assignment extends Component {
   )
 
   render() {
-    let errMessage = '';
-    let errClass = prefixer('hidden');
-    if (this.props.errors && this.props.showErrors) {
-      const assignmentErrors = this.props.errors.get('assignmentError');
-      if (assignmentErrors) {
-        errClass = prefixer('error');
-        errMessage = assignmentErrors[0];
-      }
-    }
     return (
       <div className={prefixer('form-component')}>
         <div>
@@ -219,15 +211,7 @@ class Assignment extends Component {
           >
             {this.renderEditor()}
           </div>
-          <Transition
-            appear={{ opacity: 0, height: 0 }}
-            enter={{ opacity: 1, height: 16 }}
-            leave={{ opacity: 0, height: 0, translateY: -3 }}
-          >
-            <span key={errClass} className={errClass}>
-              {errMessage}
-            </span>
-          </Transition>
+          <Errors errors={this.props.assignment.errors} show={this.props.showErrors} />
         </div >
       </div >
     );
@@ -236,8 +220,7 @@ class Assignment extends Component {
 
 function mapStateToProps(state: State) {
   return {
-    editorState: state.form.assignment,
-    errors: state.form.errors,
+    assignment: state.form.assignment,
     showErrors: state.form.showErrors,
   };
 }

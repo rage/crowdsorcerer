@@ -1,5 +1,7 @@
 // @flow
-import { Plain } from 'slate';
+import { Plain, State as sState } from 'slate';
+import FormValue from 'domain/form-value';
+import validator from 'utils/validator';
 import {
   ADD_TEST_FIELD,
   REMOVE_TEST_FIELD,
@@ -10,35 +12,38 @@ import {
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
   CHANGE_FORM_ERRORS_VISIBILITY,
+  ADD_TAG,
+  REMOVE_TAG,
 } from 'state/form';
 import type {
-    AddTestFieldAction,
-    RemoveTestFieldAction,
-    TestInputChangeAction,
-    TestOutputChangeAction,
-    AssignmentChangeAction,
-    ModelSolutionChangeAction,
-    AddHiddenRowAction,
-    DeleteHiddenRowAction,
-    ChangeErrorsVisibilityAction,
+  AddTestFieldAction,
+  RemoveTestFieldAction,
+  TestInputChangeAction,
+  TestOutputChangeAction,
+  AssignmentChangeAction,
+  ModelSolutionChangeAction,
+  AddHiddenRowAction,
+  DeleteHiddenRowAction,
+  ChangeErrorsVisibilityAction,
+  AddTagAction,
+  RemoveTagAction,
 } from 'state/form';
 import type { State } from './index';
 
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
-const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT.toString()} sanaa pitkä.`;
+const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
   MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
-const TEST_INPUT_ERROR = 'Syöte-kenttä ei voi olla tyhjä.';
-const TEST_OUTPUT_ERROR = 'Tulos-kenttä ei voi olla tyhjä.';
+const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
   | AssignmentChangeAction | ModelSolutionChangeAction
-  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction;
+  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction ;
 
 function isFormAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
@@ -50,24 +55,25 @@ function isFormAction(actionContainer: AnyAction) {
     action === CHANGE_TEST_OUTPUT ||
     action === ADD_HIDDEN_ROW ||
     action === DELETE_HIDDEN_ROW ||
-    action === CHANGE_FORM_ERRORS_VISIBILITY;
+    action === CHANGE_FORM_ERRORS_VISIBILITY ||
+    action === ADD_TAG ||
+    action === REMOVE_TAG;
 }
 
-function validateAssignment(state: State) {
-  const words = Plain.serialize(state.assignment).split(/[ \n]+/).filter(Boolean);
+function assignmentErrors(assignment: FormValue<sState>): Array<string> {
+  const errors = [];
+  const words = Plain.serialize(assignment.get()).split(/[ \n]+/).filter(Boolean);
   if (words.length < MIN_ASSIGNMENT_WORD_AMOUNT) {
-    return {
-      key: 'assignmentError',
-      errors: [ASSIGNMENT_ERROR],
-    };
+    errors.push(ASSIGNMENT_ERROR);
   }
-  return undefined;
+  return errors;
 }
 
 
-function validateModelSolution(state: State) {
-  const words = state.modelSolution.split(/[ \n]+/).filter(Boolean);
-  const lines = state.modelSolution.split('\n').filter(Boolean);
+function modelSolutionErrors(modelSolution: FormValue<*>): Array<string> {
+  const errors = [];
+  const words = modelSolution.get().split(/[ \n]+/).filter(Boolean);
+  const lines = modelSolution.get().split('\n').filter(Boolean);
   let errorMessage;
   if (words.length < MIN_MODEL_SOLUTION_WORD_AMOUNT &&
     lines.length < MIN_MODEL_SOLUTION_LINE_AMOUNT) {
@@ -78,53 +84,30 @@ function validateModelSolution(state: State) {
     errorMessage = MODEL_SOLUTION_LINE_ERROR;
   }
   if (errorMessage) {
-    return {
-      key: 'modelSolutionError',
-      errors: [errorMessage],
-    };
+    errors.push(errorMessage);
   }
-  return undefined;
+  return errors;
 }
 
-function validateTestInputOutput(state: State) {
+function checkNotBlank(formValue: FormValue<*>): Array<string> {
   const errors = [];
-  for (let i = 0; i < state.inputOutput.length; i++) {
-    if (state.inputOutput[i].input.length === 0) {
-      errors.push({
-        key: 'inputError',
-        msg: TEST_INPUT_ERROR,
-        index: i,
-      });
-    }
-    if (state.inputOutput[i].output.length === 0) {
-      errors.push({
-        key: 'outputError',
-        msg: TEST_OUTPUT_ERROR,
-        index: i,
-      });
-    }
+  if (formValue.get().length === 0) {
+    errors.push(CANNOT_BE_BLANK_ERROR);
   }
-  if (errors.length > 0) {
-    return { key: 'IOError', errors };
-  }
-  return undefined;
+  return errors;
 }
 
 export default function (state: State, action: AnyAction) {
-  const validityFunctions = [validateAssignment, validateModelSolution, validateTestInputOutput];
-  if (isFormAction(action)) {
-    let valid = false;
-    const errors = new Map();
-    validityFunctions.forEach((func) => {
-      const error = func(state);
-      if (error) {
-        errors.set(error.key, error.errors);
-      }
-    });
-    if (errors.size === 0) {
-      valid = true;
-    }
-    return { ...state, ...{ valid, errors } };
+  if (!isFormAction(action)) {
+    return state;
   }
-  return state;
+  const validators = [
+    { field: 'assignment', validator: assignmentErrors },
+    { field: 'modelSolution', validator: modelSolutionErrors },
+    { field: 'tags', validator: checkNotBlank },
+    { field: 'inputOutput', validator: checkNotBlank },
+  ];
+
+  const valid = validator(validators, state);
+  return { ...state, ...{ valid } };
 }

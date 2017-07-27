@@ -4,12 +4,14 @@ import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from 'react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
+import FormValue from 'domain/form-value';
 import {
   modelSolutionChangeAction,
   addHiddenRow,
   deleteHiddenRow,
 } from 'state/form';
-import Transition from 'react-motion-ui-pack';
+import Errors from 'components/errors';
+
 
 class ModelSolution extends Component {
 
@@ -71,23 +73,16 @@ class ModelSolution extends Component {
   handleAddNewHiddenRow: Function;
 
   props: {
-    value: string,
+    value: FormValue<string>,
     solutionRows: Array<number>,
-    errors: Map<string, Array<Object>>,
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
     readOnly: boolean,
+    showErrors: boolean,
   };
 
   render() {
-    let errMessage = '';
-    let errClass = prefixer('errorHide');
-    const modelSolutionErrors = this.props.errors.get('modelSolutionError');
-    if (modelSolutionErrors && this.props.showErrors) {
-      errClass = prefixer('error');
-      errMessage = modelSolutionErrors[0];
-    }
     return (
       <div className={prefixer('form-component')}>
         <div id="modelSolution" className={prefixer('instructions')}>
@@ -105,7 +100,7 @@ class ModelSolution extends Component {
               indentUnit: 4,
               readOnly: this.props.readOnly,
             }}
-            value={this.props.value}
+            value={this.props.value.get()}
             onChange={(solution) => {
               this.props.onModelSolutionChange(solution);
             }}
@@ -113,15 +108,7 @@ class ModelSolution extends Component {
             aria-required
           />
         </div>
-        <Transition
-          appear={{ opacity: 0, height: 0 }}
-          enter={{ opacity: 1, height: 16 }}
-          leave={{ opacity: 0, height: 0, translateY: -3 }}
-        >
-          <span key={errClass} className={errClass}>
-            {errMessage}
-          </span>
-        </Transition>
+        <Errors errors={this.props.value.errors} show={this.props.showErrors} />
       </div>
     );
   }
@@ -131,7 +118,6 @@ function mapStateToProps(state: State) {
   return {
     modelSolution: state.form.modelSolution,
     solutionRows: state.form.solutionRows,
-    errors: state.form.errors,
     showErrors: state.form.showErrors,
     value: state.form.modelSolution,
   };

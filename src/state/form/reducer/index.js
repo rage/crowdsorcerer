@@ -2,6 +2,7 @@
 import reduceReducers from 'reduce-reducers';
 import IO from 'domain/io';
 import { State as sState } from 'slate';
+import FormValue from 'domain/form-value';
 import changes from './changes';
 import validity from './validity';
 
@@ -10,14 +11,13 @@ export type TagType = {
 };
 
 export type State = {
-  assignment: sState,
-  modelSolution: string,
+  assignment: FormValue<sState>,
+  modelSolution: FormValue<string>,
   inputOutput: Array<IO>,
   solutionRows: Array<number>,
   valid: boolean,
-  errors: Map<string, Array<Object>>,
   showErrors: boolean,
-  tags: Array<string>,
+  tags: FormValue<Array<string>>,
   tagSuggestions: Array<string>,
 };
 
