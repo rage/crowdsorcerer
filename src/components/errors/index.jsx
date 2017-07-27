@@ -5,12 +5,12 @@ import Transition from 'react-motion-ui-pack';
 import Error from './error';
 
 type Props = {
-  keyBase: string,
+  keyBase?: string,
   errors: Array<string>,
   show: bool,
 };
 
-export default ({ errors, keyBase, show }: Props) => (
+export default ({ errors, keyBase = '', show }: Props) => (
   <Transition
     appear={{ opacity: 0, height: 0 }}
     enter={{ opacity: 1, height: 16 }}
@@ -24,4 +24,5 @@ export default ({ errors, keyBase, show }: Props) => (
         ))
       }
   </Transition>
-  );
+);
+

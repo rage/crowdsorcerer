@@ -25,7 +25,7 @@ class ReviewComment extends Component {
           value={this.props.comment.get()}
           onChange={event => this.props.changeComment(event.currentTarget.value)}
         />
-        <Errors errors={this.props.comment.errors} keyBase="" show={this.props.showErrors} />
+        <Errors errors={this.props.comment.errors} show={this.props.showErrors} />
       </div>
     );
   }

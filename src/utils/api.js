@@ -6,7 +6,7 @@ import type { State as ReviewState } from 'state/review';
 import formSolutionTemplate from 'utils/solution-template-former';
 import ActionCable from 'actioncable';
 import * as storejs from 'store';
-import mapToObject from 'utils/map-to-object';
+import formValueToObject from 'utils/form-value-to-object';
 
 let SERVER;
 let SOCKET_SERVER;
@@ -31,7 +31,7 @@ export default class Api {
   connection: ActionCable.Channel;
 
   createFormJSON(state: FormState): Object {
-    const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
+    const IOArray = state.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
     const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
     return (
     {
@@ -51,16 +51,17 @@ export default class Api {
     this.connection.unsubscribe();
   }
 
-  createReviewJSON(state: ReviewState): Object {
-    const answers = mapToObject(state.reviews);
+  _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {
+    const answers = formValueToObject(reviewState.reviews);
     return (
     {
       oauth_token: this.oauthToken(),
       exercise: {
         exercise_id: 1,
+        tags: formState.tags.get(),
       },
       peer_review: {
-        comment: state.comment,
+        comment: reviewState.comment.get(),
         answers,
       },
     }
@@ -130,9 +131,9 @@ export default class Api {
     });
   }
 
-  postReview(state: ReviewState): Promise<any> {
+  postReview(reviewState: ReviewState, formState: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
-      const data = this.createReviewJSON(state);
+      const data = this._createReviewJSON(reviewState, formState);
       console.info(`sending: ${JSON.stringify(data)}`);
       fetch(`${SERVER}/peer_reviews`, {
         method: 'POST',

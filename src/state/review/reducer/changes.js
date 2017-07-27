@@ -35,8 +35,6 @@ export default createReducer(initialState, {
       let review = fVal.get().review;
       if (question === action.question) {
         review = action.value;
-        review = review > 5 ? 5 : review;
-        review = review < 1 ? 1 : review;
         reviews.push(new FormValue({ question, review }));
       } else {
         reviews.push(new FormValue({ question, review }));

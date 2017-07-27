@@ -211,7 +211,7 @@ class Assignment extends Component {
           >
             {this.renderEditor()}
           </div>
-          <Errors errors={this.props.assignment.errors} keyBase="" show={this.props.showErrors} />
+          <Errors errors={this.props.assignment.errors} show={this.props.showErrors} />
         </div >
       </div >
     );

@@ -108,7 +108,7 @@ class ModelSolution extends Component {
             aria-required
           />
         </div>
-        <Errors errors={this.props.value.errors} keyBase="" show={this.props.showErrors} />
+        <Errors errors={this.props.value.errors} show={this.props.showErrors} />
       </div>
     );
   }

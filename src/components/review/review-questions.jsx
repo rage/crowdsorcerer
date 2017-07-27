@@ -11,7 +11,6 @@ import ReviewScale from './review-scale';
 class ReviewQuestions extends Component {
 
   props: {
-    errors: Map<string, Array<Object>>,
     showErrors: boolean,
     reviews: Array<FormValue<Review>>,
   }

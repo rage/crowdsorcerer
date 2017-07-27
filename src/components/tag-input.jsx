@@ -33,7 +33,7 @@ class ExerciseTags extends Component {
           autofocus={false}
           placeholder="Lisää uusi tagi"
         />
-        <Errors errors={this.props.tags.errors} keyBase="" show={this.props.showErrors} />
+        <Errors errors={this.props.tags.errors} show={this.props.showErrors} />
       </div>
     );
   }
