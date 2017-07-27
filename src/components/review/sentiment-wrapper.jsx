@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 
 const notChosen = prefixer('scale-icon');
-const highlighted = `${notChosen}-highlighted`;
+const highlighted = `${notChosen} ${prefixer('highlighted')}`;
 
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;

@@ -19,6 +19,7 @@ const initialState = {
     new FormValue({
       question: 'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys', review: undefined,
     }),
+    new FormValue({ question: 'Tehtävänannon selkeys', review: undefined }),
   ],
   comment: new FormValue(''),
   valid: false,

@@ -89,8 +89,8 @@ export default class Api {
   }
 
   _createFormJSON(state: FormState): Object {
-    const IOArray = state.inputOutput.map(IO => ({ input: IO.input, output: IO.output }));
-    const parsedForm = formSolutionTemplate(state.modelSolution, state.solutionRows);
+    const IOArray = state.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
+    const parsedForm = formSolutionTemplate(state.modelSolution.get(), state.solutionRows);
     return (
     {
       oauth_token: this.oauthToken(),
@@ -99,14 +99,10 @@ export default class Api {
         description: Raw.serialize(state.assignment.get()),
         code: parsedForm,
         testIO: IOArray,
-        tags: state.tags,
+        tags: state.tags.get(),
       },
     }
     );
-  }
-
-  deleteSubscription(): void {
-    this.connection.unsubscribe();
   }
 
   _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {

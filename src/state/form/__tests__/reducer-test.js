@@ -317,7 +317,10 @@ test('form not valid without assignment', (t) => {
   const state = reducer(
     { form:
     {
-      assignment: initialAssignment, modelSolution: 'asdf \n asf asdf', inputOutput: [new IO('asdf', 'asdf')], solutionRows: [],
+      assignment: new FormValue(initialAssignment),
+      modelSolution: new FormValue('asdf \n asf asdf'),
+      inputOutput: [new IO('asdf', 'asdf')],
+      solutionRows: [],
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -330,7 +333,10 @@ test('form not valid without model solution', (t) => {
   const state = reducer(
     { form:
     {
-      assignment: assignmentWithContent, modelSolution: '', inputOutput: [new IO('asdf', 'asdf')], solutionRows: [],
+      assignment: new FormValue(assignmentWithContent),
+      modelSolution: new FormValue(''),
+      inputOutput: [new IO('asdf', 'asdf')],
+      solutionRows: [],
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -343,7 +349,10 @@ test('form not valid without tests', (t) => {
   const state = reducer(
     { form:
     {
-      assignment: assignmentWithContent, modelSolution: 'asdf \n asf asdf', inputOutput: [], solutionRows: [],
+      assignment: new FormValue(assignmentWithContent),
+      modelSolution: new FormValue('asdf \n asf asdf'),
+      inputOutput: [],
+      solutionRows: [],
     },
     },
     { modelSolution: oneLineSolution, type: CHANGE_MODEL_SOLUTION },
