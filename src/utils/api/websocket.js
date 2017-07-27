@@ -1,16 +1,5 @@
 // @flow
 import ActionCable from 'actioncable';
-import * as storejs from 'store';
-
-let SOCKET_SERVER;
-
-/* eslint-disable no-const-assign */
-if (process.env.NODE_ENV === 'production') {
-  SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
-} else {
-  SOCKET_SERVER = 'ws://localhost:3000/cable';
-}
-/* eslint-enable no-const-assign */
 
 const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
