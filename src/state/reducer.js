@@ -1,6 +1,6 @@
 // @flow
 
-import Api from 'utils/api';
+import Api from 'utils/api/index';
 
 import { combineReducers } from 'redux';
 

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import { SERVER_ADDR } from 'utils/api';
+import { SERVER_ADDR } from 'utils/api/index';
 
 type Props = {
   message: string,

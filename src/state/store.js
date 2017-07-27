@@ -1,7 +1,7 @@
 // @flow
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
-import Api from 'utils/api';
+import Api from 'utils/api/index';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 

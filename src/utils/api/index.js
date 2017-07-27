@@ -4,9 +4,9 @@ import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
 import type { State as ReviewState } from 'state/review';
 import formSolutionTemplate from 'utils/solution-template-former';
-import ActionCable from 'actioncable';
 import * as storejs from 'store';
 import formValueToObject from 'utils/form-value-to-object';
+import WebSocketConnection from './websocket';
 
 let SERVER;
 let SOCKET_SERVER;
@@ -22,27 +22,10 @@ if (process.env.NODE_ENV === 'production') {
 /* eslint-enable no-const-assign */
 export const SERVER_ADDR = SERVER;
 
-const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
-
 export default class Api {
 
   store: Store<any>;
-  cable: ActionCable.Cable;
-  connection: ActionCable.Channel;
-
-  deleteSubscription(): void {
-    this.connection.unsubscribe();
-  }
-
-  createSubscription(
-    onUpdate: (result: Object) => void,
-    onDisconnected: () => void,
-    onInvalidDataError: () => void,
-    sentExerciseId: number,
-    ): void {
-    this.cable = ActionCable.createConsumer(this._addExtraParamsToUrl(SOCKET_SERVER, sentExerciseId));
-    this._subscribe(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
-  }
+  ws: WebSocketConnection;
 
   postForm(state: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -63,6 +46,20 @@ export default class Api {
       })
       .then(resolve, reject);
     });
+  }
+
+  createSubscription(
+    onUpdate: (result: Object) => void,
+    onDisconnected: () => void,
+    onInvalidDataError: () => void,
+    sentExerciseId: number,
+  ): void {
+    this.ws = new WebSocketConnection(this.oauthToken(), SOCKET_SERVER);
+    this.ws.createSubscription(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
+  }
+
+  deleteSubscription(): void {
+    this.ws.deleteSubscription();
   }
 
   postReview(reviewState: ReviewState, formState: FormState): Promise<any> {
@@ -127,52 +124,6 @@ export default class Api {
       },
     }
     );
-  }
-
-  _subscribe(
-    onUpdate: (result: Object) => void,
-    onDisconnected: () => void,
-    onInvalidDataError: () => void,
-    exerciseId: number,
-    ): void {
-    const connection = this.cable.subscriptions.create('SubmissionStatusChannel', {
-      connected() {
-        // ask for current state from server in case socket open too late
-        connection.send({ ping: true, id: exerciseId });
-      },
-      disconnected() {
-        onDisconnected();
-      },
-      received(data) {
-        console.info(data);
-        let result = {};
-        try {
-          result = JSON.parse(data);
-          if (!Api._correctJSON(result)) {
-            throw SyntaxError('Data väärässä muodossa');
-          }
-        } catch (error) {
-          console.error(`error: ${error}`);
-          onInvalidDataError();
-        }
-        onUpdate(result);
-      },
-    });
-    this.connection = connection;
-  }
-
-  static _correctJSON(JSON: Object): boolean {
-    let valid = true;
-    JSON_FIELDS.forEach((field) => {
-      if (!Object.prototype.hasOwnProperty.call(JSON, field)) {
-        valid = false;
-      }
-    });
-    return valid;
-  }
-
-  _addExtraParamsToUrl(url: string, exerciseId: number): string {
-    return `${url}?oauth_token=${this.oauthToken()}&exercise_id=${exerciseId}`;
   }
 
   oauthToken(): string {
