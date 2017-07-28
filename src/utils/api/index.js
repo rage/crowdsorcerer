@@ -3,6 +3,7 @@ import { Raw } from 'slate';
 import type { Store } from 'redux';
 import type { State as FormState } from 'state/form';
 import type { State as ReviewState } from 'state/review';
+import type { State as AssignmentState } from 'state/assignment';
 import formSolutionTemplate from 'utils/solution-template-former';
 import * as storejs from 'store';
 import formValueToObject from 'utils/form-value-to-object';
@@ -27,9 +28,9 @@ export default class Api {
   store: Store<any>;
   ws: WebSocketConnection;
 
-  postForm(state: FormState): Promise<any> {
+  postForm(formstate: FormState, assignmentState: AssignmentState): Promise<any> {
     return new Promise((resolve, reject) => {
-      const data = this._createFormJSON(state);
+      const data = this._createFormJSON(formstate, assignmentState);
       fetch(`${SERVER}/exercises`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -46,20 +47,6 @@ export default class Api {
       })
       .then(resolve, reject);
     });
-  }
-
-  createSubscription(
-    onUpdate: (result: Object) => void,
-    onDisconnected: () => void,
-    onInvalidDataError: () => void,
-    sentExerciseId: number,
-  ): void {
-    this.ws = new WebSocketConnection(this.oauthToken(), SOCKET_SERVER);
-    this.ws.createSubscription(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
-  }
-
-  deleteSubscription(): void {
-    this.ws.deleteSubscription();
   }
 
   postReview(reviewState: ReviewState, formState: FormState): Promise<any> {
@@ -84,22 +71,55 @@ export default class Api {
     });
   }
 
+  getReviewableExerciseAndQuestions(assignmentId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      fetch(`${SERVER}/peer_reviews/assignments/${assignmentId}/request_exercise`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      })
+      .then((resp) => {
+        if (!resp) {
+          return reject(resp);
+        }
+        return resp.json();
+      })
+      .then(resolve, reject);
+    });
+  }
+
   syncStore(store: Store): void {
     this.store = store;
   }
 
-  _createFormJSON(state: FormState): Object {
-    const IOArray = state.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
-    const parsedForm = formSolutionTemplate(state.modelSolution.get(), state.solutionRows);
+  createSubscription(
+    onUpdate: (result: Object) => void,
+    onDisconnected: () => void,
+    onInvalidDataError: () => void,
+    sentExerciseId: number,
+  ): void {
+    this.ws = new WebSocketConnection(this.oauthToken(), SOCKET_SERVER);
+    this.ws.createSubscription(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
+  }
+
+  deleteSubscription(): void {
+    this.ws.deleteSubscription();
+  }
+
+  _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
+    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
+    const parsedForm = formSolutionTemplate(formState.modelSolution.get(), formState.solutionRows);
     return (
     {
       oauth_token: this.oauthToken(),
       exercise: {
-        assignment_id: 1,
-        description: Raw.serialize(state.assignment.get()),
+        assignment_id: assignmentState.assignmentId,
+        description: Raw.serialize(formState.assignment.get(), { terse: true }),
         code: parsedForm,
         testIO: IOArray,
-        tags: state.tags.get(),
+        tags: formState.tags.get(),
       },
     }
     );
@@ -111,7 +131,7 @@ export default class Api {
     {
       oauth_token: this.oauthToken(),
       exercise: {
-        exercise_id: 1,
+        exercise_id: reviewState.reviewable,
         tags: formState.tags.get(),
       },
       peer_review: {

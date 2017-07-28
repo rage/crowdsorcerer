@@ -6,11 +6,16 @@ import {
   postSuccessfulAction,
   postUnsuccessfulAction,
   finishAction,
+  invalidDataErrorAction,
 } from 'state/submission';
+import { setFormState, setTagSuggestions } from 'state/form';
 
 export const GIVE_REVIEW = 'GIVE_REVIEW';
 export const CHANGE_COMMENT = 'CHANGE_COMMENT';
 export const CHANGE_REVIEW_ERRORS_VISIBILITY = 'CHANGE_REVIEW_ERRORS_VISIBILITY';
+export const SET_REVIEW_QUESTIONS = 'SET_REVIEW_QUESTIONS';
+export const SET_REVIEWABLE_EXERCISE = 'SET_REVIEWABLE_EXERCISE';
+export const SET_FORM_STATE = 'SET_FORM_STATE';
 
 export function giveReviewAction(question: string, value: number) {
   return {
@@ -30,6 +35,39 @@ export function changeCommentAction(comment: string) {
 export function changeReviewErrorVisibilityAction() {
   return {
     type: CHANGE_REVIEW_ERRORS_VISIBILITY,
+  };
+}
+
+export function setReviewableIdAction(exerciseId: number) {
+  return {
+    exerciseId,
+    type: SET_REVIEWABLE_EXERCISE,
+  };
+}
+
+type ReviewQuestion = {
+  question: string,
+};
+
+export function setReviewQuestions(reviewQuestions: Array<ReviewQuestion>) {
+  const questions = reviewQuestions.map(rq => rq.question);
+  return {
+    questions,
+    type: SET_REVIEW_QUESTIONS,
+  };
+}
+
+export function setReviewableExerciseAction(assignmentId: number) {
+  return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.getReviewableExerciseAndQuestions(assignmentId)
+      .then((resp) => {
+        dispatch(setReviewableIdAction(resp.exercise.id));
+        dispatch(setFormState(resp.exercise));
+        dispatch(setReviewQuestions(resp.peer_review_questions));
+        dispatch(setTagSuggestions(resp.tags));
+      }, () => {
+        dispatch(invalidDataErrorAction());
+      });
   };
 }
 
@@ -70,5 +108,15 @@ export type ChangeCommentAction = {
 };
 
 export type ChangeReviewErrorVisibility = {
+  type: string,
+};
+
+export type SetReviewQuestions = {
+  questions: Array<string>,
+  type: string,
+};
+
+export type SetReviewableExerciseAction = {
+  exerciseId: number,
   type: string,
 };

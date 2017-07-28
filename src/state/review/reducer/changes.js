@@ -4,11 +4,15 @@ import {
   GIVE_REVIEW,
   CHANGE_COMMENT,
   CHANGE_REVIEW_ERRORS_VISIBILITY,
-} from 'state/review';
+  SET_REVIEW_QUESTIONS,
+  SET_REVIEWABLE_EXERCISE,
+} from 'state/review/actions';
 import type {
   GiveReviewAction,
   ChangeCommentAction,
-} from 'state/review';
+  SetReviewQuestions,
+  SetReviewableExerciseAction,
+} from 'state/review/actions';
 import FormValue from 'domain/form-value';
 import type { State } from './index';
 
@@ -61,6 +65,23 @@ export default createReducer(initialState, {
       ...state,
       ...{
         showErrors: !state.showErrors,
+      },
+    };
+  },
+  [SET_REVIEW_QUESTIONS](state: State, action: SetReviewQuestions): State {
+    const reviews = action.questions.map(question => new FormValue({ question, review: undefined }));
+    return {
+      ...state,
+      ...{
+        reviews,
+      },
+    };
+  },
+  [SET_REVIEWABLE_EXERCISE](state: State, action: SetReviewableExerciseAction): State {
+    return {
+      ...state,
+      ...{
+        reviewable: action.exerciseId,
       },
     };
   },

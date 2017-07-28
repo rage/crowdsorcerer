@@ -3,12 +3,12 @@ import {
   GIVE_REVIEW,
   CHANGE_COMMENT,
   CHANGE_REVIEW_ERRORS_VISIBILITY,
-} from 'state/review';
+} from 'state/review/actions';
 import type {
   GiveReviewAction,
   ChangeCommentAction,
   ChangeReviewErrorVisibility,
-} from 'state/review';
+} from 'state/review/actions';
 import FormValue from 'domain/form-value';
 import validator from 'utils/validator';
 import type { State, Review } from './index';

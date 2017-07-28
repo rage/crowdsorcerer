@@ -11,7 +11,7 @@ type Props = {
 
 export default ({ message, exerciseId, zipType }: Props) => (
   <a
-    href={`${SERVER_ADDR}peer_reviews/exercises/${exerciseId}/${zipType}_zip`}
+    href={`${SERVER_ADDR}/peer_reviews/exercises/${exerciseId}/${zipType}_zip`}
     className={prefixer('info-button')}
     role="button"
     target="_blank"
