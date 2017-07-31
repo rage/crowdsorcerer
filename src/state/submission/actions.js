@@ -10,6 +10,7 @@ export const CONNECTION_TERMINATED_PREMATURELY = 'CONNECTION_TERMINATED_PREMATUR
 export const INVALID_DATA_ERROR = 'INVALID_DATA_ERROR';
 export const AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR';
 export const FINISH = 'FINISH';
+export const SET_EXERCISE_ID = 'SET_EXERCISE_ID';
 
 export function startSendAction() {
   return {
@@ -29,6 +30,12 @@ export function postUnsuccessfulAction() {
   };
 }
 
+export function setExerciseAction(exerciseId: number) {
+  return {
+    exerciseId,
+    type: SET_EXERCISE_ID,
+  };
+}
 
 export function finishAction() {
   return {
@@ -106,4 +113,9 @@ export type AuthenticationErrorAction = {
 
 export type Finish = {
   type: string
+};
+
+export type SetExerciseAction = {
+  exerciseId: number,
+  type: string,
 };

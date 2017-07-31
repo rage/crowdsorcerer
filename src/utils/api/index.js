@@ -81,7 +81,7 @@ export default class Api {
         credentials: 'same-origin',
       })
       .then((resp) => {
-        if (!resp) {
+        if (!resp || resp.status.toString().startsWith('4')) {
           return reject(resp);
         }
         return resp.json();

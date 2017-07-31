@@ -9,9 +9,9 @@ export default class IO {
   output: FormValue<string>;
   hashCode: ?string;
 
-  constructor(input: string = '', output: string = '', hashCode: ?string) {
-    this.input = new FormValue(input);
-    this.output = new FormValue(output);
+  constructor(input: FormValue<string> = new FormValue(''), output: FormValue<string> = new FormValue(''), hashCode: ?string) {
+    this.input = input;
+    this.output = output;
     this.hashCode = hashCode;
   }
 
@@ -25,12 +25,12 @@ export default class IO {
   }
 
   _changeInput(input: string) {
-    const newIO = new IO(input, this.output.get(), this.hashCode);
+    const newIO = new IO(new FormValue(input), this.output, this.hashCode);
     return newIO;
   }
 
   _changeOutput(output: string) {
-    const newIO = new IO(this.input.get(), output, this.hashCode);
+    const newIO = new IO(this.input, new FormValue(output), this.hashCode);
     return newIO;
   }
 }
