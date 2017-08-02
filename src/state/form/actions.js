@@ -8,10 +8,9 @@ import {
   startSendAction,
   postSuccessfulAction,
   postUnsuccessfulAction,
-  updateSubmissionStatusAction, connectionTerminatedPrematurelyAction,
-  invalidDataErrorAction,
   authenticationError,
   setExerciseAction,
+  openWebSocketConnectionAction,
 } from 'state/submission';
 
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -112,20 +111,6 @@ export function setTagSuggestions(newTags: Array<Tag>) {
   };
 }
 
-export function openApiConnectionAction() {
-  return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    api.createSubscription((data: Object) => {
-      dispatch(updateSubmissionStatusAction(data, api));
-    }, () => {
-      if (!getState().submission.finished) {
-        dispatch(connectionTerminatedPrematurelyAction());
-      }
-    }, () => {
-      dispatch(invalidDataErrorAction());
-    }, getState().submission.exerciseId);
-  };
-}
-
 export function submitFormAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
@@ -135,7 +120,7 @@ export function submitFormAction() {
         // status 400 == exercise already being processed
         dispatch(setExerciseAction(response.exercise.id));
         dispatch(postSuccessfulAction());
-        dispatch(openApiConnectionAction());
+        dispatch(openWebSocketConnectionAction());
       },
       (error) => {
         if (error.status === 403) {

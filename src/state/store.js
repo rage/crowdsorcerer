@@ -6,46 +6,42 @@ import { Raw } from 'slate';
 import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
-import { openApiConnectionAction } from 'state/form/actions';
+import { openWebSocketConnectionAction } from 'state/submission/actions';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 import { setReviewableExerciseAction } from './review';
-
-const STORAGE_NAME = 'redux-state';
 
 export type ThunkArgument = {
   api: Api
 };
 
-function saveStateInLocalStorage() {
+function saveStateInLocalStorage(storageName: string) {
   return store => next => (action) => {
     next(action);
     const state = store.getState();
-    if (state) {
-      const saveableState = {
-        ...state,
-        ...{
-          form: {
-            ...state.form,
-            ...{
-              assignment: {
-                value: Raw.serialize(state.form.assignment.get(), { terse: true }),
-                errors: state.form.assignment.errors,
-              },
+    const saveableState = {
+      ...state,
+      ...{
+        form: {
+          ...state.form,
+          ...{
+            assignment: {
+              value: Raw.serialize(state.form.assignment.get(), { terse: true }),
+              errors: state.form.assignment.errors,
             },
           },
         },
-      };
-      localStorage[STORAGE_NAME] = JSON.stringify(saveableState);
-    }
+      },
+    };
+    localStorage[storageName] = JSON.stringify(saveableState);
   };
 }
 
-function loadStateFromLocalStorage() {
-  if (!localStorage[STORAGE_NAME]) {
+function loadStateFromLocalStorage(storageName: string) {
+  if (!localStorage[storageName]) {
     return undefined;
   }
-  const state = JSON.parse(localStorage[STORAGE_NAME]);
+  const state = JSON.parse(localStorage[storageName]);
   const assignmentValue = Raw.deserialize(state.form.assignment.value, { terse: true });
   const ios = state.form.inputOutput.map((io) => {
     const input = new FormValue(io.input.value, io.input.errors);
@@ -75,22 +71,24 @@ function loadStateFromLocalStorage() {
   };
 }
 
-export default function makeStore(assignmentId: string, review: boolean) {
+export default function makeStore(assignment: string, review: boolean) {
+  const storageName = `crowdsorcerer-redux-state-${assignment}`;
+  const assignmentId = parseInt(assignment, 10);
   const api = new Api();
   /* eslint-disable no-underscore-dangle */
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   /* eslint-enable no-underscore-dangle */
   const store = createStore(
-    rootReducer(assignmentId), loadStateFromLocalStorage(),
+    rootReducer(assignmentId), loadStateFromLocalStorage(storageName),
     composeEnhancers(
-      applyMiddleware(thunk.withExtraArgument({ api }), saveStateInLocalStorage()),
+      applyMiddleware(thunk.withExtraArgument({ api }), saveStateInLocalStorage(storageName)),
     ),
   );
   store.dispatch(trackLoginStateAction());
   if (review) {
     store.dispatch(setReviewableExerciseAction(parseInt(assignmentId, 10)));
   } else if (store.getState().submission.status !== STATUS_NONE) {
-    store.dispatch(openApiConnectionAction());
+    store.dispatch(openWebSocketConnectionAction());
   }
   api.syncStore(store);
   return store;

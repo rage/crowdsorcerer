@@ -51,12 +51,12 @@ const initialState: State = {
     ],
   }, { terse: true })),
   modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
-  inputOutput: [new IO(new FormValue('meikä'), new FormValue('Hello meikä'))],
+  inputOutput: [new IO(new FormValue('initial'), new FormValue('Hello initial'))],
   solutionRows: [],
   valid: false,
   showErrors: false,
   tagSuggestions: ['for-each', 'while', 'for-loop', 'java', 'javascript'],
-  tags: new FormValue(['oon tägi']),
+  tags: new FormValue(['tag']),
 };
 
 export default createReducer(initialState, {

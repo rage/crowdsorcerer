@@ -1,5 +1,7 @@
 // @flow
 import Api from 'utils/api/index';
+import type { ThunkArgument } from 'state/store';
+import type { Dispatch, GetState } from 'state/reducer';
 
 export const POST_EXERCISE = 'POST_EXERCISE';
 export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';
@@ -74,6 +76,20 @@ export function connectionTerminatedPrematurelyAction() {
 export function invalidDataErrorAction() {
   return {
     type: INVALID_DATA_ERROR,
+  };
+}
+
+export function openWebSocketConnectionAction() {
+  return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.createSubscription((data: Object) => {
+      dispatch(updateSubmissionStatusAction(data, api));
+    }, () => {
+      if (!getState().submission.finished) {
+        dispatch(connectionTerminatedPrematurelyAction());
+      }
+    }, () => {
+      dispatch(invalidDataErrorAction());
+    }, getState().submission.exerciseId);
   };
 }
 
