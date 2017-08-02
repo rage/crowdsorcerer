@@ -1,4 +1,5 @@
 // @flow
+import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
@@ -23,6 +24,8 @@ export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
 export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
 export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
+export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
 
 export function addTestFieldAction() {
   return {
@@ -74,12 +77,47 @@ export function changeFormErrorVisibilityAction() {
   };
 }
 
+type testIO = {
+  input: string,
+  output: string,
+};
+
+type formStateJSON = {
+  code: string,
+  testIO: Array<testIO>,
+  description: string,
+};
+
+export function setFormState(state: formStateJSON) {
+  const newState = {};
+  newState.modelSolution = new FormValue(state.code);
+  newState.inputOutput = state.testIO.map(io => new IO(io.input, io.output));
+  newState.assignment = state.description;
+  return {
+    newState,
+    type: SET_FORM_STATE,
+  };
+}
+
+type Tag = {
+  name: string,
+};
+
+export function setTagSuggestions(newTags: Array<Tag>) {
+  const tagSuggestions = newTags.map(tag => tag.name);
+  return {
+    tagSuggestions,
+    type: SET_TAG_SUGGESTIONS,
+  };
+}
+
 export function submitFormAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
-    api.postForm(getState().form)
+    api.postForm(getState().form, getState().assignment)
     .then(
       (response) => {
+        // status 400 == exercise already being processed
         dispatch(postSuccessfulAction());
         api.createSubscription((data: Object) => {
           dispatch(updateSubmissionStatusAction(data, api));
@@ -193,5 +231,21 @@ export type AddTagAction = {
 
 export type RemoveTagAction = {
   tagIndex: number,
+  type: string,
+};
+
+type ReviewForm = {
+   assignment: sState,
+   modelSolution: FormValue<string>,
+   inputOutput: Array<IO>,
+ };
+
+export type SetFormStateAction = {
+  newState: ReviewForm,
+  type: string,
+};
+
+export type SetTagSuggestions = {
+  tagSuggestions: Array<string>,
   type: string,
 };

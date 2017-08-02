@@ -30,7 +30,7 @@ class AssignmentForm extends Component {
         <ExerciseTags showErrors={this.props.showErrors} />
         <div className={prefixer('form-component')}>
           <button
-            type="submit"
+            type="button"
             disabled={this.props.showErrors && !this.props.valid}
             className={prefixer('sender')}
             onClick={(e) => {

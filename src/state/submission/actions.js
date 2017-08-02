@@ -1,5 +1,5 @@
 // @flow
-import Api from 'utils/api';
+import Api from 'utils/api/index';
 
 export const POST_EXERCISE = 'POST_EXERCISE';
 export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';

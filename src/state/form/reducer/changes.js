@@ -2,7 +2,6 @@
 import { createReducer } from 'redux-create-reducer';
 import FormValue from 'domain/form-value';
 import IO from 'domain/io';
-
 import {
   ADD_TEST_FIELD,
   REMOVE_TEST_FIELD,
@@ -15,7 +14,9 @@ import {
   CHANGE_FORM_ERRORS_VISIBILITY,
   REMOVE_TAG,
   ADD_TAG,
-} from 'state/form';
+  SET_FORM_STATE,
+  SET_TAG_SUGGESTIONS,
+} from 'state/form/actions';
 import type {
     AddTestFieldAction,
     RemoveTestFieldAction,
@@ -27,7 +28,9 @@ import type {
     DeleteHiddenRowAction,
     AddTagAction,
     RemoveTagAction,
-} from 'state/form';
+    SetFormStateAction,
+    SetTagSuggestions,
+} from 'state/form/actions';
 import { Raw } from 'slate';
 
 import type { State } from './index';
@@ -41,14 +44,14 @@ const initialState: State = {
         nodes: [
           {
             kind: 'text',
-            text: 'Tämä on tarpeeksi pitkä tehtävänanto',
+            text: 'asdf asdf asdf sdf dfas sdf asdf',
           },
         ],
       },
     ],
   }, { terse: true })),
   modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
-  inputOutput: [new IO(), new IO(), new IO()],
+  inputOutput: [new IO('meikä', 'Hello meikä')],
   solutionRows: [],
   valid: false,
   showErrors: false,
@@ -219,6 +222,26 @@ export default createReducer(initialState, {
       ...state,
       ...{
         tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
+      },
+    };
+  },
+  [SET_FORM_STATE](state: State, action: SetFormStateAction): State {
+    return {
+      ...state,
+      ...{
+        valid: true,
+        assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
+        showErrors: false,
+        modelSolution: action.newState.modelSolution,
+        inputOutput: action.newState.inputOutput,
+      },
+    };
+  },
+  [SET_TAG_SUGGESTIONS](state: State, action: SetTagSuggestions): State {
+    return {
+      ...state,
+      ...{
+        tagSuggestions: action.tagSuggestions,
       },
     };
   },

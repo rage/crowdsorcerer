@@ -6,7 +6,7 @@ import validity from './validity';
 
 export type Review = {
   question:string,
-  review: number
+  review: ?number
 }
 
 export type State = {

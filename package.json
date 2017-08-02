@@ -14,6 +14,7 @@
     "coverage": "BABEL_ENV=production babel --out-dir=dist index.jsx"
   },
   "dependencies": {
+    "@skidding/react-codemirror": "^1.0.0",
     "actioncable": "^5.1.1",
     "axios": "^0.16.1",
     "babel-polyfill": "^6.23.0",
@@ -23,7 +24,6 @@
     "react": "^15.5.4",
     "react-addons-css-transition-group": "^15.5.2",
     "react-addons-transition-group": "^15.5.2",
-    "react-codemirror": "^1.0.0",
     "react-dom": "^15.5.4",
     "react-icons": "^2.2.5",
     "react-motion": "^0.5.0",

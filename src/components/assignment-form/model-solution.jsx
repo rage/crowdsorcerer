@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import CodeMirror, { TextMarker } from 'react-codemirror';
+import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import { connect } from 'react-redux';
 import FormValue from 'domain/form-value';
@@ -60,6 +60,9 @@ class ModelSolution extends Component {
   }
 
   handleAddNewHiddenRow(cm: CodeMirror, line: number) {
+    if (this.props.readOnly) {
+      return;
+    }
     if (this.props.solutionRows.includes(line)) {
       this.props.onDeleteHiddenRow(line);
     } else {
@@ -73,7 +76,7 @@ class ModelSolution extends Component {
   handleAddNewHiddenRow: Function;
 
   props: {
-    value: FormValue<string>,
+    modelSolution: FormValue<string>,
     solutionRows: Array<number>,
     onModelSolutionChange: (modelSolution: string) => void,
     onNewHiddenRow: (row: number) => void,
@@ -100,7 +103,7 @@ class ModelSolution extends Component {
               indentUnit: 4,
               readOnly: this.props.readOnly,
             }}
-            value={this.props.value.get()}
+            value={this.props.modelSolution.get()}
             onChange={(solution) => {
               this.props.onModelSolutionChange(solution);
             }}
@@ -108,7 +111,7 @@ class ModelSolution extends Component {
             aria-required
           />
         </div>
-        <Errors errors={this.props.value.errors} show={this.props.showErrors} />
+        <Errors errors={this.props.modelSolution.errors} show={this.props.showErrors} />
       </div>
     );
   }
@@ -119,7 +122,6 @@ function mapStateToProps(state: State) {
     modelSolution: state.form.modelSolution,
     solutionRows: state.form.solutionRows,
     showErrors: state.form.showErrors,
-    value: state.form.modelSolution,
   };
 }
 

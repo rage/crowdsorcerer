@@ -59,6 +59,21 @@ const emptyTest2 = new IO();
 emptyTest2.input.errors = ['Kenttä ei voi olla tyhjä.'];
 emptyTest2.output.errors = ['Kenttä ei voi olla tyhjä.'];
 
+const assignmentWithContent = Raw.deserialize({
+  nodes: [
+    {
+      kind: 'block',
+      type: 'paragraph',
+      nodes: [
+        {
+          kind: 'text',
+          text: 'Tämä on tarpeeksi pitkä malliratkaisu',
+        },
+      ],
+    },
+  ],
+}, { terse: true });
+
 test('Add a single empty field to intial state test input/output array', (t) => {
   const reducer = reducers('1');
   const state = reducer(
@@ -297,3 +312,50 @@ test('Remove only field from intial state test input/output array', (t) => {
   t.deepEqual(state.form.inputOutput, [emptyTest1]);
 });
 
+test('form not valid without assignment', (t) => {
+  const reducer = reducers('1');
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(initialAssignment),
+      modelSolution: new FormValue('asdf \n asf asdf'),
+      inputOutput: [new IO('asdf', 'asdf')],
+      solutionRows: [],
+    },
+    },
+    { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
+  );
+  t.deepEqual(state.form.valid, false);
+});
+
+test('form not valid without model solution', (t) => {
+  const reducer = reducers('1');
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      modelSolution: new FormValue(''),
+      inputOutput: [new IO('asdf', 'asdf')],
+      solutionRows: [],
+    },
+    },
+    { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
+  );
+  t.deepEqual(state.form.valid, false);
+});
+
+test('form not valid without tests', (t) => {
+  const reducer = reducers('1');
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      modelSolution: new FormValue('asdf \n asf asdf'),
+      inputOutput: [],
+      solutionRows: [],
+    },
+    },
+    { modelSolution: oneLineSolution, type: CHANGE_MODEL_SOLUTION },
+  );
+  t.deepEqual(state.form.valid, false);
+});

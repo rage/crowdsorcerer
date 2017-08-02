@@ -14,7 +14,7 @@ import {
   CHANGE_FORM_ERRORS_VISIBILITY,
   ADD_TAG,
   REMOVE_TAG,
-} from 'state/form';
+} from 'state/form/actions';
 import type {
   AddTestFieldAction,
   RemoveTestFieldAction,
@@ -27,7 +27,7 @@ import type {
   ChangeErrorsVisibilityAction,
   AddTagAction,
   RemoveTagAction,
-} from 'state/form';
+} from 'state/form/actions';
 import type { State } from './index';
 
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;

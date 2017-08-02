@@ -1,9 +1,10 @@
 // @flow
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
-import Api from 'utils/api';
+import Api from 'utils/api/index';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
+import { setReviewableExerciseAction } from './review';
 
 export type ThunkArgument = {
   api: Api
@@ -23,7 +24,7 @@ export default function makeStore(assignmentId: string, review: boolean) {
   store.dispatch(trackLoginStateAction());
   if (review) {
     // get exercise id and form state from backend
-    // store.dispatch();
+    store.dispatch(setReviewableExerciseAction(parseInt(assignmentId, 10)));
   }
   api.syncStore(store);
   return store;
