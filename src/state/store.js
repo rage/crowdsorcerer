@@ -8,6 +8,7 @@ import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
+>>>>>>> Add save to localstorage by assignment
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 import { setReviewableExerciseAction } from './review';
