@@ -12,13 +12,14 @@ export type TagType = {
 
 export type State = {
   assignment: FormValue<sState>,
-  modelSolution: FormValue<string>,
+  modelSolution: ?FormValue<string>,
   inputOutput: Array<IO>,
   solutionRows: Array<number>,
   valid: boolean,
   showErrors: boolean,
   tags: FormValue<Array<string>>,
   tagSuggestions: Array<string>,
+  readOnlyModelSolutionLines: Array<number>,
 };
 
 export default reduceReducers(changes, validity);

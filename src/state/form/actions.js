@@ -3,7 +3,7 @@ import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
-import type { Dispatch, GetState } from 'state/reducer';
+import type { Dispatch, GetState, Change } from 'state/reducer';
 import {
   startSendAction,
   postSuccessfulAction,
@@ -12,6 +12,7 @@ import {
   setExerciseAction,
   openWebSocketConnectionAction,
 } from 'state/submission';
+import getReadOnlyLines from 'utils/get-read-only-lines';
 
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
 export const REMOVE_TEST_FIELD = 'REMOVE_TEST_FIELD';
@@ -26,6 +27,8 @@ export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
 export const SET_FORM_STATE = 'SET_FORM_STATE';
 export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
+export const SET_BOILERPLATE = 'SET_BOILERPLATE';
+export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
 
 export function addTestFieldAction() {
   return {
@@ -48,9 +51,10 @@ export function assignmentChangeAction(assignment: sState) {
   };
 }
 
-export function modelSolutionChangeAction(modelSolution: string) {
+export function modelSolutionChangeAction(modelSolution: string, change: Change) {
   return {
     modelSolution,
+    change,
     type: CHANGE_MODEL_SOLUTION,
   };
 }
@@ -117,10 +121,37 @@ export function submitFormAction() {
     api.postForm(getState().form, getState().assignment)
     .then(
       (response) => {
-        // status 400 == exercise already being processed
         dispatch(setExerciseAction(response.exercise.id));
         dispatch(postSuccessfulAction());
         dispatch(openWebSocketConnectionAction());
+      },
+      (error) => {
+        if (error.status === 403) {
+          dispatch(authenticationError());
+        } else {
+          dispatch(postUnsuccessfulAction());
+        }
+      },
+    );
+  };
+}
+
+export function setBoilerplateAction(boilerplate: string) {
+  const readOnlyLines = getReadOnlyLines(boilerplate);
+  return {
+    boilerplate,
+    readOnlyLines,
+    type: SET_BOILERPLATE,
+  };
+}
+
+export function getAssignmentInfoAction() {
+  return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.getAssignmentInformation(getState().assignment.assignmentId)
+    .then(
+      (response) => {
+        dispatch(setTagSuggestions(response.tags));
+        dispatch(setBoilerplateAction(response.template));
       },
       (error) => {
         if (error.status === 403) {
@@ -189,6 +220,7 @@ export type AssignmentChangeAction = {
 
 export type ModelSolutionChangeAction = {
   modelSolution: string,
+  change: Change,
   type: string
 };
 
@@ -239,5 +271,11 @@ export type SetFormStateAction = {
 
 export type SetTagSuggestions = {
   tagSuggestions: Array<string>,
+  type: string,
+};
+
+export type SetBoilerplateAction = {
+  boilerplate: string,
+  readOnlyLines: Array<number>,
   type: string,
 };

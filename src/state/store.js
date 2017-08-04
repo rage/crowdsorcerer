@@ -6,22 +6,12 @@ import { Raw } from 'slate';
 import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
-<<<<<<< da2856bebbe22f6a0e2839b752ad9a1cd3fb1601
 import { openWebSocketConnectionAction } from 'state/submission/actions';
-=======
-import { openApiConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
->>>>>>> Add save to localstorage by assignment
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 import { setReviewableExerciseAction } from './review';
 
-<<<<<<< da2856bebbe22f6a0e2839b752ad9a1cd3fb1601
-=======
-const STORAGE = 'crowdsorcerer-redux-state';
-let STORAGE_NAME;
-
->>>>>>> Add save to localstorage by assignment
 export type ThunkArgument = {
   api: Api
 };
@@ -30,12 +20,6 @@ function saveStateInLocalStorage(storageName: string) {
   return store => next => (action) => {
     next(action);
     const state = store.getState();
-<<<<<<< da2856bebbe22f6a0e2839b752ad9a1cd3fb1601
-=======
-    if (!state) {
-      return;
-    }
->>>>>>> Add save to localstorage by assignment
     const saveableState = {
       ...state,
       ...{
@@ -50,11 +34,7 @@ function saveStateInLocalStorage(storageName: string) {
         },
       },
     };
-<<<<<<< da2856bebbe22f6a0e2839b752ad9a1cd3fb1601
     localStorage[storageName] = JSON.stringify(saveableState);
-=======
-    localStorage[STORAGE_NAME] = JSON.stringify(saveableState);
->>>>>>> Add save to localstorage by assignment
   };
 }
 
@@ -107,10 +87,13 @@ export default function makeStore(assignment: string, review: boolean) {
   );
   store.dispatch(trackLoginStateAction());
   if (review) {
-    store.dispatch(setReviewableExerciseAction(parseInt(assignmentId, 10)));
+    store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());
+  } else if (store.getState().form.modelSolution === undefined) {
+    store.dispatch(getAssignmentInfoAction());
   }
   api.syncStore(store);
   return store;
 }
+

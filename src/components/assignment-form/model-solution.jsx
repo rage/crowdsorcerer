@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
-import type { State, Dispatch } from 'state/reducer';
+import type { State, Dispatch, Change } from 'state/reducer';
 import { connect } from 'react-redux';
 import FormValue from 'domain/form-value';
 import {
@@ -19,14 +19,17 @@ class ModelSolution extends Component {
     super(props);
 
     this.handleAddNewHiddenRow = this.handleAddNewHiddenRow.bind(this);
+    this.handleModelSolutionChange = this.handleModelSolutionChange.bind(this);
     this.modelSolutionMarkers = [];
   }
 
   componentDidMount() {
     this.addGutterMarks();
+    this.showMarkers();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('gutterClick',
       (instance, line) => this.handleAddNewHiddenRow(instance, line));
+    codeDocument.on('beforeChange', this.handleModelSolutionChange);
   }
 
   componentDidUpdate() {
@@ -54,9 +57,14 @@ class ModelSolution extends Component {
     const codeDocument = this.textInput.getCodeMirror().getDoc();
     for (let i = 0; i <= codeDocument.getEditor().lineCount(); i++) {
       codeDocument.removeLineClass(i, 'background', prefixer('hiddenRow'));
+      codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
     }
-    this.props.solutionRows.forEach(row =>
-      codeDocument.addLineClass(row, 'background', prefixer('hiddenRow')));
+    this.props.solutionRows.forEach((row) => {
+      codeDocument.addLineClass(row, 'background', prefixer('hiddenRow'));
+    });
+    this.props.readOnlyLines.forEach((row) => {
+      codeDocument.addLineClass(row, 'background', prefixer('readOnly'));
+    });
   }
 
   handleAddNewHiddenRow(cm: CodeMirror, line: number) {
@@ -70,19 +78,50 @@ class ModelSolution extends Component {
     }
   }
 
+  handleModelSolutionChange(cm, change) {
+    let deletedReadOnly = false;
+    if (change.to.line - change.from.line > 0) {
+      if (change.from.ch === 0 && change.to.ch === 0) {
+        // deleted the whole row, the line in 'to' is one off
+        // check that the user is not deleting the only editale row between two readonly lines
+        const lastEditableBetweenReadOnlysDeleted = change.from.line > 0 &&
+        this.props.readOnlyLines.includes(change.from.line - 1) && this.props.readOnlyLines.includes(change.to.line);
+        const lastEditableDeleted = change.to.line === 0 && this.props.readOnlyLines.includes(change.from.line + 1);
+        const lastEditableBlockDeleted = change.from.line === 0 && this.props.readOnlyLines.includes(change.to.line);
+        if (lastEditableBetweenReadOnlysDeleted || lastEditableDeleted || lastEditableBlockDeleted) {
+          change.update(change.from, change.to, ['', ''], '+input');
+        } else {
+          // allow a whole row to be deleted before a readonly line
+          deletedReadOnly = this.props.readOnlyLines.includes(change.to.line - 1);
+        }
+      } else if (this.props.readOnlyLines.some(l => l >= change.from.line || l <= change.to.line)) {
+        deletedReadOnly = true;
+      } else {
+        // normal case
+        deletedReadOnly = this.props.readOnlyLines.includes(change.to.line);
+      }
+    }
+    if (this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) {
+      change.cancel();
+    }
+  }
+
   textInput: CodeMirror;
   markers: TextMarker;
   modelSolutionMarkers: Array<string>;
-  handleAddNewHiddenRow: Function;
+  handleAddNewHiddenRow: (CodeMirror, number) => void;
+  markReadOnlyLines: () => void;
+  handleModelSolutionChange: (CodeMirror, Change) => void;
 
   props: {
     modelSolution: FormValue<string>,
     solutionRows: Array<number>,
-    onModelSolutionChange: (modelSolution: string) => void,
+    onModelSolutionChange: (string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
     readOnly: boolean,
     showErrors: boolean,
+    readOnlyLines: Array<number>,
   };
 
   render() {
@@ -102,10 +141,11 @@ class ModelSolution extends Component {
               tabSize: 4,
               indentUnit: 4,
               readOnly: this.props.readOnly,
+              dragDrop: false,
             }}
             value={this.props.modelSolution.get()}
-            onChange={(solution) => {
-              this.props.onModelSolutionChange(solution);
+            onChange={(solution, change) => {
+              this.props.onModelSolutionChange(solution, change);
             }}
             ref={(input) => { this.textInput = input; }}
             aria-required
@@ -122,13 +162,14 @@ function mapStateToProps(state: State) {
     modelSolution: state.form.modelSolution,
     solutionRows: state.form.solutionRows,
     showErrors: state.form.showErrors,
+    readOnlyLines: state.form.readOnlyModelSolutionLines,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    onModelSolutionChange(modelSolution: string) {
-      dispatch(modelSolutionChangeAction(modelSolution));
+    onModelSolutionChange(modelSolution: string, change: Change) {
+      dispatch(modelSolutionChangeAction(modelSolution, change));
     },
     onNewHiddenRow(row: number) {
       dispatch(addHiddenRow(row));
