@@ -140,7 +140,7 @@ export function submitFormAction() {
   };
 }
 
-export function setBoilerPlateAction(boilerplate: string) {
+export function setBoilerplateAction(boilerplate: string) {
   const readOnlyLines = getReadOnlyLines(boilerplate);
   return {
     boilerplate,

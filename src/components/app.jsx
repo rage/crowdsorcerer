@@ -29,6 +29,7 @@ class App extends Component {
   }
 }
 
+
 function mapStateToProps(state: State) {
   return {
     loggedIn: state.user.loggedIn,

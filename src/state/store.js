@@ -8,7 +8,6 @@ import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
->>>>>>> Add save to localstorage by assignment
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 import { setReviewableExerciseAction } from './review';
@@ -40,10 +39,12 @@ function saveStateInLocalStorage(storageName: string) {
 }
 
 function loadStateFromLocalStorage(storageName: string) {
-  if (!localStorage[storageName]) {
+  const storedState = localStorage[storageName];
+  if (!storedState) {
     return undefined;
   }
-  const state = JSON.parse(localStorage[storageName]);
+  console.info('state from localstorage');
+  const state = JSON.parse(storedState);
   const assignmentValue = Raw.deserialize(state.form.assignment.value, { terse: true });
   const ios = state.form.inputOutput.map((io) => {
     const input = new FormValue(io.input.value, io.input.errors);

@@ -17,6 +17,7 @@ import {
   SET_FORM_STATE,
   ASSIGNMENT_INFO_RECEIVED,
   RESET_TO_BOILERPLATE,
+  SET_BOILERPLATE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -31,11 +32,26 @@ import type {
     RemoveTagAction,
     SetFormStateAction,
     AssignmentInfoReceivedAction,
+    SetBoilerplateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
+
 import type { State } from './index';
 
+export type Change = {
+  from: {
+    ch: number,
+    line: number,
+  },
+  to: {
+    ch: number,
+    line: number,
+  },
+  removed: string,
+  text: string,
+  origin: string,
+}
 
 const initialState: State = {
   assignment: new FormValue(Raw.deserialize({
@@ -55,6 +71,7 @@ const initialState: State = {
   modelSolution: undefined,
   boilerplate: { code: '', readOnlyLines: [] },
   inputOutput: [new IO(new FormValue('initial'), new FormValue('Hello initial'))],
+  readOnlyModelSolutionLines: [],
   solutionRows: [],
   valid: false,
   showErrors: false,
@@ -279,6 +296,22 @@ export default createReducer(initialState, {
         modelSolution: new FormValue(state.boilerplate.code),
         readOnlyModelSolutionLines: state.boilerplate.readOnlyLines,
         solutionRows: [],
+      },
+    };
+  },
+  [SET_BOILERPLATE](state: State, action: SetBoilerplateAction): State {
+    const cleanPlate = [];
+    action.boilerplate.split('\n').forEach((row) => {
+      if (!isReadOnlyTag(row)) {
+        cleanPlate.push(row);
+      }
+    });
+
+    return {
+      ...state,
+      ...{
+        modelSolution: new FormValue(cleanPlate.join('\n')),
+        readOnlyModelSolutionLines: action.readOnlyLines,
       },
     };
   },
