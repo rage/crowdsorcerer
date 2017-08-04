@@ -118,7 +118,6 @@ export default createReducer(initialState, {
     const rowsInOldModelSolution = modelSolution.get().split('\n');
     const rowsInNewModelSolution = action.modelSolution.split('\n');
     const solutionLengthDifferenceToNew = rowsInNewModelSolution.length - rowsInOldModelSolution.length;
-    debugger;
     if (solutionLengthDifferenceToNew < 0) {
         // poistettiin
         // removed sisältää poistetun tekstin
@@ -146,9 +145,9 @@ export default createReducer(initialState, {
     } else if (solutionLengthDifferenceToNew > 0) {
         // lisättiin
         // text sisältää lisätyn tekstin määrän
-      const solutionLengthDifference = change.text.length - 1;
+      const solutionLengthDifference = change.origin === 'undo' ? change.text.length - 2 : change.text.length - 1; // :)
       newSolutionRows = state.solutionRows.map((row) => {
-        if (row >= startLine) {
+        if (row > startLine) {
           return row + solutionLengthDifference;
         }
         return row;

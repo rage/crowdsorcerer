@@ -79,25 +79,31 @@ class ModelSolution extends Component {
   }
 
   handleModelSolutionChange(cm, change) {
+    debugger;
     let deletedReadOnly = false;
     if (change.to.line - change.from.line > 0) {
       if (change.from.ch === 0 && change.to.ch === 0) {
-        // deleted the whole row, the line in 'to' is one off
-        // check that the user is not deleting the only editale row between two readonly lines
+        // deleted the whole row
+        // check that the user is not deleting the only editale row between two readonly lines or the last one
         const lastEditableBetweenReadOnlysDeleted = change.from.line > 0 &&
         this.props.readOnlyLines.includes(change.from.line - 1) && this.props.readOnlyLines.includes(change.to.line);
         const lastEditableDeleted = change.to.line === 0 && this.props.readOnlyLines.includes(change.from.line + 1);
         const lastEditableBlockDeleted = change.from.line === 0 && this.props.readOnlyLines.includes(change.to.line);
         if (lastEditableBetweenReadOnlysDeleted || lastEditableDeleted || lastEditableBlockDeleted) {
-          change.update(change.from, change.to, ['', ''], '+input');
+          // force an empty newline in
+          // no update on undo
+          if (change.update) {
+            change.update(change.from, change.to, [change.text[0], ''], 'forced');
+          }
         } else {
-          // allow a whole row to be deleted before a readonly line
+          // allow a whole row to be deleted before a readonly line (the line in 'to' is one off)
           deletedReadOnly = this.props.readOnlyLines.includes(change.to.line - 1);
         }
-      } else if (this.props.readOnlyLines.some(l => l >= change.from.line || l <= change.to.line)) {
+      } else if (this.props.readOnlyLines.some(l => l >= change.from.line && l <= change.to.line)) {
+        // don't allow deleting readOnly lines
         deletedReadOnly = true;
       } else {
-        // normal case
+        // normal case with whole line
         deletedReadOnly = this.props.readOnlyLines.includes(change.to.line);
       }
     }
@@ -145,6 +151,9 @@ class ModelSolution extends Component {
             }}
             value={this.props.modelSolution.get()}
             onChange={(solution, change) => {
+              if (change.origin === 'forced') {
+                this.textInput.getCodeMirror().setCursor({ line: change.from.line, ch: change.text[0].length });
+              }
               this.props.onModelSolutionChange(solution, change);
             }}
             ref={(input) => { this.textInput = input; }}
