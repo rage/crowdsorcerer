@@ -18,3 +18,11 @@
 .readOnly {
   background-color: $read-only;
 }
+
+.reset-button {
+  border-radius: 0.4rem;
+  border: 0.1rem solid $border-grey;
+  background-color: $reset-red;
+  padding: 0.5rem 0.5rem;
+  color: $white;
+}

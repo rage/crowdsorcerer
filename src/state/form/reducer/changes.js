@@ -15,8 +15,8 @@ import {
   REMOVE_TAG,
   ADD_TAG,
   SET_FORM_STATE,
-  SET_TAG_SUGGESTIONS,
-  SET_BOILERPLATE,
+  ASSIGNMENT_INFO_RECEIVED,
+  RESET_TO_BOILERPLATE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -30,27 +30,12 @@ import type {
     AddTagAction,
     RemoveTagAction,
     SetFormStateAction,
-    SetTagSuggestions,
-    SetBoilerplateAction,
+    AssignmentInfoReceivedAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
-
 import type { State } from './index';
 
-export type Change = {
-  from: {
-    ch: number,
-    line: number,
-  },
-  to: {
-    ch: number,
-    line: number,
-  },
-  removed: string,
-  text: string,
-  origin: string,
-}
 
 const initialState: State = {
   assignment: new FormValue(Raw.deserialize({
@@ -68,6 +53,7 @@ const initialState: State = {
     ],
   }, { terse: true })),
   modelSolution: undefined,
+  boilerplate: { code: '', readOnlyLines: [] },
   inputOutput: [new IO(new FormValue('initial'), new FormValue('Hello initial'))],
   solutionRows: [],
   valid: false,
@@ -119,11 +105,12 @@ export default createReducer(initialState, {
     const rowsInNewModelSolution = action.modelSolution.split('\n');
     const solutionLengthDifferenceToNew = rowsInNewModelSolution.length - rowsInOldModelSolution.length;
     if (solutionLengthDifferenceToNew < 0) {
-        // poistettiin
-        // removed sisältää poistetun tekstin
+        // text was removed
+        // removed contains the deleted text
       const solutionLengthDifference = change.removed.length - change.text.length;
-        // poista poistetut ja merkatut rivit
-      newSolutionRows = newSolutionRows.filter(row => row < startLine || row > startLine + solutionLengthDifference - 1);
+        // deleted the removed marked lines
+      const deletedRowLength = solutionLengthDifference - 1;
+      newSolutionRows = newSolutionRows.filter(row => row < startLine || row > startLine + deletedRowLength);
       newSolutionRows = newSolutionRows.map((row) => {
         if (row >= startLine + solutionLengthDifference) {
           if (row - solutionLengthDifference >= 0) {
@@ -143,8 +130,8 @@ export default createReducer(initialState, {
         return row;
       });
     } else if (solutionLengthDifferenceToNew > 0) {
-        // lisättiin
-        // text sisältää lisätyn tekstin määrän
+        // text was added
+        // text contains the added text
       const solutionLengthDifference = change.origin === 'undo' ? change.text.length - 2 : change.text.length - 1; // :)
       newSolutionRows = state.solutionRows.map((row) => {
         if (row > startLine) {
@@ -267,27 +254,31 @@ export default createReducer(initialState, {
       },
     };
   },
-  [SET_TAG_SUGGESTIONS](state: State, action: SetTagSuggestions): State {
-    return {
-      ...state,
-      ...{
-        tagSuggestions: action.tagSuggestions,
-      },
-    };
-  },
-  [SET_BOILERPLATE](state: State, action: SetBoilerplateAction): State {
+  [ASSIGNMENT_INFO_RECEIVED](state: State, action: AssignmentInfoReceivedAction): State {
     const cleanPlate = [];
     action.boilerplate.split('\n').forEach((row) => {
       if (!isReadOnlyTag(row)) {
         cleanPlate.push(row);
       }
     });
-
+    const plate = cleanPlate.join('\n');
     return {
       ...state,
       ...{
-        modelSolution: new FormValue(cleanPlate.join('\n')),
+        tagSuggestions: action.tagSuggestions,
+        boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
+        modelSolution: new FormValue(plate),
         readOnlyModelSolutionLines: action.readOnlyLines,
+      },
+    };
+  },
+  [RESET_TO_BOILERPLATE](state: State): State {
+    return {
+      ...state,
+      ...{
+        modelSolution: new FormValue(state.boilerplate.code),
+        readOnlyModelSolutionLines: state.boilerplate.readOnlyLines,
+        solutionRows: [],
       },
     };
   },

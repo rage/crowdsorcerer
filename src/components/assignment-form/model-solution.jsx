@@ -2,13 +2,15 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
-import type { State, Dispatch, Change } from 'state/reducer';
+import type { State, Dispatch } from 'state/reducer';
+import type { Change } from 'state/form/reducer';
 import { connect } from 'react-redux';
 import FormValue from 'domain/form-value';
 import {
   modelSolutionChangeAction,
   addHiddenRow,
   deleteHiddenRow,
+  resetToBoilerplateAction,
 } from 'state/form';
 import Errors from 'components/errors';
 
@@ -79,25 +81,17 @@ class ModelSolution extends Component {
   }
 
   handleModelSolutionChange(cm, change) {
-    debugger;
     let deletedReadOnly = false;
     if (change.to.line - change.from.line > 0) {
       if (change.from.ch === 0 && change.to.ch === 0) {
         // deleted the whole row
-        // check that the user is not deleting the only editale row between two readonly lines or the last one
-        const lastEditableBetweenReadOnlysDeleted = change.from.line > 0 &&
-        this.props.readOnlyLines.includes(change.from.line - 1) && this.props.readOnlyLines.includes(change.to.line);
-        const lastEditableDeleted = change.to.line === 0 && this.props.readOnlyLines.includes(change.from.line + 1);
-        const lastEditableBlockDeleted = change.from.line === 0 && this.props.readOnlyLines.includes(change.to.line);
-        if (lastEditableBetweenReadOnlysDeleted || lastEditableDeleted || lastEditableBlockDeleted) {
+        // this check covers all cases which would end up editing a readnoly line
+        if (this.props.readOnlyLines.includes(change.to.line)) {
           // force an empty newline in
           // no update on undo
           if (change.update) {
             change.update(change.from, change.to, [change.text[0], ''], 'forced');
           }
-        } else {
-          // allow a whole row to be deleted before a readonly line (the line in 'to' is one off)
-          deletedReadOnly = this.props.readOnlyLines.includes(change.to.line - 1);
         }
       } else if (this.props.readOnlyLines.some(l => l >= change.from.line && l <= change.to.line)) {
         // don't allow deleting readOnly lines
@@ -107,7 +101,7 @@ class ModelSolution extends Component {
         deletedReadOnly = this.props.readOnlyLines.includes(change.to.line);
       }
     }
-    if (this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) {
+    if ((this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) && change.origin !== 'setValue') {
       change.cancel();
     }
   }
@@ -125,6 +119,7 @@ class ModelSolution extends Component {
     onModelSolutionChange: (string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
+    onResetModelSolution: () => void,
     readOnly: boolean,
     showErrors: boolean,
     readOnlyLines: Array<number>,
@@ -133,9 +128,21 @@ class ModelSolution extends Component {
   render() {
     return (
       <div className={prefixer('form-component')}>
-        <div id="modelSolution" className={prefixer('instructions')}>
+        <div className={prefixer('same-line')}>
+          <div id="modelSolution" className={prefixer('instructions')}>
             Malliratkaisu
           </div>
+          {!this.props.readOnly && <button
+            className={prefixer('reset-button')}
+            onClick={(e) => {
+              e.preventDefault();
+              this.props.onResetModelSolution();
+            }}
+          >
+          Nollaa mallivastaus
+        </button>
+          }
+        </div>
         <div tabIndex="0">
           <CodeMirror
             aria-labelledby="modelSolution"
@@ -185,6 +192,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onDeleteHiddenRow(row: number) {
       dispatch(deleteHiddenRow(row));
+    },
+    onResetModelSolution() {
+      dispatch(resetToBoilerplateAction());
     },
   };
 }

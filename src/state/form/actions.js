@@ -3,7 +3,8 @@ import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
-import type { Dispatch, GetState, Change } from 'state/reducer';
+import type { Dispatch, GetState } from 'state/reducer';
+import type { Change } from 'state/form/reducer';
 import {
   startSendAction,
   postSuccessfulAction,
@@ -26,9 +27,12 @@ export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
 export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
 export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const RESET_TO_BOILERPLATE = 'RESET_TO_BOILERPLATE';
+export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
+export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
+
 export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
-export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
 
 export function addTestFieldAction() {
   return {
@@ -136,7 +140,7 @@ export function submitFormAction() {
   };
 }
 
-export function setBoilerplateAction(boilerplate: string) {
+export function setBoilerPlateAction(boilerplate: string) {
   const readOnlyLines = getReadOnlyLines(boilerplate);
   return {
     boilerplate,
@@ -145,13 +149,29 @@ export function setBoilerplateAction(boilerplate: string) {
   };
 }
 
+export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string) {
+  const tagSuggestions = newTags.map(tag => tag.name);
+  const readOnlyLines = getReadOnlyLines(boilerplate);
+  return {
+    tagSuggestions,
+    boilerplate,
+    readOnlyLines,
+    type: ASSIGNMENT_INFO_RECEIVED,
+  };
+}
+
+export function resetToBoilerplateAction() {
+  return {
+    type: RESET_TO_BOILERPLATE,
+  };
+}
+
 export function getAssignmentInfoAction() {
   return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     api.getAssignmentInformation(getState().assignment.assignmentId)
     .then(
       (response) => {
-        dispatch(setTagSuggestions(response.tags));
-        dispatch(setBoilerplateAction(response.template));
+        dispatch(assignmentInfoReceivedAction(response.tags, response.template));
       },
       (error) => {
         if (error.status === 403) {
@@ -274,8 +294,15 @@ export type SetTagSuggestions = {
   type: string,
 };
 
-export type SetBoilerplateAction = {
+export type SetBoilerPlateAction = {
   boilerplate: string,
-  readOnlyLines: Array<number>,
+  readOnlyLines: number[],
+  type: string,
+};
+
+export type AssignmentInfoReceivedAction = {
+  boilerplate: string,
+  readOnlyLines: number[],
+  tagSuggestions: Array<string>,
   type: string,
 };
