@@ -30,7 +30,6 @@ export const SET_FORM_STATE = 'SET_FORM_STATE';
 export const RESET_TO_BOILERPLATE = 'RESET_TO_BOILERPLATE';
 export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
 export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
-
 export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 
@@ -140,7 +139,7 @@ export function submitFormAction() {
   };
 }
 
-export function setBoilerplateAction(boilerplate: string) {
+export function setBoilerPlateAction(boilerplate: string) {
   const readOnlyLines = getReadOnlyLines(boilerplate);
   return {
     boilerplate,

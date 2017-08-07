@@ -91,7 +91,11 @@ export default function makeStore(assignment: string, review: boolean) {
   if (review) {
     store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
+<<<<<<< 34ac32c0127d3320c427bcdc8c644af9394b15a9
     store.dispatch(openWebSocketConnectionAction());
+=======
+    store.dispatch(openWebSocketConnection());
+>>>>>>> Finish readonly boilerplate, update tests
   } else if (store.getState().form.modelSolution === undefined) {
     store.dispatch(getAssignmentInfoAction());
   }

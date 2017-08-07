@@ -2,12 +2,8 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
-<<<<<<< 07a96e249eb9563b3be112adac4e6c7e120d30da
 import type { State, Dispatch } from 'state/reducer';
 import type { Change } from 'state/form/reducer';
-=======
-import type { State, Dispatch, Change } from 'state/reducer';
->>>>>>> Update readme & add readonly boilerplate
 import { connect } from 'react-redux';
 import FormValue from 'domain/form-value';
 import {
@@ -88,7 +84,6 @@ class ModelSolution extends Component {
     let deletedReadOnly = false;
     if (change.to.line - change.from.line > 0) {
       if (change.from.ch === 0 && change.to.ch === 0) {
-<<<<<<< 07a96e249eb9563b3be112adac4e6c7e120d30da
         // deleted the whole row
         // this check covers all cases which would end up editing a readnoly line
         if (this.props.readOnlyLines.includes(change.to.line)) {
@@ -107,28 +102,25 @@ class ModelSolution extends Component {
       }
     }
     if ((this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) && change.origin !== 'setValue') {
-=======
         // deleted the whole row, the line in 'to' is one off
         // check that the user is not deleting the only editale row between two readonly lines
-        const lastEditableBetweenReadOnlysDeleted = change.from.line > 0 &&
+      const lastEditableBetweenReadOnlysDeleted = change.from.line > 0 &&
         this.props.readOnlyLines.includes(change.from.line - 1) && this.props.readOnlyLines.includes(change.to.line);
-        const lastEditableDeleted = change.to.line === 0 && this.props.readOnlyLines.includes(change.from.line + 1);
-        const lastEditableBlockDeleted = change.from.line === 0 && this.props.readOnlyLines.includes(change.to.line);
-        if (lastEditableBetweenReadOnlysDeleted || lastEditableDeleted || lastEditableBlockDeleted) {
-          change.update(change.from, change.to, ['', ''], '+input');
-        } else {
-          // allow a whole row to be deleted before a readonly line
-          deletedReadOnly = this.props.readOnlyLines.includes(change.to.line - 1);
-        }
-      } else if (this.props.readOnlyLines.some(l => l >= change.from.line || l <= change.to.line)) {
-        deletedReadOnly = true;
+      const lastEditableDeleted = change.to.line === 0 && this.props.readOnlyLines.includes(change.from.line + 1);
+      const lastEditableBlockDeleted = change.from.line === 0 && this.props.readOnlyLines.includes(change.to.line);
+      if (lastEditableBetweenReadOnlysDeleted || lastEditableDeleted || lastEditableBlockDeleted) {
+        change.update(change.from, change.to, ['', ''], '+input');
       } else {
-        // normal case
-        deletedReadOnly = this.props.readOnlyLines.includes(change.to.line);
+          // allow a whole row to be deleted before a readonly line
+        deletedReadOnly = this.props.readOnlyLines.includes(change.to.line - 1);
       }
+    } else if (this.props.readOnlyLines.some(l => l >= change.from.line || l <= change.to.line)) {
+      deletedReadOnly = true;
+    } else {
+        // normal case
+      deletedReadOnly = this.props.readOnlyLines.includes(change.to.line);
     }
     if (this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) {
->>>>>>> Update readme & add readonly boilerplate
       change.cancel();
     }
   }
@@ -185,12 +177,9 @@ class ModelSolution extends Component {
             }}
             value={this.props.modelSolution.get()}
             onChange={(solution, change) => {
-<<<<<<< 07a96e249eb9563b3be112adac4e6c7e120d30da
               if (change.origin === 'forced') {
                 this.textInput.getCodeMirror().setCursor({ line: change.from.line, ch: change.text[0].length });
               }
-=======
->>>>>>> Update readme & add readonly boilerplate
               this.props.onModelSolutionChange(solution, change);
             }}
             ref={(input) => { this.textInput = input; }}
