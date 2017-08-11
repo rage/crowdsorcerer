@@ -81,7 +81,7 @@ export default class Api {
         credentials: 'same-origin',
       })
       .then((resp) => {
-        if (!resp) {
+        if (!resp.ok) {
           return reject(resp);
         }
         return resp.json();

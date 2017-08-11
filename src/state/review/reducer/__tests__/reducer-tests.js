@@ -12,7 +12,7 @@ const initalReviews = [
   })];
 
 test('empty review is not valid', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { review:
     {

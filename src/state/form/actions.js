@@ -8,9 +8,9 @@ import {
   startSendAction,
   postSuccessfulAction,
   postUnsuccessfulAction,
-  updateSubmissionStatusAction, connectionTerminatedPrematurelyAction,
-  invalidDataErrorAction,
   authenticationError,
+  setExerciseAction,
+  openWebSocketConnectionAction,
 } from 'state/submission';
 
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -91,7 +91,7 @@ type formStateJSON = {
 export function setFormState(state: formStateJSON) {
   const newState = {};
   newState.modelSolution = new FormValue(state.code);
-  newState.inputOutput = state.testIO.map(io => new IO(io.input, io.output));
+  newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output)));
   newState.assignment = state.description;
   return {
     newState,
@@ -118,16 +118,9 @@ export function submitFormAction() {
     .then(
       (response) => {
         // status 400 == exercise already being processed
+        dispatch(setExerciseAction(response.exercise.id));
         dispatch(postSuccessfulAction());
-        api.createSubscription((data: Object) => {
-          dispatch(updateSubmissionStatusAction(data, api));
-        }, () => {
-          if (!getState().submission.finished) {
-            dispatch(connectionTerminatedPrematurelyAction());
-          }
-        }, () => {
-          dispatch(invalidDataErrorAction());
-        }, response.exercise.id);
+        dispatch(openWebSocketConnectionAction());
       },
       (error) => {
         if (error.status === 403) {
@@ -139,7 +132,6 @@ export function submitFormAction() {
     );
   };
 }
-
 
 export function formSubmitButtonPressedAction() {
   return function submitter(dispatch: Dispatch, getState: GetState) {

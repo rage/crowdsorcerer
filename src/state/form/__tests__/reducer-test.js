@@ -75,7 +75,7 @@ const assignmentWithContent = Raw.deserialize({
 }, { terse: true });
 
 test('Add a single empty field to intial state test input/output array', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -91,7 +91,7 @@ test('Add a single empty field to intial state test input/output array', (t) => 
 });
 
 test('Add new test input to the first test input/output array', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -108,13 +108,13 @@ test('Add new test input to the first test input/output array', (t) => {
 });
 
 test('Add new test output to the first test input/output array', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
       modelSolution: new FormValue(''),
-      inputOutput: [new IO('Test', ''), new IO()],
+      inputOutput: [new IO(new FormValue('Test'), new FormValue('')), new IO()],
       solutionRows: [],
     },
     },
@@ -127,7 +127,7 @@ test('Add new test output to the first test input/output array', (t) => {
 });
 
 test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -144,7 +144,7 @@ test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
 });
 
 test('Delete hidden row from selection deletes form solutionRows in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -161,7 +161,7 @@ test('Delete hidden row from selection deletes form solutionRows in state', (t) 
 });
 
 test('Changing assigment changes assignment in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -178,7 +178,7 @@ test('Changing assigment changes assignment in state', (t) => {
 });
 
 test('Changing model solution changes model solution in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -194,7 +194,7 @@ test('Changing model solution changes model solution in state', (t) => {
 });
 
 test('Removing one selected line from model solution changes model solution and selected solution rows in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -212,7 +212,7 @@ test('Removing one selected line from model solution changes model solution and 
 });
 
 test('Removing two selected lines from model solution changes model solution and selected solution rows in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -230,7 +230,7 @@ test('Removing two selected lines from model solution changes model solution and
 });
 
 test('Remove model solution changes model solution in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -246,7 +246,7 @@ test('Remove model solution changes model solution in state', (t) => {
 });
 
 test('Change model solution without selected rows changes model solution in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -263,7 +263,7 @@ test('Change model solution without selected rows changes model solution in stat
 });
 
 test('Add new line to model solution changes model solution in state', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -281,7 +281,7 @@ test('Add new line to model solution changes model solution in state', (t) => {
 });
 
 test('Remove a single empty field from intial state test input/output array', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -297,7 +297,7 @@ test('Remove a single empty field from intial state test input/output array', (t
 });
 
 test('Remove only field from intial state test input/output array', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -313,13 +313,30 @@ test('Remove only field from intial state test input/output array', (t) => {
 });
 
 test('form not valid without assignment', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
       modelSolution: new FormValue('asdf \n asf asdf'),
-      inputOutput: [new IO('asdf', 'asdf')],
+      inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
+      solutionRows: [],
+    },
+    },
+    { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
+  );
+  t.deepEqual(state.form.valid, false);
+});
+
+test('form not valid without assignment', (t) => {
+  const reducer = reducers(1);
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(initialAssignment),
+      modelSolution: 'asdf \n asf asdf',
+      inputOutput: [new IO(new FormValue('asdf'),
+      new FormValue('asdf'))],
       solutionRows: [],
     },
     },
@@ -329,13 +346,13 @@ test('form not valid without assignment', (t) => {
 });
 
 test('form not valid without model solution', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
       modelSolution: new FormValue(''),
-      inputOutput: [new IO('asdf', 'asdf')],
+      inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
       solutionRows: [],
     },
     },
@@ -345,7 +362,7 @@ test('form not valid without model solution', (t) => {
 });
 
 test('form not valid without tests', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { form:
     {

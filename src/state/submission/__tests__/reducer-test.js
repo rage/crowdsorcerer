@@ -5,7 +5,7 @@ import { POST_EXERCISE, POST_UNSUCCESSFUL, RESET_SUBMISSION_STATUS, UPDATE_SUBMI
 import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_ERROR } from 'state/submission/reducer';
 
 test('POST changes status to in progress', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { submission:
     {
@@ -24,7 +24,7 @@ test('POST changes status to in progress', (t) => {
 });
 
 test('unsuccessful POST changes status to in error', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { submission:
     {
@@ -44,7 +44,7 @@ test('unsuccessful POST changes status to in error', (t) => {
 
 
 test('resetting state works correctly', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const state = reducer(
     { submission:
     {
@@ -65,7 +65,7 @@ test('resetting state works correctly', (t) => {
 });
 
 test('update changes state according to data', (t) => {
-  const reducer = reducers('1');
+  const reducer = reducers(1);
   const data = {
     message: 'message',
     status: 'status',

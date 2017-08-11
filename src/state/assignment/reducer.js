@@ -1,9 +1,9 @@
 // @flow
 export type State = {
-  assignmentId: string,
+  assignmentId: number,
 };
 
-export default function createReducerCreator(assignmentId: string) {
+export default function createReducerCreator(assignmentId: number) {
   const initialState = {
     assignmentId,
   };

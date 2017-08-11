@@ -57,9 +57,9 @@ export function setReviewQuestions(reviewQuestions: Array<ReviewQuestion>) {
   };
 }
 
-export function setReviewableExerciseAction(assignmentId: number) {
+export function setReviewableExerciseAction() {
   return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    api.getReviewableExerciseAndQuestions(assignmentId)
+    api.getReviewableExerciseAndQuestions(getState().assignment.assignmentId)
       .then((resp) => {
         dispatch(setReviewableIdAction(resp.exercise.id));
         dispatch(setFormState(resp.exercise));

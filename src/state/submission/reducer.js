@@ -10,9 +10,11 @@ import {
   INVALID_DATA_ERROR,
   AUTHENTICATION_ERROR,
   FINISH,
+  SET_EXERCISE_ID,
 } from 'state/submission';
 import type {
     UpdateSubmissionStatusAction,
+    SetExerciseAction,
 } from 'state/submission/actions';
 
 export type ResultType = {
@@ -20,6 +22,7 @@ export type ResultType = {
 }
 
 export type State = {
+  exerciseId: number,
   status: string,
   message: string,
   progress: number,
@@ -43,6 +46,7 @@ const initialState = {
   message: '',
   progress: undefined,
   result: { OK: false, error: [] },
+  exerciseId: undefined,
 };
 
 export default createReducer(initialState, {
@@ -129,6 +133,14 @@ export default createReducer(initialState, {
       ...{
         message: INTERNAL_ERROR_MSG,
         status: STATUS_ERROR,
+      },
+    };
+  },
+  [SET_EXERCISE_ID](state: State, action: SetExerciseAction): State {
+    return {
+      ...state,
+      ...{
+        exerciseId: action.exerciseId,
       },
     };
   },

@@ -51,12 +51,12 @@ const initialState: State = {
     ],
   }, { terse: true })),
   modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
-  inputOutput: [new IO('meikä', 'Hello meikä')],
+  inputOutput: [new IO(new FormValue('initial'), new FormValue('Hello initial'))],
   solutionRows: [],
   valid: false,
   showErrors: false,
   tagSuggestions: ['for-each', 'while', 'for-loop', 'java', 'javascript'],
-  tags: new FormValue(['oon tägi']),
+  tags: new FormValue(['tag']),
 };
 
 export default createReducer(initialState, {
@@ -154,7 +154,7 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
       .map((io, i) => {
         if (i === action.index) {
-          return new IO(action.testInput, io.output.get(), io.hash());
+          return new IO(new FormValue(action.testInput), new FormValue(io.output.get()), io.hash());
         }
         return io;
       });
@@ -169,7 +169,7 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
       .map((io, i) => {
         if (i === action.index) {
-          return new IO(io.input.get(), action.testOutput, io.hash());
+          return new IO(new FormValue(io.input.get()), new FormValue(action.testOutput), io.hash());
         }
         return io;
       });
@@ -234,6 +234,7 @@ export default createReducer(initialState, {
         showErrors: false,
         modelSolution: action.newState.modelSolution,
         inputOutput: action.newState.inputOutput,
+        tags: new FormValue([]),
       },
     };
   },

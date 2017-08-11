@@ -1,5 +1,7 @@
 // @flow
 import Api from 'utils/api/index';
+import type { ThunkArgument } from 'state/store';
+import type { Dispatch, GetState } from 'state/reducer';
 
 export const POST_EXERCISE = 'POST_EXERCISE';
 export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';
@@ -10,6 +12,7 @@ export const CONNECTION_TERMINATED_PREMATURELY = 'CONNECTION_TERMINATED_PREMATUR
 export const INVALID_DATA_ERROR = 'INVALID_DATA_ERROR';
 export const AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR';
 export const FINISH = 'FINISH';
+export const SET_EXERCISE_ID = 'SET_EXERCISE_ID';
 
 export function startSendAction() {
   return {
@@ -29,6 +32,12 @@ export function postUnsuccessfulAction() {
   };
 }
 
+export function setExerciseAction(exerciseId: number) {
+  return {
+    exerciseId,
+    type: SET_EXERCISE_ID,
+  };
+}
 
 export function finishAction() {
   return {
@@ -70,6 +79,20 @@ export function invalidDataErrorAction() {
   };
 }
 
+export function openWebSocketConnectionAction() {
+  return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.createSubscription((data: Object) => {
+      dispatch(updateSubmissionStatusAction(data, api));
+    }, () => {
+      if (!getState().submission.finished) {
+        dispatch(connectionTerminatedPrematurelyAction());
+      }
+    }, () => {
+      dispatch(invalidDataErrorAction());
+    }, getState().submission.exerciseId);
+  };
+}
+
 export type StartSendAction = {
   type: string
 };
@@ -106,4 +129,9 @@ export type AuthenticationErrorAction = {
 
 export type Finish = {
   type: string
+};
+
+export type SetExerciseAction = {
+  exerciseId: number,
+  type: string,
 };

@@ -69,7 +69,10 @@ export default createReducer(initialState, {
     };
   },
   [SET_REVIEW_QUESTIONS](state: State, action: SetReviewQuestions): State {
-    const reviews = action.questions.map(question => new FormValue({ question, review: undefined }));
+    const answers = new Map();
+    state.reviews.map(f => f.get()).forEach(obj => answers.set(obj.question, obj.review));
+    const reviews = action.questions
+      .map(question => new FormValue({ question, review: answers.get(question) ? answers.get(question) : undefined }));
     return {
       ...state,
       ...{

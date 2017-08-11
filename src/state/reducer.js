@@ -35,7 +35,7 @@ export type ThunkArguments = {
 
 export type GetState = () => State;
 
-export default (assignmentId: string) => combineReducers({
+export default (assignmentId: number) => combineReducers({
   form,
   submission,
   assignment: assignment(assignmentId),
