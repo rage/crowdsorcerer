@@ -6,6 +6,7 @@ import {
   CHANGE_REVIEW_ERRORS_VISIBILITY,
   SET_REVIEW_QUESTIONS,
   SET_REVIEWABLE_EXERCISE,
+  RESET_REVIEWABLE,
 } from 'state/review/actions';
 import type {
   GiveReviewAction,
@@ -18,17 +19,12 @@ import type { State } from './index';
 
 const initialState = {
   reviews: [
-    new FormValue({ question: 'Tehtävänannon mielekkyys', review: undefined }),
-    new FormValue({ question: 'Testien kattavuus', review: undefined }),
-    new FormValue({
-      question: 'Epätodennäköisen pitkä ja luultavasti vaikeasti ymmärrettävä vertaisarviointikysymys', review: undefined,
-    }),
-    new FormValue({ question: 'Tehtävänannon selkeys', review: undefined }),
+    new FormValue({ question: 'Terveisiä initial Statesta', review: undefined }),
   ],
   comment: new FormValue(''),
   valid: false,
   showErrors: false,
-  reviewable: 2,
+  reviewable: undefined,
 };
 
 export default createReducer(initialState, {
@@ -85,6 +81,14 @@ export default createReducer(initialState, {
       ...state,
       ...{
         reviewable: action.exerciseId,
+      },
+    };
+  },
+  [RESET_REVIEWABLE](state: State): State {
+    return {
+      ...state,
+      ...{
+        reviewable: -1,
       },
     };
   },

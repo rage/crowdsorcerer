@@ -10,7 +10,7 @@ import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
-import { setReviewableExerciseAction } from './review';
+import { setReviewableExerciseAction, resetReviewableAction } from './review';
 
 export type ThunkArgument = {
   api: Api
@@ -43,8 +43,8 @@ function loadStateFromLocalStorage(storageName: string) {
   if (!storedState) {
     return undefined;
   }
-  console.info('state from localstorage');
   const state = JSON.parse(storedState);
+  console.info('state from localstorage');
   const assignmentValue = Raw.deserialize(state.form.assignment.value, { terse: true });
   const ios = state.form.inputOutput.map((io) => {
     const input = new FormValue(io.input.value, io.input.errors);
@@ -58,9 +58,17 @@ function loadStateFromLocalStorage(storageName: string) {
         ...state.form,
         ...{
           assignment: new FormValue(assignmentValue, state.form.assignment.errors),
-          modelSolution: new FormValue(state.form.modelSolution.value, state.form.modelSolution.errors),
           inputOutput: ios,
           tags: new FormValue(state.form.tags.value, state.form.tags.errors),
+          modelSolution: {
+            ...state.form.modelSolution,
+            ...{
+              editableModelSolution: state.form.editableModelSolution
+                ? new FormValue(state.form.modelSolution.editableModelSolution.value,
+                  state.form.modelSolution.editableModelSolution.errors)
+                : undefined,
+            },
+          },
         },
       },
       review: {
@@ -75,7 +83,9 @@ function loadStateFromLocalStorage(storageName: string) {
 }
 
 export default function makeStore(assignment: string, review: boolean) {
-  const storageName = `crowdsorcerer-redux-state-${assignment}`;
+  let storageName = `crowdsorcerer-redux-state-${assignment}`;
+  const peerReview = review ? 'review' : 'exercise';
+  storageName = `${storageName}-${peerReview}`;
   const assignmentId = parseInt(assignment, 10);
   const api = new Api();
   /* eslint-disable no-underscore-dangle */
@@ -91,12 +101,9 @@ export default function makeStore(assignment: string, review: boolean) {
   if (review) {
     store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
-<<<<<<< 34ac32c0127d3320c427bcdc8c644af9394b15a9
     store.dispatch(openWebSocketConnectionAction());
-=======
-    store.dispatch(openWebSocketConnection());
->>>>>>> Finish readonly boilerplate, update tests
   } else if (store.getState().form.modelSolution === undefined) {
+    store.dispatch(resetReviewableAction);
     store.dispatch(getAssignmentInfoAction());
   }
   api.syncStore(store);

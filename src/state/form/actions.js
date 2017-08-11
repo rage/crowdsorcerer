@@ -32,6 +32,7 @@ export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
 export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
 export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
+export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 
 export function addTestFieldAction() {
   return {
@@ -84,22 +85,23 @@ export function changeFormErrorVisibilityAction() {
   };
 }
 
-type testIO = {
+type TestIO = {
   input: string,
   output: string,
 };
 
-type formStateJSON = {
+type FormStateJSON = {
   code: string,
-  testIO: Array<testIO>,
+  testIO: Array<TestIO>,
   description: string,
 };
 
-export function setFormState(state: formStateJSON) {
+export function setFormState(state: FormStateJSON, modelSolution: string, template: string) {
   const newState = {};
-  newState.modelSolution = new FormValue(state.code);
   newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output)));
   newState.assignment = state.description;
+  newState.readOnlyModelSolution = modelSolution;
+  newState.readOnlyCodeTemplate = template;
   return {
     newState,
     type: SET_FORM_STATE,
@@ -222,6 +224,13 @@ export function removeTagAction(tagIndex: number) {
   };
 }
 
+export function setShowCodeTemplateAction(show: boolean) {
+  return {
+    show,
+    type: SET_SHOW_CODE_TEMPLATE,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -279,9 +288,10 @@ export type RemoveTagAction = {
 
 type ReviewForm = {
    assignment: sState,
-   modelSolution: FormValue<string>,
+   readOnlyModelSolution: string,
+   readOnlyCodeTemplate: string,
    inputOutput: Array<IO>,
- };
+}
 
 export type SetFormStateAction = {
   newState: ReviewForm,
@@ -305,3 +315,8 @@ export type AssignmentInfoReceivedAction = {
   tagSuggestions: Array<string>,
   type: string,
 };
+export type SetShowCodeTemplateAction = {
+  show: boolean,
+  type: string,
+};
+

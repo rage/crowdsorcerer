@@ -16,6 +16,7 @@ export const CHANGE_REVIEW_ERRORS_VISIBILITY = 'CHANGE_REVIEW_ERRORS_VISIBILITY'
 export const SET_REVIEW_QUESTIONS = 'SET_REVIEW_QUESTIONS';
 export const SET_REVIEWABLE_EXERCISE = 'SET_REVIEWABLE_EXERCISE';
 export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const RESET_REVIEWABLE = 'RESET_REVIEWABLE';
 
 export function giveReviewAction(question: string, value: number) {
   return {
@@ -62,7 +63,7 @@ export function setReviewableExerciseAction() {
     api.getReviewableExerciseAndQuestions(getState().assignment.assignmentId)
       .then((resp) => {
         dispatch(setReviewableIdAction(resp.exercise.id));
-        dispatch(setFormState(resp.exercise));
+        dispatch(setFormState(resp.exercise, resp.model_solution, resp.template));
         dispatch(setReviewQuestions(resp.peer_review_questions));
         dispatch(setTagSuggestions(resp.tags));
       }, () => {
@@ -96,6 +97,12 @@ export function reviewSubmitButtonPressedAction() {
   };
 }
 
+export function resetReviewableAction() {
+  return {
+    type: RESET_REVIEWABLE,
+  };
+}
+
 export type GiveReviewAction = {
   question: string,
   value: number,
@@ -118,5 +125,9 @@ export type SetReviewQuestions = {
 
 export type SetReviewableExerciseAction = {
   exerciseId: number,
+  type: string,
+};
+
+export type ResetReviewableAction = {
   type: string,
 };

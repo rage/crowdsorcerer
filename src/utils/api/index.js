@@ -128,10 +128,11 @@ export default class Api {
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
     const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
-    if (!formState.modelSolution) {
+    if (!formState.modelSolution.editableModelSolution) {
       return {};
     }
-    const parsedForm = formSolutionTemplate(formState.modelSolution.get(), formState.solutionRows);
+    const parsedForm =
+      formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows);
     return (
     {
       oauth_token: this.oauthToken(),

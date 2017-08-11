@@ -26,15 +26,23 @@ export type TagType = {
 
 export type State = {
   assignment: FormValue<sState>,
-  modelSolution: ?FormValue<string>,
   inputOutput: Array<IO>,
-  solutionRows: Array<number>,
   valid: boolean,
   showErrors: boolean,
   tags: FormValue<Array<string>>,
   tagSuggestions: Array<string>,
-  readOnlyModelSolutionLines: Array<number>,
-  boilerplate: {code: string, readOnlyLines: number[] },
+  modelSolution: {
+    solutionRows: Array<number>,
+    editableModelSolution: ?FormValue<string>,
+    readOnlyModelSolutionLines: Array<number>,
+    readOnlyModelSolution: ?string,
+    readOnlyCodeTemplate: ?string,
+    showTemplate: boolean,
+    boilerplate: {
+      code: string,
+      readOnlyLines: number[]
+    },
+  }
 };
 
 export default reduceReducers(changes, validity);
