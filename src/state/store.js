@@ -44,6 +44,9 @@ function loadStateFromLocalStorage(storageName: string) {
     return undefined;
   }
   const state = JSON.parse(storedState);
+  if (state.form.editableModelSolution === undefined) {
+    return undefined;
+  }
   console.info('state from localstorage');
   const assignmentValue = Raw.deserialize(state.form.assignment.value, { terse: true });
   const ios = state.form.inputOutput.map((io) => {
@@ -63,7 +66,7 @@ function loadStateFromLocalStorage(storageName: string) {
           modelSolution: {
             ...state.form.modelSolution,
             ...{
-              editableModelSolution: state.form.editableModelSolution
+              editableModelSolution: state.form.modelSolution.editableModelSolution
                 ? new FormValue(state.form.modelSolution.editableModelSolution.value,
                   state.form.modelSolution.editableModelSolution.errors)
                 : undefined,
@@ -75,7 +78,7 @@ function loadStateFromLocalStorage(storageName: string) {
         ...state.review,
         ...{
           comment: new FormValue(state.review.comment.value, state.review.errors),
-          reviews: state.review.reviews.map(review => new FormValue(review.value, review.errors)),
+          reviews: new FormValue(state.review.reviews.value, state.review.reviews.errors),
         },
       },
     },

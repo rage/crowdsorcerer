@@ -18,9 +18,9 @@ import FormValue from 'domain/form-value';
 import type { State } from './index';
 
 const initialState = {
-  reviews: [
-    new FormValue({ question: 'Terveisiä initial Statesta', review: undefined }),
-  ],
+  reviews: new FormValue([
+    { question: 'Greetings from the initial state', review: undefined },
+  ]),
   comment: new FormValue(''),
   valid: false,
   showErrors: false,
@@ -31,20 +31,20 @@ export default createReducer(initialState, {
   [GIVE_REVIEW](state: State, action: GiveReviewAction): State {
     const oldReviews = state.reviews;
     const reviews = [];
-    oldReviews.forEach((fVal) => {
-      const question = fVal.get().question;
-      let review = fVal.get().review;
+    oldReviews.get().forEach((obj) => {
+      const question = obj.question;
+      let review = obj.review;
       if (question === action.question) {
         review = action.value;
-        reviews.push(new FormValue({ question, review }));
+        reviews.push({ question, review });
       } else {
-        reviews.push(new FormValue({ question, review }));
+        reviews.push({ question, review });
       }
     });
     return {
       ...state,
       ...{
-        reviews,
+        reviews: new FormValue(reviews),
       },
     };
   },
@@ -60,19 +60,19 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        showErrors: !state.showErrors,
+        showErrors: true,
       },
     };
   },
   [SET_REVIEW_QUESTIONS](state: State, action: SetReviewQuestions): State {
     const answers = new Map();
-    state.reviews.map(f => f.get()).forEach(obj => answers.set(obj.question, obj.review));
+    state.reviews.get().forEach(obj => answers.set(obj.question, obj.review));
     const reviews = action.questions
-      .map(question => new FormValue({ question, review: answers.get(question) ? answers.get(question) : undefined }));
+      .map(question => ({ question, review: answers.get(question) ? answers.get(question) : undefined }));
     return {
       ...state,
       ...{
-        reviews,
+        reviews: new FormValue(reviews),
       },
     };
   },

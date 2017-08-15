@@ -35,11 +35,13 @@ function validateComment(comment: FormValue<*>) {
   return errors;
 }
 
-function validateReview(fVal: FormValue<Review>) {
+function validateReview(fVal: FormValue<Array<Review>>) {
   const errors = [];
-  if (fVal.get().review === undefined) {
-    errors.push(REVIEW_ERROR);
-  }
+  fVal.get().forEach((obj) => {
+    if (obj.review === undefined && errors.length === 0) {
+      errors.push(REVIEW_ERROR);
+    }
+  });
   return errors;
 }
 

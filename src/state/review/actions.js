@@ -90,7 +90,7 @@ export function reviewSubmitButtonPressedAction() {
   return function submitter(dispatch: Dispatch, getState: GetState) {
     dispatch(changeReviewErrorVisibilityAction());
     const state = getState();
-    if (!state.review.valid) {
+    if (!state.review.valid || !state.form.valid) {
       return;
     }
     dispatch(submitReviewAction());
