@@ -14,10 +14,10 @@ let SOCKET_SERVER;
 
 /* eslint-disable no-const-assign */
 if (process.env.NODE_ENV === 'production') {
-  SERVER = 'https://crowdsorcerer.testmycode.io';
+  SERVER = 'https://crowdsorcerer.testmycode.io/api/v0';
   SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
 } else {
-  SERVER = 'http://localhost:3000';
+  SERVER = 'http://localhost:3000/api/v0';
   SOCKET_SERVER = 'ws://localhost:3000/cable';
 }
 /* eslint-enable no-const-assign */
@@ -72,7 +72,7 @@ export default class Api {
 
   getReviewableExerciseAndQuestions(assignmentId: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      fetch(`${SERVER}/peer_reviews/assignments/${assignmentId}/request_exercise`, {
+      fetch(`${SERVER}/assignments/${assignmentId}/peer_review_exercise`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export default class Api {
   }
 
   _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {
-    const answers = reviewState.reviews.get();
+    const answers = formValueToObject(reviewState.reviews);
     return (
     {
       oauth_token: this.oauthToken(),

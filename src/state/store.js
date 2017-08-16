@@ -8,6 +8,7 @@ import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
+import applicationStateNotComplete from 'utils/application-state-not-complete';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 import { setReviewableExerciseAction, resetReviewableAction } from './review';
@@ -44,7 +45,7 @@ function loadStateFromLocalStorage(storageName: string) {
     return undefined;
   }
   const state = JSON.parse(storedState);
-  if (state.form.editableModelSolution === undefined) {
+  if (applicationStateNotComplete(state)) {
     return undefined;
   }
   console.info('state from localstorage');

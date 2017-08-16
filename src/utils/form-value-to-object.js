@@ -4,9 +4,9 @@ import Review from 'state/review/reducer';
 
 export default function mapToObject(input: FormValue<Array<Review>>): Object {
   const object = Object.create(null);
-  input.forEach((fVal) => {
-    const key = fVal.get().question;
-    const value = fVal.get().review;
+  input.get().forEach((obj) => {
+    const key = obj.question;
+    const value = obj.review;
     object[key] = value;
   });
   return object;
