@@ -4,6 +4,7 @@ import IO from 'domain/io';
 import { State as sState } from 'slate';
 import type { ThunkArgument } from 'state/store';
 import type { Dispatch, GetState } from 'state/reducer';
+import type { Change } from 'state/form/reducer';
 import {
   startSendAction,
   postSuccessfulAction,
@@ -12,6 +13,7 @@ import {
   setExerciseAction,
   openWebSocketConnectionAction,
 } from 'state/submission';
+import getReadOnlyLines from 'utils/get-read-only-lines';
 
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
 export const REMOVE_TEST_FIELD = 'REMOVE_TEST_FIELD';
@@ -25,7 +27,12 @@ export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
 export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
 export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const RESET_TO_BOILERPLATE = 'RESET_TO_BOILERPLATE';
+export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
+export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
+
 export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
+export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 
 export function addTestFieldAction() {
   return {
@@ -48,9 +55,10 @@ export function assignmentChangeAction(assignment: sState) {
   };
 }
 
-export function modelSolutionChangeAction(modelSolution: string) {
+export function modelSolutionChangeAction(modelSolution: string, change: Change) {
   return {
     modelSolution,
+    change,
     type: CHANGE_MODEL_SOLUTION,
   };
 }
@@ -117,10 +125,53 @@ export function submitFormAction() {
     api.postForm(getState().form, getState().assignment)
     .then(
       (response) => {
-        // status 400 == exercise already being processed
         dispatch(setExerciseAction(response.exercise.id));
         dispatch(postSuccessfulAction());
         dispatch(openWebSocketConnectionAction());
+      },
+      (error) => {
+        if (error.status === 403) {
+          dispatch(authenticationError());
+        } else {
+          dispatch(postUnsuccessfulAction());
+        }
+      },
+    );
+  };
+}
+
+export function setBoilerPlateAction(boilerplate: string) {
+  const readOnlyLines = getReadOnlyLines(boilerplate);
+  return {
+    boilerplate,
+    readOnlyLines,
+    type: SET_BOILERPLATE,
+  };
+}
+
+export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string) {
+  const tagSuggestions = newTags.map(tag => tag.name);
+  const readOnlyLines = getReadOnlyLines(boilerplate);
+  return {
+    tagSuggestions,
+    boilerplate,
+    readOnlyLines,
+    type: ASSIGNMENT_INFO_RECEIVED,
+  };
+}
+
+export function resetToBoilerplateAction() {
+  return {
+    type: RESET_TO_BOILERPLATE,
+  };
+}
+
+export function getAssignmentInfoAction() {
+  return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.getAssignmentInformation(getState().assignment.assignmentId)
+    .then(
+      (response) => {
+        dispatch(assignmentInfoReceivedAction(response.tags, response.template));
       },
       (error) => {
         if (error.status === 403) {
@@ -189,6 +240,7 @@ export type AssignmentChangeAction = {
 
 export type ModelSolutionChangeAction = {
   modelSolution: string,
+  change: Change,
   type: string
 };
 
@@ -238,6 +290,19 @@ export type SetFormStateAction = {
 };
 
 export type SetTagSuggestions = {
+  tagSuggestions: Array<string>,
+  type: string,
+};
+
+export type SetBoilerPlateAction = {
+  boilerplate: string,
+  readOnlyLines: number[],
+  type: string,
+};
+
+export type AssignmentInfoReceivedAction = {
+  boilerplate: string,
+  readOnlyLines: number[],
   tagSuggestions: Array<string>,
   type: string,
 };

@@ -21,6 +21,9 @@ return world;`;
 const threeLineSolution = `print('Hello');
 System.out.println('Yo!');
 return world;`;
+const oneLineChangeAdd = { from: { line: 0, ch: 0 }, text: oneLineSolution.split('\n'), to: { line: 0, ch: 15 } };
+const twoLineChange = { from: { line: 0, ch: 0 }, text: twoLineSolution.split('\n'), to: { line: 1, ch: 12 } };
+const threeLineChange = { from: { line: 0, ch: 0 }, text: threeLineSolution.split('\n'), to: { line: 2, ch: 12 } };
 const simpleAssignment = Raw.deserialize({
   nodes: [
     {
@@ -59,6 +62,8 @@ const emptyTest2 = new IO();
 emptyTest2.input.errors = ['Kenttä ei voi olla tyhjä.'];
 emptyTest2.output.errors = ['Kenttä ei voi olla tyhjä.'];
 
+const reducer = reducers(1);
+
 const assignmentWithContent = Raw.deserialize({
   nodes: [
     {
@@ -75,7 +80,6 @@ const assignmentWithContent = Raw.deserialize({
 }, { terse: true });
 
 test('Add a single empty field to intial state test input/output array', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -83,6 +87,7 @@ test('Add a single empty field to intial state test input/output array', (t) => 
       modelSolution: new FormValue(''),
       inputOutput: [new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { field: new IO(), type: ADD_TEST_FIELD },
@@ -91,7 +96,6 @@ test('Add a single empty field to intial state test input/output array', (t) => 
 });
 
 test('Add new test input to the first test input/output array', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -99,6 +103,7 @@ test('Add new test input to the first test input/output array', (t) => {
       modelSolution: new FormValue(''),
       inputOutput: [new IO(), new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -108,7 +113,6 @@ test('Add new test input to the first test input/output array', (t) => {
 });
 
 test('Add new test output to the first test input/output array', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -116,6 +120,7 @@ test('Add new test output to the first test input/output array', (t) => {
       modelSolution: new FormValue(''),
       inputOutput: [new IO(new FormValue('Test'), new FormValue('')), new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { testOutput: 'Hello', index: 0, type: CHANGE_TEST_OUTPUT },
@@ -127,7 +132,6 @@ test('Add new test output to the first test input/output array', (t) => {
 });
 
 test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -135,6 +139,7 @@ test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
       modelSolution: new FormValue(twoLineSolution),
       inputOutput: [new IO(), new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { row: 0, type: ADD_HIDDEN_ROW },
@@ -144,7 +149,6 @@ test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
 });
 
 test('Delete hidden row from selection deletes form solutionRows in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -152,6 +156,7 @@ test('Delete hidden row from selection deletes form solutionRows in state', (t) 
       modelSolution: twoLineSolution,
       inputOutput: [new IO(), new IO()],
       solutionRows: [0, 1],
+      readOnlyModelSolutionLines: [],
     },
     },
     { row: 0, type: DELETE_HIDDEN_ROW },
@@ -161,7 +166,6 @@ test('Delete hidden row from selection deletes form solutionRows in state', (t) 
 });
 
 test('Changing assigment changes assignment in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -169,6 +173,7 @@ test('Changing assigment changes assignment in state', (t) => {
       modelSolution: twoLineSolution,
       inputOutput: [new IO(), new IO()],
       solutionRows: [0, 1],
+      readOnlyModelSolutionLines: [],
     },
     },
     { assignment: simpleAssignment, type: CHANGE_ASSIGNMENT },
@@ -178,51 +183,62 @@ test('Changing assigment changes assignment in state', (t) => {
 });
 
 test('Changing model solution changes model solution in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
       modelSolution: new FormValue(''),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [0, 1] },
+      solutionRows: [0, 1],
+      readOnlyModelSolutionLines: [] },
     },
-    { modelSolution: twoLineSolution, type: CHANGE_MODEL_SOLUTION },
+    { modelSolution: twoLineSolution, change: twoLineChange, type: CHANGE_MODEL_SOLUTION },
   );
 
   t.deepEqual(state.form.modelSolution.get(), twoLineSolution);
 });
 
 test('Removing one selected line from model solution changes model solution and selected solution rows in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(threeLineSolution),
+      modelSolution: new FormValue(threeLineSolution.concat('\n')),
       inputOutput: [new IO(), new IO()],
       solutionRows: [1, 2],
+      readOnlyModelSolutionLines: [],
     },
     },
-    { modelSolution: twoLineSolution, type: CHANGE_MODEL_SOLUTION },
+    {
+      modelSolution: threeLineSolution,
+      change: { from: { line: 2, ch: 12 }, removed: ['', ''], text: [''], to: { line: 3, ch: 0 } },
+      type: CHANGE_MODEL_SOLUTION },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), twoLineSolution);
+  t.deepEqual(state.form.modelSolution.get(), threeLineSolution);
   t.deepEqual(state.form.solutionRows, [1]);
 });
 
 test('Removing two selected lines from model solution changes model solution and selected solution rows in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
       modelSolution: new FormValue(threeLineSolution),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [1, 2],
+      solutionRows: [0, 1, 2],
+      readOnlyModelSolutionLines: [],
     },
     },
-    { modelSolution: oneLineSolution, type: CHANGE_MODEL_SOLUTION },
+    {
+      modelSolution: oneLineSolution,
+      change: {
+        from: { line: 1, ch: 0 },
+        removed: ["System.out.println('Yo!')", 'return world;', ''],
+        text: [''],
+        to: { line: 3, ch: 0 },
+      },
+      type: CHANGE_MODEL_SOLUTION },
   );
 
   t.deepEqual(state.form.modelSolution.get(), oneLineSolution);
@@ -230,40 +246,43 @@ test('Removing two selected lines from model solution changes model solution and
 });
 
 test('Remove model solution changes model solution in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
       modelSolution: new FormValue(oneLineSolution),
       inputOutput: [new IO(), new IO()],
+      readOnlyModelSolutionLines: [],
       solutionRows: [0] },
     },
-    { modelSolution: '', type: CHANGE_MODEL_SOLUTION },
+    { modelSolution: '', change: oneLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
   );
 
   t.deepEqual(state.form.modelSolution.get(), '');
 });
 
 test('Change model solution without selected rows changes model solution in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(twoLineSolution),
+      modelSolution: new FormValue(threeLineSolution),
       inputOutput: [new IO(), new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
-    { modelSolution: oneLineSolution, type: CHANGE_MODEL_SOLUTION },
+    {
+      modelSolution: twoLineSolution,
+      change: { from: { line: 1, ch: 0 }, removed: ["System.out.println('Yo!')"], text: [''], to: { line: 1, ch: 25 } },
+      type: CHANGE_MODEL_SOLUTION,
+    },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), oneLineSolution);
+  t.deepEqual(state.form.modelSolution.get(), twoLineSolution);
 });
 
 test('Add new line to model solution changes model solution in state', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -271,9 +290,10 @@ test('Add new line to model solution changes model solution in state', (t) => {
       modelSolution: new FormValue(twoLineSolution),
       inputOutput: [new IO(), new IO()],
       solutionRows: [0],
+      readOnlyModelSolutionLines: [],
     },
     },
-    { modelSolution: threeLineSolution, type: CHANGE_MODEL_SOLUTION },
+    { modelSolution: threeLineSolution, change: threeLineChange, type: CHANGE_MODEL_SOLUTION },
   );
 
   t.deepEqual(state.form.modelSolution.get(), threeLineSolution);
@@ -281,7 +301,6 @@ test('Add new line to model solution changes model solution in state', (t) => {
 });
 
 test('Remove a single empty field from intial state test input/output array', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -289,6 +308,7 @@ test('Remove a single empty field from intial state test input/output array', (t
       modelSolution: new FormValue(''),
       inputOutput: [new IO(), new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { index: 0, type: REMOVE_TEST_FIELD },
@@ -297,7 +317,6 @@ test('Remove a single empty field from intial state test input/output array', (t
 });
 
 test('Remove only field from intial state test input/output array', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -305,6 +324,7 @@ test('Remove only field from intial state test input/output array', (t) => {
       modelSolution: new FormValue(''),
       inputOutput: [new IO()],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { index: 0, type: REMOVE_TEST_FIELD },
@@ -313,7 +333,6 @@ test('Remove only field from intial state test input/output array', (t) => {
 });
 
 test('form not valid without assignment', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -321,6 +340,7 @@ test('form not valid without assignment', (t) => {
       modelSolution: new FormValue('asdf \n asf asdf'),
       inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -329,7 +349,6 @@ test('form not valid without assignment', (t) => {
 });
 
 test('form not valid without assignment', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -338,6 +357,7 @@ test('form not valid without assignment', (t) => {
       inputOutput: [new IO(new FormValue('asdf'),
       new FormValue('asdf'))],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -346,7 +366,6 @@ test('form not valid without assignment', (t) => {
 });
 
 test('form not valid without model solution', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
@@ -354,6 +373,7 @@ test('form not valid without model solution', (t) => {
       modelSolution: new FormValue(''),
       inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -362,17 +382,17 @@ test('form not valid without model solution', (t) => {
 });
 
 test('form not valid without tests', (t) => {
-  const reducer = reducers(1);
   const state = reducer(
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      modelSolution: new FormValue('asdf \n asf asdf'),
+      modelSolution: new FormValue(''),
       inputOutput: [],
       solutionRows: [],
+      readOnlyModelSolutionLines: [],
     },
     },
-    { modelSolution: oneLineSolution, type: CHANGE_MODEL_SOLUTION },
+    { modelSolution: oneLineSolution, change: oneLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
   );
   t.deepEqual(state.form.valid, false);
 });

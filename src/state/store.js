@@ -7,6 +7,7 @@ import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
+import { getAssignmentInfoAction } from 'state/form/actions';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
 import { setReviewableExerciseAction } from './review';
@@ -86,10 +87,13 @@ export default function makeStore(assignment: string, review: boolean) {
   );
   store.dispatch(trackLoginStateAction());
   if (review) {
-    store.dispatch(setReviewableExerciseAction(parseInt(assignmentId, 10)));
+    store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());
+  } else if (store.getState().form.modelSolution === undefined) {
+    store.dispatch(getAssignmentInfoAction());
   }
   api.syncStore(store);
   return store;
 }
+

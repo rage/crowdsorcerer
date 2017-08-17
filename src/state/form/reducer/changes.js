@@ -15,7 +15,8 @@ import {
   REMOVE_TAG,
   ADD_TAG,
   SET_FORM_STATE,
-  SET_TAG_SUGGESTIONS,
+  ASSIGNMENT_INFO_RECEIVED,
+  RESET_TO_BOILERPLATE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -29,11 +30,12 @@ import type {
     AddTagAction,
     RemoveTagAction,
     SetFormStateAction,
-    SetTagSuggestions,
+    AssignmentInfoReceivedAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
-
+import { isReadOnlyTag } from 'utils/get-read-only-lines';
 import type { State } from './index';
+
 
 const initialState: State = {
   assignment: new FormValue(Raw.deserialize({
@@ -44,19 +46,21 @@ const initialState: State = {
         nodes: [
           {
             kind: 'text',
-            text: 'asdf asdf asdf sdf dfas sdf asdf',
+            text: 'Initial initial initial initial initial initial',
           },
         ],
       },
     ],
   }, { terse: true })),
-  modelSolution: new FormValue('System.out.println("moi"); \n return "Hello " + input;'),
+  modelSolution: undefined,
+  boilerplate: { code: '', readOnlyLines: [] },
   inputOutput: [new IO(new FormValue('initial'), new FormValue('Hello initial'))],
   solutionRows: [],
   valid: false,
   showErrors: false,
-  tagSuggestions: ['for-each', 'while', 'for-loop', 'java', 'javascript'],
-  tags: new FormValue(['tag']),
+  tagSuggestions: [],
+  tags: new FormValue(['initial tag']),
+  readOnlyModelSolutionLines: [],
 };
 
 export default createReducer(initialState, {
@@ -87,58 +91,67 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
-    const previousSolution = state.modelSolution.get().split('\n');
-    const newSolution = action.modelSolution.split('\n');
+    // controls the movement of marked model solution rows when model solution is changed
+    const modelSolution = state.modelSolution;
+    if (modelSolution === undefined || modelSolution === null) {
+      return state;
+    }
+    // prevent the removal of the last editable line
+    const change = action.change;
+    const startLine = change.from.line;
     let newSolutionRows = state.solutionRows;
-    let newSolutionDifferenceToPrevious = newSolution.length - previousSolution.length;
-    if (state.solutionRows.length > 0) {
-      if (newSolutionDifferenceToPrevious < 0) {
-        newSolutionDifferenceToPrevious = Math.abs(newSolutionDifferenceToPrevious);
-        let i = 0;
-        for (; i < newSolution.length; i++) {
-          if (newSolution[i].localeCompare(previousSolution[i]) !== 0) {
-            break;
+    let newReadOnlyRows = state.readOnlyModelSolutionLines;
+    const rowsInOldModelSolution = modelSolution.get().split('\n');
+    const rowsInNewModelSolution = action.modelSolution.split('\n');
+    const solutionLengthDifferenceToNew = rowsInNewModelSolution.length - rowsInOldModelSolution.length;
+    if (solutionLengthDifferenceToNew < 0) {
+        // text was removed
+        // removed contains the deleted text
+      const solutionLengthDifference = change.removed.length - change.text.length;
+        // deleted the removed marked lines
+      const deletedRowLength = solutionLengthDifference - 1;
+      newSolutionRows = newSolutionRows.filter(row => row < startLine || row > startLine + deletedRowLength);
+      newSolutionRows = newSolutionRows.map((row) => {
+        if (row >= startLine + solutionLengthDifference) {
+          if (row - solutionLengthDifference >= 0) {
+            return row - solutionLengthDifference;
           }
+          return 0;
         }
-        const removedSolutionRows = [];
-        const endRow = i + newSolutionDifferenceToPrevious;
-        for (; i < endRow; i++) {
-          if (state.solutionRows.includes(i)) {
-            removedSolutionRows.push(i);
+        return row;
+      });
+      newReadOnlyRows = state.readOnlyModelSolutionLines.map((row) => {
+        if (row >= startLine + solutionLengthDifference) {
+          if (row - solutionLengthDifference >= 0) {
+            return row - solutionLengthDifference;
           }
+          return 0;
         }
-        newSolutionRows = state.solutionRows.filter(row => (
-          !removedSolutionRows.includes(row)
-        ));
-        newSolutionRows = newSolutionRows.map((row) => {
-          if (row >= i) {
-            if (row - newSolutionDifferenceToPrevious >= 0) {
-              return row - newSolutionDifferenceToPrevious;
-            }
-            return 0;
-          }
-          return row;
-        });
-      } else if (newSolutionDifferenceToPrevious > 0) {
-        let i = 0;
-        for (; i < previousSolution.length; i++) {
-          if (previousSolution[i].localeCompare(newSolution[i]) !== 0) {
-            break;
-          }
+        return row;
+      });
+    } else if (solutionLengthDifferenceToNew > 0) {
+        // text was added
+        // text contains the added text
+      const solutionLengthDifference = change.origin === 'undo' ? change.text.length - 2 : change.text.length - 1; // :)
+      newSolutionRows = state.solutionRows.map((row) => {
+        if (row > startLine) {
+          return row + solutionLengthDifference;
         }
-        newSolutionRows = newSolutionRows.map((row) => {
-          if (row >= i) {
-            return row + newSolutionDifferenceToPrevious;
-          }
-          return row;
-        });
-      }
+        return row;
+      });
+      newReadOnlyRows = state.readOnlyModelSolutionLines.map((row) => {
+        if (row >= startLine) {
+          return row + solutionLengthDifference;
+        }
+        return row;
+      });
     }
     return {
       ...state,
       ...{
         modelSolution: new FormValue(action.modelSolution),
         solutionRows: newSolutionRows,
+        readOnlyModelSolutionLines: newReadOnlyRows,
       },
     };
   },
@@ -181,6 +194,9 @@ export default createReducer(initialState, {
     };
   },
   [ADD_HIDDEN_ROW](state: State, action: AddHiddenRowAction): State {
+    if (state.readOnlyModelSolutionLines.includes(action.row)) {
+      return state;
+    }
     return {
       ...state,
       ...{
@@ -238,11 +254,31 @@ export default createReducer(initialState, {
       },
     };
   },
-  [SET_TAG_SUGGESTIONS](state: State, action: SetTagSuggestions): State {
+  [ASSIGNMENT_INFO_RECEIVED](state: State, action: AssignmentInfoReceivedAction): State {
+    const cleanPlate = [];
+    action.boilerplate.split('\n').forEach((row) => {
+      if (!isReadOnlyTag(row)) {
+        cleanPlate.push(row);
+      }
+    });
+    const plate = cleanPlate.join('\n');
     return {
       ...state,
       ...{
         tagSuggestions: action.tagSuggestions,
+        boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
+        modelSolution: new FormValue(plate),
+        readOnlyModelSolutionLines: action.readOnlyLines,
+      },
+    };
+  },
+  [RESET_TO_BOILERPLATE](state: State): State {
+    return {
+      ...state,
+      ...{
+        modelSolution: new FormValue(state.boilerplate.code),
+        readOnlyModelSolutionLines: state.boilerplate.readOnlyLines,
+        solutionRows: [],
       },
     };
   },

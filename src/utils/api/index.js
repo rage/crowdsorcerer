@@ -52,7 +52,6 @@ export default class Api {
   postReview(reviewState: ReviewState, formState: FormState): Promise<any> {
     return new Promise((resolve, reject) => {
       const data = this._createReviewJSON(reviewState, formState);
-      console.info(`sending: ${JSON.stringify(data)}`);
       fetch(`${SERVER}/peer_reviews`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -90,6 +89,25 @@ export default class Api {
     });
   }
 
+  getAssignmentInformation(assignmentId: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      fetch(`${SERVER}/assignments/${assignmentId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      })
+      .then((resp) => {
+        if (!resp.ok) {
+          return reject(resp);
+        }
+        return resp.json();
+      })
+      .then(resolve, reject);
+    });
+  }
+
   syncStore(store: Store): void {
     this.store = store;
   }
@@ -110,6 +128,9 @@ export default class Api {
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
     const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
+    if (!formState.modelSolution) {
+      return {};
+    }
     const parsedForm = formSolutionTemplate(formState.modelSolution.get(), formState.solutionRows);
     return (
     {
