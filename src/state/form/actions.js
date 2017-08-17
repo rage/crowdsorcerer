@@ -141,7 +141,7 @@ export function submitFormAction() {
   };
 }
 
-export function setBoilerPlateAction(boilerplate: string) {
+export function setBoilerplateAction(boilerplate: string) {
   const readOnlyLines = getReadOnlyLines(boilerplate);
   return {
     boilerplate,
@@ -303,7 +303,7 @@ export type SetTagSuggestions = {
   type: string,
 };
 
-export type SetBoilerPlateAction = {
+export type SetBoilerplateAction = {
   boilerplate: string,
   readOnlyLines: number[],
   type: string,

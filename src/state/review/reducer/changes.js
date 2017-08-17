@@ -17,7 +17,7 @@ import type {
 import FormValue from 'domain/form-value';
 import type { State } from './index';
 
-const initialState = {
+const initialState: State = {
   reviews: new FormValue([
     { question: 'Greetings from the initial state', review: undefined },
   ]),

@@ -106,7 +106,7 @@ export default function makeStore(assignment: string, review: boolean) {
     store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());
-  } else if (store.getState().form.modelSolution === undefined) {
+  } else if (applicationStateNotComplete(store.getState())) {
     store.dispatch(resetReviewableAction);
     store.dispatch(getAssignmentInfoAction());
   }

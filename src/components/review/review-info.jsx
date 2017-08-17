@@ -16,7 +16,7 @@ class ReviewInfo extends Component {
       <div className={`${prefixer('peer-review-content')} ${prefixer('peer-review-component')}`}>
         <div className={prefixer('peer-review-title')}>Vertaisarviointi</div>
         <div className={prefixer('peer-review-instructions')}>
-          //TODO: Vertaisarviointiohjeistus.
+          TODO: Vertaisarviointiohjeistus.
         </div>
         <div className={prefixer('zip-load-buttons')}>
           <ZipLoadButton

@@ -33,7 +33,7 @@ import type {
     RemoveTagAction,
     SetFormStateAction,
     AssignmentInfoReceivedAction,
-    SetBoilerPlateAction,
+    SetBoilerplateAction,
     SetShowCodeTemplateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
@@ -297,8 +297,14 @@ export default createReducer(initialState, {
       ...{
         tagSuggestions: action.tagSuggestions,
         boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
-        modelSolution: new FormValue(plate),
-        readOnlyModelSolutionLines: action.readOnlyLines,
+        modelSolution: {
+          ...state.modelSolution,
+          ...{
+            editableModelSolution: new FormValue(plate),
+            readOnlyModelSolutionLines: action.readOnlyLines,
+            solutionRows: [],
+          },
+        },
       },
     };
   },
@@ -306,13 +312,18 @@ export default createReducer(initialState, {
     return {
       ...state,
       ...{
-        modelSolution: new FormValue(state.boilerplate.code),
-        readOnlyModelSolutionLines: state.boilerplate.readOnlyLines,
-        solutionRows: [],
+        modelSolution: {
+          ...state.modelSolution,
+          ...{
+            editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
+            readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
+            solutionRows: [],
+          },
+        },
       },
     };
   },
-  [SET_BOILERPLATE](state: State, action: SetBoilerPlateAction): State {
+  [SET_BOILERPLATE](state: State, action: SetBoilerplateAction): State {
     const cleanPlate = [];
     action.boilerplate.split('\n').forEach((row) => {
       if (!isReadOnlyTag(row)) {
@@ -329,21 +340,6 @@ export default createReducer(initialState, {
             boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
             editableModelSolution: new FormValue(plate),
             readOnlyModelSolutionLines: action.readOnlyLines,
-          },
-        },
-      },
-    };
-  },
-  [RESET_TO_BOILERPLATE](state: State): State {
-    return {
-      ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
-            readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
-            solutionRows: [],
           },
         },
       },

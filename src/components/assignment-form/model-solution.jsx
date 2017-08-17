@@ -109,25 +109,6 @@ class ModelSolution extends Component {
       }
     }
     if ((this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) && change.origin !== 'setValue') {
-        // deleted the whole row, the line in 'to' is one off
-        // check that the user is not deleting the only editale row between two readonly lines
-      const lastEditableBetweenReadOnlysDeleted = change.from.line > 0 &&
-        this.props.readOnlyLines.includes(change.from.line - 1) && this.props.readOnlyLines.includes(change.to.line);
-      const lastEditableDeleted = change.to.line === 0 && this.props.readOnlyLines.includes(change.from.line + 1);
-      const lastEditableBlockDeleted = change.from.line === 0 && this.props.readOnlyLines.includes(change.to.line);
-      if (lastEditableBetweenReadOnlysDeleted || lastEditableDeleted || lastEditableBlockDeleted) {
-        change.update(change.from, change.to, ['', ''], '+input');
-      } else {
-          // allow a whole row to be deleted before a readonly line
-        deletedReadOnly = this.props.readOnlyLines.includes(change.to.line - 1);
-      }
-    } else if (this.props.readOnlyLines.some(l => l >= change.from.line || l <= change.to.line)) {
-      deletedReadOnly = true;
-    } else {
-        // normal case
-      deletedReadOnly = this.props.readOnlyLines.includes(change.to.line);
-    }
-    if (this.props.readOnlyLines.includes(change.from.line) || deletedReadOnly) {
       change.cancel();
     }
   }

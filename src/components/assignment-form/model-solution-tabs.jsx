@@ -4,12 +4,13 @@ import prefixer from 'utils/class-name-prefixer';
 
 export default ({ readOnly, onShowCodeTemplate, showCodeTemplate }:
    { readOnly: boolean, onShowCodeTemplate: () => void, showCodeTemplate: boolean}) => {
-  const templateButtonClass = showCodeTemplate
-  ? `${prefixer('toggle-show-code-template-button')} ${prefixer('active')}`
-  : prefixer('toggle-show-code-template-button');
-  const modelSolutionButtonClass = showCodeTemplate
-  ? prefixer('toggle-show-code-template-button')
-  : `${prefixer('toggle-show-code-template-button')} ${prefixer('active')}`;
+  let templateButtonClass = prefixer('toggle-show-code-template-button');
+  let modelSolutionButtonClass = prefixer('toggle-show-code-template-button');
+  if (showCodeTemplate) {
+    templateButtonClass += ` ${prefixer('active')}`;
+  } else {
+    modelSolutionButtonClass += ` ${prefixer('active')}`;
+  }
   if (!readOnly) {
     return null;
   }

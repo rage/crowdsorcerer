@@ -13,8 +13,10 @@ import {
   ADD_HIDDEN_ROW,
   DELETE_HIDDEN_ROW,
   REMOVE_TEST_FIELD,
+  RESET_TO_BOILERPLATE,
 } from 'state/form';
 
+const boilerplate = '// START LOCK \n import java.util.*; \n // END LOCK';
 const oneLineSolution = 'print("Hello");';
 const twoLineSolution = `print('Hello');
 return world;`;
@@ -22,8 +24,13 @@ const threeLineSolution = `print('Hello');
 System.out.println('Yo!');
 return world;`;
 const oneLineChangeAdd = { from: { line: 0, ch: 0 }, text: oneLineSolution.split('\n'), to: { line: 0, ch: 15 } };
-const twoLineChange = { from: { line: 0, ch: 0 }, text: twoLineSolution.split('\n'), to: { line: 1, ch: 12 } };
-const threeLineChange = { from: { line: 0, ch: 0 }, text: threeLineSolution.split('\n'), to: { line: 2, ch: 12 } };
+const twoLineChangeAdd = { from: { line: 0, ch: 0 }, text: twoLineSolution.split('\n'), to: { line: 1, ch: 12 } };
+const threeLineChangeAdd = { from: { line: 0, ch: 0 }, text: threeLineSolution.split('\n'), to: { line: 2, ch: 12 } };
+const twoToThreeChange =
+  { from: { line: 0, ch: 15 }, text: "\nSystem.out.println('Yo!');".split('\n'), to: { line: 2, ch: 12 } };
+const threeToTwoChange =
+  { from: { line: 0, ch: 15 }, removed: "\nSystem.out.println('Yo!');".split('\n'), to: { line: 2, ch: 12 }, text: [''] };
+const oneLineChangeRemoved = { from: { line: 0, ch: 0 }, removed: oneLineSolution.split('\n'), to: { line: 0, ch: 15 } };
 const simpleAssignment = Raw.deserialize({
   nodes: [
     {
@@ -84,10 +91,12 @@ test('Add a single empty field to intial state test input/output array', (t) => 
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+        editableModelSolution: new FormValue(''),
+      },
     },
     },
     { field: new IO(), type: ADD_TEST_FIELD },
@@ -100,10 +109,13 @@ test('Add new test input to the first test input/output array', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution:
+      {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -117,16 +129,18 @@ test('Add new test output to the first test input/output array', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO(new FormValue('Test'), new FormValue('')), new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { testOutput: 'Hello', index: 0, type: CHANGE_TEST_OUTPUT },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), '');
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), '');
   t.deepEqual(state.form.inputOutput[0].input.get(), 'Test');
   t.deepEqual(state.form.inputOutput[0].output.get(), 'Hello');
 });
@@ -136,16 +150,18 @@ test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(twoLineSolution),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editabelModelSolution: new FormValue(twoLineSolution),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { row: 0, type: ADD_HIDDEN_ROW },
   );
 
-  t.deepEqual(state.form.solutionRows, [0]);
+  t.deepEqual(state.form.modelSolution.solutionRows, [0]);
 });
 
 test('Delete hidden row from selection deletes form solutionRows in state', (t) => {
@@ -153,16 +169,18 @@ test('Delete hidden row from selection deletes form solutionRows in state', (t) 
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: twoLineSolution,
       inputOutput: [new IO(), new IO()],
-      solutionRows: [0, 1],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: twoLineSolution,
+        solutionRows: [0, 1],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { row: 0, type: DELETE_HIDDEN_ROW },
   );
 
-  t.deepEqual(state.form.solutionRows, [1]);
+  t.deepEqual(state.form.modelSolution.solutionRows, [1]);
 });
 
 test('Changing assigment changes assignment in state', (t) => {
@@ -170,10 +188,12 @@ test('Changing assigment changes assignment in state', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: twoLineSolution,
       inputOutput: [new IO(), new IO()],
-      solutionRows: [0, 1],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: twoLineSolution,
+        solutionRows: [0, 1],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { assignment: simpleAssignment, type: CHANGE_ASSIGNMENT },
@@ -187,15 +207,16 @@ test('Changing model solution changes model solution in state', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [0, 1],
-      readOnlyModelSolutionLines: [] },
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [0, 1],
+        readOnlyModelSolutionLines: [] },
     },
-    { modelSolution: twoLineSolution, change: twoLineChange, type: CHANGE_MODEL_SOLUTION },
+    },
+    { modelSolution: twoLineSolution, change: twoLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
   );
-
-  t.deepEqual(state.form.modelSolution.get(), twoLineSolution);
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), twoLineSolution);
 });
 
 test('Removing one selected line from model solution changes model solution and selected solution rows in state', (t) => {
@@ -203,10 +224,12 @@ test('Removing one selected line from model solution changes model solution and 
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(threeLineSolution.concat('\n')),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [1, 2],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(threeLineSolution.concat('\n')),
+        solutionRows: [1, 2],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     {
@@ -215,8 +238,8 @@ test('Removing one selected line from model solution changes model solution and 
       type: CHANGE_MODEL_SOLUTION },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), threeLineSolution);
-  t.deepEqual(state.form.solutionRows, [1]);
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), threeLineSolution);
+  t.deepEqual(state.form.modelSolution.solutionRows, [1]);
 });
 
 test('Removing two selected lines from model solution changes model solution and selected solution rows in state', (t) => {
@@ -224,10 +247,12 @@ test('Removing two selected lines from model solution changes model solution and
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(threeLineSolution),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [0, 1, 2],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(threeLineSolution),
+        solutionRows: [0, 1, 2],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     {
@@ -241,24 +266,26 @@ test('Removing two selected lines from model solution changes model solution and
       type: CHANGE_MODEL_SOLUTION },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), oneLineSolution);
-  t.deepEqual(state.form.solutionRows, [0]);
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), oneLineSolution);
+  t.deepEqual(state.form.modelSolution.solutionRows, [0]);
 });
 
-test('Remove model solution changes model solution in state', (t) => {
+test('Removing model solution changes model solution in state', (t) => {
   const state = reducer(
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(oneLineSolution),
       inputOutput: [new IO(), new IO()],
-      readOnlyModelSolutionLines: [],
-      solutionRows: [0] },
+      modelSolution: {
+        editableModelSolution: new FormValue(oneLineSolution),
+        readOnlyModelSolutionLines: [],
+        solutionRows: [] },
     },
-    { modelSolution: '', change: oneLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
+    },
+    { modelSolution: '', change: oneLineChangeRemoved, type: CHANGE_MODEL_SOLUTION },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), '');
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), '');
 });
 
 test('Change model solution without selected rows changes model solution in state', (t) => {
@@ -266,10 +293,12 @@ test('Change model solution without selected rows changes model solution in stat
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(threeLineSolution),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(threeLineSolution),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     {
@@ -279,7 +308,7 @@ test('Change model solution without selected rows changes model solution in stat
     },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), twoLineSolution);
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), twoLineSolution);
 });
 
 test('Add new line to model solution changes model solution in state', (t) => {
@@ -287,17 +316,19 @@ test('Add new line to model solution changes model solution in state', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(twoLineSolution),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [0],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(twoLineSolution),
+        solutionRows: [0],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
-    { modelSolution: threeLineSolution, change: threeLineChange, type: CHANGE_MODEL_SOLUTION },
+    { modelSolution: threeLineSolution, change: threeLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
   );
 
-  t.deepEqual(state.form.modelSolution.get(), threeLineSolution);
-  t.deepEqual(state.form.solutionRows, [0]);
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), threeLineSolution);
+  t.deepEqual(state.form.modelSolution.solutionRows, [0]);
 });
 
 test('Remove a single empty field from intial state test input/output array', (t) => {
@@ -305,10 +336,12 @@ test('Remove a single empty field from intial state test input/output array', (t
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO(), new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { index: 0, type: REMOVE_TEST_FIELD },
@@ -321,10 +354,12 @@ test('Remove only field from intial state test input/output array', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO()],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { index: 0, type: REMOVE_TEST_FIELD },
@@ -337,10 +372,12 @@ test('form not valid without assignment', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: new FormValue('asdf \n asf asdf'),
       inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue('asdf \n asf asdf'),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -353,11 +390,12 @@ test('form not valid without assignment', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      modelSolution: 'asdf \n asf asdf',
-      inputOutput: [new IO(new FormValue('asdf'),
-      new FormValue('asdf'))],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
+      modelSolution: {
+        editableModelSolution: new FormValue('asdf'),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -370,10 +408,12 @@ test('form not valid without model solution', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      modelSolution: new FormValue(''),
       inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
@@ -386,13 +426,149 @@ test('form not valid without tests', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      modelSolution: new FormValue(''),
-      inputOutput: [],
-      solutionRows: [],
-      readOnlyModelSolutionLines: [],
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
     },
     },
     { modelSolution: oneLineSolution, change: oneLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
   );
   t.deepEqual(state.form.valid, false);
+});
+
+test('form not valid without tags', (t) => {
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(''),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+      },
+      tags: new FormValue([]),
+    },
+    },
+    { modelSolution: oneLineSolution, change: oneLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
+  );
+  t.deepEqual(state.form.valid, false);
+});
+
+test('resetting to boilerplate overrides old modelSolution', (t) => {
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(oneLineSolution),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: boilerplate,
+          readOnlyLines: [0],
+        },
+      },
+      tags: new FormValue([]),
+    },
+    },
+    { type: RESET_TO_BOILERPLATE },
+  );
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), boilerplate);
+});
+
+test('readOnlyLines move up when lines removed above them', (t) => {
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(threeLineSolution),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [2],
+        boilerplate: {
+          code: boilerplate,
+          readOnlyLines: [1],
+        },
+      },
+      tags: new FormValue([]),
+    },
+    },
+    { modelSolution: twoLineSolution, change: threeToTwoChange, type: CHANGE_MODEL_SOLUTION },
+  );
+  t.deepEqual(state.form.modelSolution.readOnlyModelSolutionLines, [1]);
+});
+
+test('readOnlyLines move down when lines added above them', (t) => {
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(twoLineSolution),
+        solutionRows: [],
+        readOnlyModelSolutionLines: [1],
+        boilerplate: {
+          code: boilerplate,
+          readOnlyLines: [1],
+        },
+      },
+      tags: new FormValue([]),
+    },
+    },
+    { modelSolution: threeLineSolution, change: twoToThreeChange, type: CHANGE_MODEL_SOLUTION },
+  );
+  t.deepEqual(state.form.modelSolution.readOnlyModelSolutionLines, [2]);
+});
+
+test('solutionRows move up when lines removed above them', (t) => {
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(threeLineSolution),
+        solutionRows: [2],
+        readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: boilerplate,
+          readOnlyLines: [1],
+        },
+      },
+      tags: new FormValue([]),
+    },
+    },
+    { modelSolution: twoLineSolution, change: threeToTwoChange, type: CHANGE_MODEL_SOLUTION },
+  );
+  t.deepEqual(state.form.modelSolution.solutionRows, [1]);
+});
+
+test('solutionRows move down when lines added above them', (t) => {
+  const state = reducer(
+    { form:
+    {
+      assignment: new FormValue(assignmentWithContent),
+      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      modelSolution: {
+        editableModelSolution: new FormValue(twoLineSolution),
+        solutionRows: [1],
+        readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: boilerplate,
+          readOnlyLines: [1],
+        },
+      },
+      tags: new FormValue([]),
+    },
+    },
+    { modelSolution: threeLineSolution, change: twoToThreeChange, type: CHANGE_MODEL_SOLUTION },
+  );
+  t.deepEqual(state.form.modelSolution.solutionRows, [2]);
 });
