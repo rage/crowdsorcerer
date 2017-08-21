@@ -14,10 +14,10 @@ let SOCKET_SERVER;
 
 /* eslint-disable no-const-assign */
 if (process.env.NODE_ENV === 'production') {
-  SERVER = 'https://crowdsorcerer.testmycode.io';
+  SERVER = 'https://crowdsorcerer.testmycode.io/api/v0';
   SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
 } else {
-  SERVER = 'http://localhost:3000';
+  SERVER = 'http://localhost:3000/api/v0';
   SOCKET_SERVER = 'ws://localhost:3000/cable';
 }
 /* eslint-enable no-const-assign */
@@ -72,7 +72,7 @@ export default class Api {
 
   getReviewableExerciseAndQuestions(assignmentId: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      fetch(`${SERVER}/peer_reviews/assignments/${assignmentId}/request_exercise`, {
+      fetch(`${SERVER}/assignments/${assignmentId}/peer_review_exercise`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -128,10 +128,11 @@ export default class Api {
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
     const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
-    if (!formState.modelSolution) {
+    if (!formState.modelSolution.editableModelSolution) {
       return {};
     }
-    const parsedForm = formSolutionTemplate(formState.modelSolution.get(), formState.solutionRows);
+    const parsedForm =
+      formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows);
     return (
     {
       oauth_token: this.oauthToken(),

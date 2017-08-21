@@ -2,7 +2,7 @@
 @import "color-constants";
 
 .sending-status {
-  position: fixed;
+  position: absolute;
   z-index: 10;
   left: 0;
   top: 0;
@@ -16,7 +16,7 @@
 .sending-info {
   position: relative;
   background-color: $white;
-  margin: 20% 27%;
+  margin: 20% 7%;
   padding: 2.5rem;
   border: 1px solid #888;
   border-radius: 4px;
@@ -46,16 +46,23 @@
 .status-message {
   margin: 0.5em;
   text-align: center;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .error-message {
-  margin: 0.2em;
-  padding: 0.05em;
+  margin: 0.7em 0;
+  font-size: 15px;
+  font-family: monospace;
+  white-space:pre-wrap;
 }
 
-.error-messages {
-  margin-bottom: 0.5em;
+.error-info {
+  max-height: 13rem;
+  overflow-y: scroll;
+}
+
+.error-header {
+  font-size: 18;
 }
 
 .compile-error {
@@ -77,6 +84,7 @@
 }
 
 .result-container {
+  padding: 0.1rem;
   width: 100%;
 	display: flex;
   justify-content: space-around;

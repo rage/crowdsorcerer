@@ -106,8 +106,23 @@ export type PostUnsuccessfulAction = {
   type: string
 };
 
+export type ErrorData = {
+  header: string,
+  errors: Array<string>,
+};
+
+export type ResultData = {
+  status: string,
+  message: string,
+  progress: number,
+  result: {
+    OK: boolean,
+    errors: Array<ErrorData>,
+  },
+};
+
 export type UpdateSubmissionStatusAction = {
-  data: Object,
+  data: ResultData,
   type: string
 };
 

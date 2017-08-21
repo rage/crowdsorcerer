@@ -35,6 +35,14 @@ export default (validators: Array<FieldValidator>, state: FormState | ReviewStat
       errors = validator(field);
       field._setErrors(errors);
       validationResults.push(errors.length === 0);
+    } else if (field !== undefined) {
+      Object.entries(field).forEach(([, value]) => {
+        if (value instanceof FormValue) {
+          errors = validator(value);
+          value._setErrors(errors);
+          validationResults.push(errors.length === 0);
+        }
+      });
     }
   });
   const valid = validationResults.every(o => o);

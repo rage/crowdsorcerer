@@ -1,0 +1,29 @@
+@import "color-constants";
+
+
+.toggle-show-code-template-button {
+  height: 1.6rem;
+  border:1px solid #d0d0d0;
+  width: 100%;
+  background-color: #DDDDDD;
+  &:focus {
+    outline: none;
+  }
+  &.active {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+  }
+}
+
+.containerception {
+  position: relative;
+  bottom: -0.2rem;
+}
+.toggle-show-button-container {
+  align-self: flex-end;
+  display: flex;
+  justify-content: center;
+  z-index: 50;
+}
+

@@ -16,7 +16,7 @@ export default class ProgressBar extends Component {
   }
 
   componentWillReceiveProps() {
-    if (this.showProgress) {
+    if (this.props.showProgress) {
       const width = this.progressBar.getBoundingClientRect().width;
       this.setState({ animationStart: this.props.progressPercent, width });
     }

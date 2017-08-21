@@ -11,9 +11,10 @@ import {
   addHiddenRow,
   deleteHiddenRow,
   resetToBoilerplateAction,
+  setShowCodeTemplateAction,
 } from 'state/form';
 import Errors from 'components/errors';
-
+import ModelSolutionTabs from './model-solution-tabs';
 
 class ModelSolution extends Component {
 
@@ -40,6 +41,9 @@ class ModelSolution extends Component {
   }
 
   addGutterMarks() {
+    if (this.props.readOnly) {
+      return;
+    }
     this.textInput.getCodeMirror().getDoc().clearGutter('modelsolution-lines');
     let count = 0;
     this.textInput.getCodeMirror().getDoc().eachLine(() => {
@@ -56,6 +60,9 @@ class ModelSolution extends Component {
   }
 
   showMarkers() {
+    if (this.props.readOnly) {
+      return;
+    }
     const codeDocument = this.textInput.getCodeMirror().getDoc();
     for (let i = 0; i <= codeDocument.getEditor().lineCount(); i++) {
       codeDocument.removeLineClass(i, 'background', prefixer('hiddenRow'));
@@ -114,18 +121,30 @@ class ModelSolution extends Component {
   handleModelSolutionChange: (CodeMirror, Change) => void;
 
   props: {
-    modelSolution: FormValue<string>,
+    editableModelSolution: FormValue<string>,
     solutionRows: Array<number>,
     onModelSolutionChange: (string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
-    onResetModelSolution: () => void,
     readOnly: boolean,
     showErrors: boolean,
+    showCodeTemplate: boolean,
     readOnlyLines: Array<number>,
+    readOnlyModelSolution: string,
+    readOnlyCodeTemplate: string,
+    onResetModelSolution: () => void,
+    onSetShowCodeTemplate: () => void,
   };
 
   render() {
+    let value = this.props.showCodeTemplate
+      ? this.props.readOnlyCodeTemplate
+      : this.props.readOnlyModelSolution;
+    value = this.props.reviewable === undefined ? this.props.editableModelSolution.get() : value;
+    const errors = this.props.editableModelSolution ? this.props.editableModelSolution.errors : [];
+    const gutters = this.props.readOnly
+      ? ['CodeMirror-linenumbers']
+      : ['CodeMirror-linenumbers', 'modelsolution-lines'];
     return (
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
@@ -140,9 +159,14 @@ class ModelSolution extends Component {
             }}
           >
           Nollaa mallivastaus
-        </button>
+          </button>
           }
         </div>
+        <ModelSolutionTabs
+          readOnly={this.props.readOnly}
+          onShowCodeTemplate={this.props.onSetShowCodeTemplate}
+          showCodeTemplate={this.props.showCodeTemplate}
+        />
         <div tabIndex="0">
           <CodeMirror
             aria-labelledby="modelSolution"
@@ -150,13 +174,13 @@ class ModelSolution extends Component {
             options={{
               mode: 'text/x-java',
               lineNumbers: true,
-              gutters: ['CodeMirror-linenumbers', 'modelsolution-lines'],
+              gutters,
               tabSize: 4,
               indentUnit: 4,
               readOnly: this.props.readOnly,
               dragDrop: false,
             }}
-            value={this.props.modelSolution.get()}
+            value={value}
             onChange={(solution, change) => {
               if (change.origin === 'forced') {
                 this.textInput.getCodeMirror().setCursor({ line: change.from.line, ch: change.text[0].length });
@@ -167,7 +191,7 @@ class ModelSolution extends Component {
             aria-required
           />
         </div>
-        <Errors errors={this.props.modelSolution.errors} show={this.props.showErrors} />
+        <Errors errors={errors} show={this.props.showErrors} />
       </div>
     );
   }
@@ -175,10 +199,14 @@ class ModelSolution extends Component {
 
 function mapStateToProps(state: State) {
   return {
-    modelSolution: state.form.modelSolution,
-    solutionRows: state.form.solutionRows,
+    editableModelSolution: state.form.modelSolution.editableModelSolution,
+    readOnlyModelSolution: state.form.modelSolution.readOnlyModelSolution,
+    readOnlyCodeTemplate: state.form.modelSolution.readOnlyCodeTemplate,
+    solutionRows: state.form.modelSolution.solutionRows,
     showErrors: state.form.showErrors,
-    readOnlyLines: state.form.readOnlyModelSolutionLines,
+    readOnlyLines: state.form.modelSolution.readOnlyModelSolutionLines,
+    reviewable: state.review.reviewable,
+    showCodeTemplate: state.form.modelSolution.showTemplate,
   };
 }
 
@@ -195,6 +223,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onResetModelSolution() {
       dispatch(resetToBoilerplateAction());
+    },
+    onSetShowCodeTemplate(show: boolean) {
+      dispatch(setShowCodeTemplateAction(show));
     },
   };
 }

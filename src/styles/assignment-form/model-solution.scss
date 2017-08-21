@@ -4,7 +4,7 @@
 .model-solution {
   border: 0.1rem solid $border-grey;
   border-radius: 0.25rem;
-  width: 100%;
+  width: 99.5%;
 }
 
 .hiddenRow {
@@ -22,7 +22,13 @@
 .reset-button {
   border-radius: 0.4rem;
   border: 0.1rem solid $border-grey;
-  background-color: $reset-red;
   padding: 0.5rem 0.5rem;
   color: $white;
+  background-color: $reset-red;
+}
+
+.CodeMirror-gutters {
+  border-right: 1px solid #ddd;
+  background-color: white;
+  white-space: nowrap;
 }

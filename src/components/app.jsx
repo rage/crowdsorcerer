@@ -11,11 +11,12 @@ class App extends Component {
   props: {
     review: boolean,
     loggedIn: () => void,
-    modelSolution: ?string,
+    editableModelSolution: ?string,
   }
 
   render() {
-    if (this.props.modelSolution !== undefined) {
+    if (this.props.editableModelSolution !== undefined ||
+      (this.props.readOnlyCodeTemplate !== undefined && this.props.readOnlyModelSolution !== undefined)) {
       if (this.props.loggedIn) {
         return (
           <div className={prefixer('container')}>
@@ -25,14 +26,21 @@ class App extends Component {
       }
       return <div className={prefixer('container')}>Sinun on oltava kirjautuneena nähdäksesi tämän sisällön.</div>;
     }
-    return <div className={prefixer('container')}>Loading</div>;
+    return (
+      <div className={`${prefixer('container')} ${prefixer('center')}`}>
+        <div className={prefixer('spinner')} />
+      </div>
+    );
   }
 }
+
 
 function mapStateToProps(state: State) {
   return {
     loggedIn: state.user.loggedIn,
-    modelSolution: state.form.modelSolution,
+    editableModelSolution: state.form.modelSolution.editableModelSolution,
+    readOnlyModelSolution: state.form.modelSolution.readOnlyModelSolution,
+    readOnlyCodeTemplate: state.form.modelSolution.readOnlyCodeTemplate,
   };
 }
 

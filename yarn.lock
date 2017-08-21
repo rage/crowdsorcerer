@@ -4375,6 +4375,13 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+likert-react@^0.0.0-beta5:
+  version "0.0.0-beta5"
+  resolved "https://registry.yarnpkg.com/likert-react/-/likert-react-0.0.0-beta5.tgz#c1cf32ee67362edf42d77cdf8d624cbd9d927d49"
+  dependencies:
+    react "^15.6.1"
+    react-icons "^2.2.5"
+
 limiter@^1.0.5:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/limiter/-/limiter-1.1.2.tgz#229d8055891c8b11af9e0ee5200e8e09bb3dcbeb"
@@ -5993,7 +6000,7 @@ react-transition-group@^1.2.0:
     prop-types "^15.5.6"
     warning "^3.0.0"
 
-react@^15.5.4:
+react@^15.5.4, react@^15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
   dependencies:

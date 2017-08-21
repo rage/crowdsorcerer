@@ -61,7 +61,7 @@ test('resetting state works correctly', (t) => {
   t.deepEqual(state.submission.status, STATUS_NONE);
   t.deepEqual(state.submission.message, '');
   t.deepEqual(state.submission.progress, undefined);
-  t.deepEqual(state.submission.result, { OK: false, error: [] });
+  t.deepEqual(state.submission.result, { OK: false, errors: [] });
 });
 
 test('update changes state according to data', (t) => {
@@ -70,7 +70,7 @@ test('update changes state according to data', (t) => {
     message: 'message',
     status: 'status',
     progress: 0.5,
-    result: { OK: false, error: '' },
+    result: { OK: false, errors: [] },
   };
   const state = reducer(
     { submission:

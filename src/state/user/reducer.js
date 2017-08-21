@@ -20,9 +20,7 @@ export default createReducer(initialState, {
   [LOGIN_STATE_CHANGED](state: State, action: LoginStateChangedAction): State {
     return {
       ...state,
-      ...{
-        loggedIn: action.loggedIn,
-      },
+      loggedIn: action.loggedIn,
     };
   },
 });

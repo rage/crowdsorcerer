@@ -10,12 +10,11 @@ export type Review = {
 }
 
 export type State = {
-  reviews: Array<FormValue<Review>>,
+  reviews: FormValue<Array<Review>>,
   comment: FormValue<string>,
-  sendingStatus: string,
   valid: boolean,
   showErrors: boolean,
-  reviewable: number,
+  reviewable: ?number,
 }
 
 export default reduceReducers(changes, validity);

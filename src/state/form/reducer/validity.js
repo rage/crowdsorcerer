@@ -15,6 +15,7 @@ import {
   ADD_TAG,
   REMOVE_TAG,
 } from 'state/form/actions';
+import { CHANGE_REVIEW_ERRORS_VISIBILITY } from 'state/review/actions';
 import type {
   AddTestFieldAction,
   RemoveTestFieldAction,
@@ -89,7 +90,7 @@ function modelSolutionErrors(modelSolution: FormValue<*>): Array<string> {
   return errors;
 }
 
-function checkNotBlank(formValue: FormValue<*>): Array<string> {
+export function checkNotBlank(formValue: FormValue<*>): Array<string> {
   const errors = [];
   if (formValue.get().length === 0) {
     errors.push(CANNOT_BE_BLANK_ERROR);
@@ -98,7 +99,8 @@ function checkNotBlank(formValue: FormValue<*>): Array<string> {
 }
 
 export default function (state: State, action: AnyAction) {
-  if (!isFormAction(action)) {
+  // form is validated when review send button pressed
+  if (!isFormAction(action) && action.type !== CHANGE_REVIEW_ERRORS_VISIBILITY) {
     return state;
   }
   const validators = [

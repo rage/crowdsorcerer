@@ -16,17 +16,17 @@ class ReviewInfo extends Component {
       <div className={`${prefixer('peer-review-content')} ${prefixer('peer-review-component')}`}>
         <div className={prefixer('peer-review-title')}>Vertaisarviointi</div>
         <div className={prefixer('peer-review-instructions')}>
-          Quisque dignissim quam eu mi lobortis, sed rutrum arcu sollicitudin. Aliquam hendrerit libero eu aliquet cursus.
+          TODO: Vertaisarviointiohjeistus.
         </div>
         <div className={prefixer('zip-load-buttons')}>
           <ZipLoadButton
             exerciseId={this.props.exerciseId}
-            zipType="model"
+            zipType="model_solution"
             message="Lataa mallivastauksen ZIP"
           />
           <ZipLoadButton
             exerciseId={this.props.exerciseId}
-            zipType="stub"
+            zipType="template"
             message="Lataa tehtäväpohjan ZIP"
           />
         </div>

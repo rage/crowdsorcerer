@@ -1,6 +1,4 @@
 @import "./review-info";
-@import "./review-questions";
-@import "./review-scale";
 @import "./common";
 
 .comment-field {
@@ -10,10 +8,14 @@
   min-height: 5rem;
 }
 
-
 .test-field-arrow {
   font-size: 40px;
   position: relative;
   top: -1rem;
   text-align: center;
+}
+
+.likert-scale {
+  margin: 0.2rem 0;
+  font-size: 18px;
 }

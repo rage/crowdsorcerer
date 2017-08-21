@@ -17,6 +17,7 @@ import {
   SET_FORM_STATE,
   ASSIGNMENT_INFO_RECEIVED,
   RESET_TO_BOILERPLATE,
+  SET_SHOW_CODE_TEMPLATE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -31,6 +32,7 @@ import type {
     RemoveTagAction,
     SetFormStateAction,
     AssignmentInfoReceivedAction,
+    SetShowCodeTemplateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -46,21 +48,26 @@ const initialState: State = {
         nodes: [
           {
             kind: 'text',
-            text: 'Initial initial initial initial initial initial',
+            text: '',
           },
         ],
       },
     ],
   }, { terse: true })),
-  modelSolution: undefined,
-  boilerplate: { code: '', readOnlyLines: [] },
-  inputOutput: [new IO(new FormValue('initial'), new FormValue('Hello initial'))],
-  solutionRows: [],
   valid: false,
   showErrors: false,
   tagSuggestions: [],
-  tags: new FormValue(['initial tag']),
-  readOnlyModelSolutionLines: [],
+  tags: new FormValue([]),
+  inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+  modelSolution: {
+    editableModelSolution: undefined,
+    boilerplate: { code: '', readOnlyLines: [] },
+    solutionRows: [],
+    readOnlyModelSolutionLines: [],
+    readOnlyModelSolution: undefined,
+    readOnlyCodeTemplate: undefined,
+    showTemplate: false,
+  },
 };
 
 export default createReducer(initialState, {
@@ -92,15 +99,15 @@ export default createReducer(initialState, {
   },
   [CHANGE_MODEL_SOLUTION](state: State, action: ModelSolutionChangeAction): State {
     // controls the movement of marked model solution rows when model solution is changed
-    const modelSolution = state.modelSolution;
+    const modelSolution = state.modelSolution.editableModelSolution;
     if (modelSolution === undefined || modelSolution === null) {
       return state;
     }
     // prevent the removal of the last editable line
     const change = action.change;
     const startLine = change.from.line;
-    let newSolutionRows = state.solutionRows;
-    let newReadOnlyRows = state.readOnlyModelSolutionLines;
+    let newSolutionRows = state.modelSolution.solutionRows;
+    let newReadOnlyRows = state.modelSolution.readOnlyModelSolutionLines;
     const rowsInOldModelSolution = modelSolution.get().split('\n');
     const rowsInNewModelSolution = action.modelSolution.split('\n');
     const solutionLengthDifferenceToNew = rowsInNewModelSolution.length - rowsInOldModelSolution.length;
@@ -120,7 +127,7 @@ export default createReducer(initialState, {
         }
         return row;
       });
-      newReadOnlyRows = state.readOnlyModelSolutionLines.map((row) => {
+      newReadOnlyRows = state.modelSolution.readOnlyModelSolutionLines.map((row) => {
         if (row >= startLine + solutionLengthDifference) {
           if (row - solutionLengthDifference >= 0) {
             return row - solutionLengthDifference;
@@ -133,13 +140,13 @@ export default createReducer(initialState, {
         // text was added
         // text contains the added text
       const solutionLengthDifference = change.origin === 'undo' ? change.text.length - 2 : change.text.length - 1; // :)
-      newSolutionRows = state.solutionRows.map((row) => {
+      newSolutionRows = state.modelSolution.solutionRows.map((row) => {
         if (row > startLine) {
           return row + solutionLengthDifference;
         }
         return row;
       });
-      newReadOnlyRows = state.readOnlyModelSolutionLines.map((row) => {
+      newReadOnlyRows = state.modelSolution.readOnlyModelSolutionLines.map((row) => {
         if (row >= startLine) {
           return row + solutionLengthDifference;
         }
@@ -148,8 +155,9 @@ export default createReducer(initialState, {
     }
     return {
       ...state,
-      ...{
-        modelSolution: new FormValue(action.modelSolution),
+      modelSolution: {
+        ...state.modelSolution,
+        editableModelSolution: new FormValue(action.modelSolution),
         solutionRows: newSolutionRows,
         readOnlyModelSolutionLines: newReadOnlyRows,
       },
@@ -158,9 +166,7 @@ export default createReducer(initialState, {
   [CHANGE_ASSIGNMENT](state: State, action: AssignmentChangeAction): State {
     return {
       ...state,
-      ...{
-        assignment: new FormValue(action.assignment),
-      },
+      assignment: new FormValue(action.assignment),
     };
   },
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
@@ -173,9 +179,7 @@ export default createReducer(initialState, {
       });
     return {
       ...state,
-      ...{
-        inputOutput: newInputOutput,
-      },
+      inputOutput: newInputOutput,
     };
   },
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
@@ -188,37 +192,35 @@ export default createReducer(initialState, {
       });
     return {
       ...state,
-      ...{
-        inputOutput: newInputOutput,
-      },
+      inputOutput: newInputOutput,
     };
   },
   [ADD_HIDDEN_ROW](state: State, action: AddHiddenRowAction): State {
-    if (state.readOnlyModelSolutionLines.includes(action.row)) {
+    if (state.modelSolution.readOnlyModelSolutionLines.includes(action.row)) {
       return state;
     }
     return {
       ...state,
-      ...{
-        solutionRows: [...state.solutionRows, action.row],
+      modelSolution: {
+        ...state.modelSolution,
+        solutionRows: [...state.modelSolution.solutionRows, action.row],
       },
     };
   },
   [DELETE_HIDDEN_ROW](state: State, action: DeleteHiddenRowAction): State {
-    const i = state.solutionRows.findIndex(x => x === action.row);
+    const i = state.modelSolution.solutionRows.findIndex(x => x === action.row);
     return {
       ...state,
-      ...{
-        solutionRows: [...state.solutionRows.slice(0, i), ...state.solutionRows.slice(i + 1)],
+      modelSolution: {
+        ...state.modelSolution,
+        solutionRows: [...state.modelSolution.solutionRows.slice(0, i), ...state.modelSolution.solutionRows.slice(i + 1)],
       },
     };
   },
   [CHANGE_FORM_ERRORS_VISIBILITY](state: State): State {
     return {
       ...state,
-      ...{
-        showErrors: !state.showErrors,
-      },
+      showErrors: !state.showErrors,
     };
   },
   [ADD_TAG](state: State, action: AddTagAction): State {
@@ -228,29 +230,27 @@ export default createReducer(initialState, {
     }
     return {
       ...state,
-      ...{
-        tags: new FormValue([...state.tags.get(), newTag]),
-      },
+      tags: new FormValue([...state.tags.get(), newTag]),
     };
   },
   [REMOVE_TAG](state: State, action: RemoveTagAction): State {
     return {
       ...state,
-      ...{
-        tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
-      },
+      tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
     };
   },
   [SET_FORM_STATE](state: State, action: SetFormStateAction): State {
     return {
       ...state,
-      ...{
-        valid: true,
-        assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
-        showErrors: false,
-        modelSolution: action.newState.modelSolution,
-        inputOutput: action.newState.inputOutput,
-        tags: new FormValue([]),
+      valid: false,
+      assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
+      showErrors: false,
+      inputOutput: action.newState.inputOutput,
+      tags: new FormValue([]),
+      modelSolution: {
+        ...state.modelSolution,
+        readOnlyModelSolution: action.newState.readOnlyModelSolution,
+        readOnlyCodeTemplate: action.newState.readOnlyCodeTemplate,
       },
     };
   },
@@ -264,21 +264,33 @@ export default createReducer(initialState, {
     const plate = cleanPlate.join('\n');
     return {
       ...state,
-      ...{
-        tagSuggestions: action.tagSuggestions,
-        boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
-        modelSolution: new FormValue(plate),
+      tagSuggestions: action.tagSuggestions,
+      modelSolution: {
+        ...state.modelSolution,
+        editableModelSolution: new FormValue(plate),
         readOnlyModelSolutionLines: action.readOnlyLines,
+        solutionRows: [],
+        boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
       },
     };
   },
   [RESET_TO_BOILERPLATE](state: State): State {
     return {
       ...state,
-      ...{
-        modelSolution: new FormValue(state.boilerplate.code),
-        readOnlyModelSolutionLines: state.boilerplate.readOnlyLines,
+      modelSolution: {
+        ...state.modelSolution,
+        editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
+        readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
         solutionRows: [],
+      },
+    };
+  },
+  [SET_SHOW_CODE_TEMPLATE](state: State, action: SetShowCodeTemplateAction): State {
+    return {
+      ...state,
+      modelSolution: {
+        ...state.modelSolution,
+        showTemplate: action.show,
       },
     };
   },

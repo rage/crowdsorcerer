@@ -8,9 +8,10 @@ import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/reducer';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
+import applicationStateNotComplete from 'utils/application-state-not-complete';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
-import { setReviewableExerciseAction } from './review';
+import { setReviewableExerciseAction, resetReviewableAction } from './review';
 
 export type ThunkArgument = {
   api: Api
@@ -39,10 +40,15 @@ function saveStateInLocalStorage(storageName: string) {
 }
 
 function loadStateFromLocalStorage(storageName: string) {
-  if (!localStorage[storageName]) {
+  const storedState = localStorage[storageName];
+  if (!storedState) {
     return undefined;
   }
-  const state = JSON.parse(localStorage[storageName]);
+  const state = JSON.parse(storedState);
+  if (applicationStateNotComplete(state)) {
+    return undefined;
+  }
+  console.info('state from localstorage');
   const assignmentValue = Raw.deserialize(state.form.assignment.value, { terse: true });
   const ios = state.form.inputOutput.map((io) => {
     const input = new FormValue(io.input.value, io.input.errors);
@@ -56,16 +62,24 @@ function loadStateFromLocalStorage(storageName: string) {
         ...state.form,
         ...{
           assignment: new FormValue(assignmentValue, state.form.assignment.errors),
-          modelSolution: new FormValue(state.form.modelSolution.value, state.form.modelSolution.errors),
           inputOutput: ios,
           tags: new FormValue(state.form.tags.value, state.form.tags.errors),
+          modelSolution: {
+            ...state.form.modelSolution,
+            ...{
+              editableModelSolution: state.form.modelSolution.editableModelSolution
+                ? new FormValue(state.form.modelSolution.editableModelSolution.value,
+                  state.form.modelSolution.editableModelSolution.errors)
+                : undefined,
+            },
+          },
         },
       },
       review: {
         ...state.review,
         ...{
           comment: new FormValue(state.review.comment.value, state.review.errors),
-          reviews: state.review.reviews.map(review => new FormValue(review.value, review.errors)),
+          reviews: new FormValue(state.review.reviews.value, state.review.reviews.errors),
         },
       },
     },
@@ -73,7 +87,9 @@ function loadStateFromLocalStorage(storageName: string) {
 }
 
 export default function makeStore(assignment: string, review: boolean) {
-  const storageName = `crowdsorcerer-redux-state-${assignment}`;
+  let storageName = `crowdsorcerer-redux-state-${assignment}`;
+  const peerReview = review ? 'review' : 'exercise';
+  storageName = `${storageName}-${peerReview}`;
   const assignmentId = parseInt(assignment, 10);
   const api = new Api();
   /* eslint-disable no-underscore-dangle */
@@ -90,7 +106,8 @@ export default function makeStore(assignment: string, review: boolean) {
     store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());
-  } else if (store.getState().form.modelSolution === undefined) {
+  } else if (applicationStateNotComplete(store.getState())) {
+    store.dispatch(resetReviewableAction);
     store.dispatch(getAssignmentInfoAction());
   }
   api.syncStore(store);
