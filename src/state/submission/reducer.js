@@ -17,16 +17,21 @@ import type {
     SetExerciseAction,
 } from 'state/submission/actions';
 
-export type ResultType = {
-  OK: boolean, error: Array<string>,
-}
+export type ErrorMessage = {
+  header: string,
+  messages: string,
+};
+
+export type ErrorResult = {
+  OK: boolean, errors: Array<ErrorMessage>,
+};
 
 export type State = {
   exerciseId: number,
   status: string,
   message: string,
   progress: number,
-  result: ResultType,
+  result: ErrorResult,
 };
 
 export const STATUS_FINISHED = 'finished';
@@ -45,7 +50,7 @@ const initialState = {
   status: STATUS_NONE,
   message: '',
   progress: undefined,
-  result: { OK: false, error: [] },
+  result: { OK: false, errors: [] },
   exerciseId: undefined,
 };
 
@@ -53,95 +58,89 @@ export default createReducer(initialState, {
   [POST_EXERCISE](state: State): State {
     return {
       ...state,
-      ...{
-        progress: 0,
-        message: CONNECTION_POST_SENDING_MSG,
-        status: STATUS_IN_PROGRESS,
-      },
+      progress: 0,
+      message: CONNECTION_POST_SENDING_MSG,
+      status: STATUS_IN_PROGRESS,
     };
   },
   [POST_SUCCESSFUL](state: State): State {
     return {
       ...state,
-      ...{
-        message: CONNECTION_POST_SUCCESSFUL_MSG,
-        status: STATUS_IN_PROGRESS,
-      },
+      message: CONNECTION_POST_SUCCESSFUL_MSG,
+      status: STATUS_IN_PROGRESS,
     };
   },
   [POST_UNSUCCESSFUL](state: State): State {
     return {
       ...state,
-      ...{
-        message: CONNECTION_POST_UNSUCCESSFUL_MSG,
-        status: STATUS_ERROR,
-      },
+      message: CONNECTION_POST_UNSUCCESSFUL_MSG,
+      status: STATUS_ERROR,
     };
   },
   [AUTHENTICATION_ERROR](state: State): State {
     return {
       ...state,
-      ...{
-        message: AUTHENTICATION_ERROR_MSG,
-        status: STATUS_ERROR,
-      },
+      message: AUTHENTICATION_ERROR_MSG,
+      status: STATUS_ERROR,
     };
   },
   [UPDATE_SUBMISSION_STATUS](state: State, action: UpdateSubmissionStatusAction): State {
+    const errors = action.data.result.errors.map((obj) => {
+      const header = obj.header;
+      const errorMessages = obj.errors;
+      return {
+        header,
+        messages: errorMessages
+        .filter(line => !line.replace(/\s+/g, '').startsWith('[mkdir]'))
+        .map(line => line.replace(/\[javac\]/g, ''))
+        .join('\n'),
+      };
+    });
     return {
       ...state,
-      ...{
-        message: action.data.message,
-        progress: action.data.progress,
-        status: action.data.status,
-        result: action.data.result,
+      message: action.data.message,
+      progress: action.data.progress,
+      status: action.data.status,
+      result: {
+        OK: action.data.result.OK,
+        errors,
       },
     };
   },
   [FINISH](state: State): State {
     return {
       ...state,
-      ...{
-        result: { OK: true, error: [] },
-        status: STATUS_FINISHED,
-      },
+      result: { OK: true, errors: [] },
+      status: STATUS_FINISHED,
     };
   },
   [RESET_SUBMISSION_STATUS](state: State): State {
     return {
       ...state,
-      ...{
-        message: '',
-        progress: undefined,
-        status: STATUS_NONE,
-        result: { OK: false, error: [] },
-      },
+      message: '',
+      progress: undefined,
+      status: STATUS_NONE,
+      result: { OK: false, errors: [] },
     };
   },
   [CONNECTION_TERMINATED_PREMATURELY](state: State): State {
     return {
       ...state,
-      ...{
-        message: CONNECTION_TERMINATED_MSG,
-        status: STATUS_ERROR,
-      },
+      message: CONNECTION_TERMINATED_MSG,
+      status: STATUS_ERROR,
     };
   },
   [INVALID_DATA_ERROR](state: State): State {
     return {
       ...state,
-      ...{
-        message: INTERNAL_ERROR_MSG,
-        status: STATUS_ERROR,
-      },
+      message: INTERNAL_ERROR_MSG,
+      status: STATUS_ERROR,
     };
   },
   [SET_EXERCISE_ID](state: State, action: SetExerciseAction): State {
     return {
       ...state,
-      ...{
-        exerciseId: action.exerciseId,
-      },
+      exerciseId: action.exerciseId,
     };
   },
 });

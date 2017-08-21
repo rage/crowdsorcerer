@@ -40,3 +40,15 @@
   display: flex;
   justify-content: space-between;
 }
+
+.container {
+  position: relative;
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  &.center {
+    display: flex;
+    justify-content: center;
+  }
+}
+

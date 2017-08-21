@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import type { ResultType } from 'state/submission/reducer';
+import type { ErrorResult } from 'state/submission/reducer';
 import { STATUS_FINISHED, STATUS_ERROR } from 'state/submission/reducer';
 
 type Props = {
   status: string,
-  result: ResultType,
+  result: ErrorResult,
 };
 
 export default ({ status, result }: Props) => {

@@ -26,7 +26,11 @@ class App extends Component {
       }
       return <div className={prefixer('container')}>Sinun on oltava kirjautuneena nähdäksesi tämän sisällön.</div>;
     }
-    return <div className={prefixer('container')}>Loading</div>;
+    return (
+      <div className={`${prefixer('container')} ${prefixer('center')}`}>
+        <div className={prefixer('spinner')} />
+      </div>
+    );
   }
 }
 

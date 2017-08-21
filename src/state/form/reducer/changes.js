@@ -17,7 +17,6 @@ import {
   SET_FORM_STATE,
   ASSIGNMENT_INFO_RECEIVED,
   RESET_TO_BOILERPLATE,
-  SET_BOILERPLATE,
   SET_SHOW_CODE_TEMPLATE,
 } from 'state/form/actions';
 import type {
@@ -33,7 +32,6 @@ import type {
     RemoveTagAction,
     SetFormStateAction,
     AssignmentInfoReceivedAction,
-    SetBoilerplateAction,
     SetShowCodeTemplateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
@@ -157,24 +155,18 @@ export default createReducer(initialState, {
     }
     return {
       ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            editableModelSolution: new FormValue(action.modelSolution),
-            solutionRows: newSolutionRows,
-            readOnlyModelSolutionLines: newReadOnlyRows,
-          },
-        },
+      modelSolution: {
+        ...state.modelSolution,
+        editableModelSolution: new FormValue(action.modelSolution),
+        solutionRows: newSolutionRows,
+        readOnlyModelSolutionLines: newReadOnlyRows,
       },
     };
   },
   [CHANGE_ASSIGNMENT](state: State, action: AssignmentChangeAction): State {
     return {
       ...state,
-      ...{
-        assignment: new FormValue(action.assignment),
-      },
+      assignment: new FormValue(action.assignment),
     };
   },
   [CHANGE_TEST_INPUT](state: State, action: TestInputChangeAction): State {
@@ -187,9 +179,7 @@ export default createReducer(initialState, {
       });
     return {
       ...state,
-      ...{
-        inputOutput: newInputOutput,
-      },
+      inputOutput: newInputOutput,
     };
   },
   [CHANGE_TEST_OUTPUT](state: State, action: TestOutputChangeAction): State {
@@ -202,9 +192,7 @@ export default createReducer(initialState, {
       });
     return {
       ...state,
-      ...{
-        inputOutput: newInputOutput,
-      },
+      inputOutput: newInputOutput,
     };
   },
   [ADD_HIDDEN_ROW](state: State, action: AddHiddenRowAction): State {
@@ -213,13 +201,9 @@ export default createReducer(initialState, {
     }
     return {
       ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            solutionRows: [...state.modelSolution.solutionRows, action.row],
-          },
-        },
+      modelSolution: {
+        ...state.modelSolution,
+        solutionRows: [...state.modelSolution.solutionRows, action.row],
       },
     };
   },
@@ -227,22 +211,16 @@ export default createReducer(initialState, {
     const i = state.modelSolution.solutionRows.findIndex(x => x === action.row);
     return {
       ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            solutionRows: [...state.modelSolution.solutionRows.slice(0, i), ...state.modelSolution.solutionRows.slice(i + 1)],
-          },
-        },
+      modelSolution: {
+        ...state.modelSolution,
+        solutionRows: [...state.modelSolution.solutionRows.slice(0, i), ...state.modelSolution.solutionRows.slice(i + 1)],
       },
     };
   },
   [CHANGE_FORM_ERRORS_VISIBILITY](state: State): State {
     return {
       ...state,
-      ...{
-        showErrors: !state.showErrors,
-      },
+      showErrors: !state.showErrors,
     };
   },
   [ADD_TAG](state: State, action: AddTagAction): State {
@@ -252,35 +230,27 @@ export default createReducer(initialState, {
     }
     return {
       ...state,
-      ...{
-        tags: new FormValue([...state.tags.get(), newTag]),
-      },
+      tags: new FormValue([...state.tags.get(), newTag]),
     };
   },
   [REMOVE_TAG](state: State, action: RemoveTagAction): State {
     return {
       ...state,
-      ...{
-        tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
-      },
+      tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
     };
   },
   [SET_FORM_STATE](state: State, action: SetFormStateAction): State {
     return {
       ...state,
-      ...{
-        valid: false,
-        assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
-        showErrors: false,
-        inputOutput: action.newState.inputOutput,
-        tags: new FormValue([]),
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            readOnlyModelSolution: action.newState.readOnlyModelSolution,
-            readOnlyCodeTemplate: action.newState.readOnlyCodeTemplate,
-          },
-        },
+      valid: false,
+      assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
+      showErrors: false,
+      inputOutput: action.newState.inputOutput,
+      tags: new FormValue([]),
+      modelSolution: {
+        ...state.modelSolution,
+        readOnlyModelSolution: action.newState.readOnlyModelSolution,
+        readOnlyCodeTemplate: action.newState.readOnlyCodeTemplate,
       },
     };
   },
@@ -294,67 +264,33 @@ export default createReducer(initialState, {
     const plate = cleanPlate.join('\n');
     return {
       ...state,
-      ...{
-        tagSuggestions: action.tagSuggestions,
+      tagSuggestions: action.tagSuggestions,
+      modelSolution: {
+        ...state.modelSolution,
+        editableModelSolution: new FormValue(plate),
+        readOnlyModelSolutionLines: action.readOnlyLines,
+        solutionRows: [],
         boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            editableModelSolution: new FormValue(plate),
-            readOnlyModelSolutionLines: action.readOnlyLines,
-            solutionRows: [],
-          },
-        },
       },
     };
   },
   [RESET_TO_BOILERPLATE](state: State): State {
     return {
       ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
-            readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
-            solutionRows: [],
-          },
-        },
-      },
-    };
-  },
-  [SET_BOILERPLATE](state: State, action: SetBoilerplateAction): State {
-    const cleanPlate = [];
-    action.boilerplate.split('\n').forEach((row) => {
-      if (!isReadOnlyTag(row)) {
-        cleanPlate.push(row);
-      }
-    });
-    const plate = cleanPlate.join('\n');
-    return {
-      ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
-            editableModelSolution: new FormValue(plate),
-            readOnlyModelSolutionLines: action.readOnlyLines,
-          },
-        },
+      modelSolution: {
+        ...state.modelSolution,
+        editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
+        readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
+        solutionRows: [],
       },
     };
   },
   [SET_SHOW_CODE_TEMPLATE](state: State, action: SetShowCodeTemplateAction): State {
     return {
       ...state,
-      ...{
-        modelSolution: {
-          ...state.modelSolution,
-          ...{
-            showTemplate: action.show,
-          },
-        },
+      modelSolution: {
+        ...state.modelSolution,
+        showTemplate: action.show,
       },
     };
   },

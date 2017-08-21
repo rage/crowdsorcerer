@@ -141,15 +141,6 @@ export function submitFormAction() {
   };
 }
 
-export function setBoilerplateAction(boilerplate: string) {
-  const readOnlyLines = getReadOnlyLines(boilerplate);
-  return {
-    boilerplate,
-    readOnlyLines,
-    type: SET_BOILERPLATE,
-  };
-}
-
 export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyLines = getReadOnlyLines(boilerplate);
@@ -300,12 +291,6 @@ export type SetFormStateAction = {
 
 export type SetTagSuggestions = {
   tagSuggestions: Array<string>,
-  type: string,
-};
-
-export type SetBoilerplateAction = {
-  boilerplate: string,
-  readOnlyLines: number[],
   type: string,
 };
 

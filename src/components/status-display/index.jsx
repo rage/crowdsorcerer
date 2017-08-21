@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import type { ResultType } from 'state/submission/reducer';
+import type { ErrorResult } from 'state/submission/reducer';
 import prefixer from 'utils/class-name-prefixer';
 import { resetSubmissionStatusAction } from 'state/submission';
 import ProgressBar from './progress-bar';
@@ -16,7 +16,7 @@ class StatusDisplay extends Component {
     sendingStatusMessage: string,
     sendingStatusProgress: number,
     status: string,
-    result: ResultType,
+    result: ErrorResult,
     showProgress: boolean,
   }
 
@@ -26,11 +26,9 @@ class StatusDisplay extends Component {
       statusDisplay = prefixer('sending-status');
     }
     let finishButton = prefixer('hidden');
-    let errors = [];
     let sendingInfo = prefixer('sending-info');
     if (this.props.status !== STATUS_IN_PROGRESS) {
       finishButton = prefixer('info-button');
-      errors = this.props.result.error ? this.props.result.error : errors;
       if (this.props.status === STATUS_FINISHED) {
         const resultInfo = this.props.result.OK ? prefixer('all-passed') : prefixer('compile-error');
         sendingInfo += ` ${resultInfo}`;
@@ -38,21 +36,23 @@ class StatusDisplay extends Component {
         sendingInfo = `${sendingInfo} ${prefixer('internal-error')}`;
       }
     }
-    let errorKey = '';
+    let errorMessageKey = '';
     return (
       <div className={statusDisplay}>
         <div className={sendingInfo}>
           <div className={prefixer('status-message')}>
             {this.props.sendingStatusMessage}
           </div>
-          <div className={prefixer('error-messages')}>
-            {errors.map((e) => {
-              errorKey = errorKey.concat(e);
-              let error = JSON.stringify(e);
-              error = error.substring(1, error.length - 1);
-              return <div key={`${errorKey}`} className={prefixer('error-message')}>{error}</div>;
+          <div className={prefixer('error-info')}>
+            {this.props.result.errors.map((e) => {
+              errorMessageKey += ` ${e.messages}`;
+              return (
+                <div key={errorMessageKey}>
+                  <div className={prefixer('error-header')}>{e.header}</div>
+                  <div className={prefixer('error-message')}>{e.messages}</div>
+                </div>);
             },
-            )}
+          )}
           </div>
           <div className={prefixer('status-bottom')}>
             <div className={prefixer('result-container')}>

@@ -43,25 +43,19 @@ export default createReducer(initialState, {
     });
     return {
       ...state,
-      ...{
-        reviews: new FormValue(reviews),
-      },
+      reviews: new FormValue(reviews),
     };
   },
   [CHANGE_COMMENT](state: State, action: ChangeCommentAction): State {
     return {
       ...state,
-      ...{
-        comment: new FormValue(action.comment),
-      },
+      comment: new FormValue(action.comment),
     };
   },
   [CHANGE_REVIEW_ERRORS_VISIBILITY](state: State): State {
     return {
       ...state,
-      ...{
-        showErrors: true,
-      },
+      showErrors: true,
     };
   },
   [SET_REVIEW_QUESTIONS](state: State, action: SetReviewQuestions): State {
@@ -71,25 +65,19 @@ export default createReducer(initialState, {
       .map(question => ({ question, review: answers.get(question) ? answers.get(question) : undefined }));
     return {
       ...state,
-      ...{
-        reviews: new FormValue(reviews),
-      },
+      reviews: new FormValue(reviews),
     };
   },
   [SET_REVIEWABLE_EXERCISE](state: State, action: SetReviewableExerciseAction): State {
     return {
       ...state,
-      ...{
-        reviewable: action.exerciseId,
-      },
+      reviewable: action.exerciseId,
     };
   },
   [RESET_REVIEWABLE](state: State): State {
     return {
       ...state,
-      ...{
-        reviewable: -1,
-      },
+      reviewable: undefined,
     };
   },
 });
