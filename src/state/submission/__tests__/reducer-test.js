@@ -2,7 +2,7 @@
 import test from 'ava';
 import reducers from 'state/reducer';
 import { POST_EXERCISE, POST_UNSUCCESSFUL, RESET_SUBMISSION_STATUS, UPDATE_SUBMISSION_STATUS } from 'state/submission';
-import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_ERROR } from 'state/submission/reducer';
+import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_ERROR } from 'state/submission/';
 
 test('POST changes status to in progress', (t) => {
   const reducer = reducers(1);

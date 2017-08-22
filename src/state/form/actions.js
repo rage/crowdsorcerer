@@ -12,7 +12,7 @@ import {
   authenticationError,
   setExerciseAction,
   openWebSocketConnectionAction,
-} from 'state/submission';
+} from 'state/submission/actions';
 import getReadOnlyLines from 'utils/get-read-only-lines';
 
 export const ADD_TEST_FIELD = 'ADD_TEST_FIELD';
@@ -33,6 +33,7 @@ export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
 export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
+export const FORM_DONE = 'FORM_DONE';
 
 export function addTestFieldAction() {
   return {
@@ -222,6 +223,12 @@ export function setShowCodeTemplateAction(show: boolean) {
   };
 }
 
+export function formDoneAction() {
+  return {
+    type: FORM_DONE,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -300,8 +307,8 @@ export type AssignmentInfoReceivedAction = {
   tagSuggestions: Array<string>,
   type: string,
 };
+
 export type SetShowCodeTemplateAction = {
   show: boolean,
   type: string,
 };
-

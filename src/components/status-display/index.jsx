@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/reducer';
+import { STATUS_NONE, STATUS_IN_PROGRESS, STATUS_FINISHED } from 'state/submission/';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import type { ErrorResult } from 'state/submission/reducer';

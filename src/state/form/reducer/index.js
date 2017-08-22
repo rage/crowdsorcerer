@@ -20,7 +20,7 @@ export type Change = {
   origin: string,
 };
 
-export type TagType = {
+export type Tag = {
   name: string,
 };
 
@@ -42,7 +42,8 @@ export type State = {
       code: string,
       readOnlyLines: number[]
     },
-  }
+  },
+  done: boolean,
 };
 
 export default reduceReducers(changes, validity);

@@ -148,7 +148,10 @@ export default class Api {
   }
 
   _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {
-    const answers = formValueToObject(reviewState.reviews);
+    let answers = [];
+    if (reviewState.reviews) {
+      answers = formValueToObject(reviewState.reviews);
+    }
     return (
     {
       oauth_token: this.oauthToken(),

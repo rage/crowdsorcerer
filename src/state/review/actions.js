@@ -7,7 +7,7 @@ import {
   postUnsuccessfulAction,
   finishAction,
   invalidDataErrorAction,
-} from 'state/submission';
+} from 'state/submission/actions';
 import { setFormState, setTagSuggestions } from 'state/form';
 
 export const GIVE_REVIEW = 'GIVE_REVIEW';
@@ -17,6 +17,7 @@ export const SET_REVIEW_QUESTIONS = 'SET_REVIEW_QUESTIONS';
 export const SET_REVIEWABLE_EXERCISE = 'SET_REVIEWABLE_EXERCISE';
 export const SET_FORM_STATE = 'SET_FORM_STATE';
 export const RESET_REVIEWABLE = 'RESET_REVIEWABLE';
+export const REVIEW_DONE = 'REVIEW_DONE';
 
 export function giveReviewAction(question: string, value: number) {
   return {
@@ -72,14 +73,22 @@ export function setReviewableExerciseAction() {
   };
 }
 
+export function reviewDoneAction() {
+  return {
+    type: REVIEW_DONE,
+  };
+}
+
 export function submitReviewAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    console.info('submit');
     dispatch(startSendAction());
     api.postReview(getState().review, getState().form)
     .then((resp) => {
       console.info(resp);
       dispatch(postSuccessfulAction());
       dispatch(finishAction());
+      dispatch(reviewDoneAction());
     }, (error) => {
       dispatch(postUnsuccessfulAction(error.message));
     });

@@ -18,6 +18,7 @@ import {
   ASSIGNMENT_INFO_RECEIVED,
   RESET_TO_BOILERPLATE,
   SET_SHOW_CODE_TEMPLATE,
+  FORM_DONE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -68,6 +69,7 @@ const initialState: State = {
     readOnlyCodeTemplate: undefined,
     showTemplate: false,
   },
+  done: false,
 };
 
 export default createReducer(initialState, {
@@ -139,7 +141,7 @@ export default createReducer(initialState, {
     } else if (solutionLengthDifferenceToNew > 0) {
         // text was added
         // text contains the added text
-      const solutionLengthDifference = change.origin === 'undo' ? change.text.length - 2 : change.text.length - 1; // :)
+      const solutionLengthDifference = change.text.length - 1;
       newSolutionRows = state.modelSolution.solutionRows.map((row) => {
         if (row > startLine) {
           return row + solutionLengthDifference;
@@ -292,6 +294,12 @@ export default createReducer(initialState, {
         ...state.modelSolution,
         showTemplate: action.show,
       },
+    };
+  },
+  [FORM_DONE](state: State): State {
+    return {
+      ...state,
+      done: true,
     };
   },
 });
