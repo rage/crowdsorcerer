@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ReactTags from 'react-tag-autocomplete';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import type { TagType } from 'state/form/reducer';
+import type { Tag } from 'state/form/reducer';
 import { addTagAction, removeTagAction } from 'state/form/actions';
 import prefixer from 'utils/class-name-prefixer';
 import FormValue from 'domain/form-value';
@@ -14,7 +14,7 @@ class ExerciseTags extends Component {
   props: {
     tags: FormValue<Array<string>>,
     tagSuggestions: Array<string>,
-    handleAddTag: (TagType) => void,
+    handleAddTag: (Tag) => void,
     handleRemoveTag: (string) => void,
     showErrors: boolean,
   }
@@ -48,7 +48,7 @@ function mapStateToProps(state: State) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    handleAddTag(tag: TagType) {
+    handleAddTag(tag: Tag) {
       dispatch(addTagAction(tag.name));
     },
     handleRemoveTag(tagIndex: number) {

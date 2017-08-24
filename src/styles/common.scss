@@ -52,3 +52,11 @@
   }
 }
 
+.check-mark {
+  float: right;
+  &:after {
+    content: "\2713";
+    font-size: 40px;
+    color: $green;
+  }
+}

@@ -6,6 +6,9 @@ const START_LOCK = '// START LOCK';
 const END_LOCK = '// END LOCK';
 
 export default (code: string) => {
+  if (code.trim() === '') {
+    return [];
+  }
   const readOnlyLines = [];
   const lines = code.split('\n');
   let amountOfTags = 0;

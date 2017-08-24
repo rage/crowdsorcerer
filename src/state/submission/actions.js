@@ -2,6 +2,13 @@
 import Api from 'utils/api/index';
 import type { ThunkArgument } from 'state/store';
 import type { Dispatch, GetState } from 'state/reducer';
+import { formDoneAction } from 'state/form/actions';
+import type { ErrorMessage } from './index';
+
+export const STATUS_FINISHED = 'finished';
+export const STATUS_ERROR = 'error';
+export const STATUS_IN_PROGRESS = 'in progress';
+export const STATUS_NONE = '';
 
 export const POST_EXERCISE = 'POST_EXERCISE';
 export const POST_SUCCESSFUL = 'POST_SUCCESSFUL';
@@ -52,7 +59,7 @@ export function authenticationError() {
 }
 
 export function updateSubmissionStatusAction(data: Object, api: Api) {
-  if (data.status === 'finished') {
+  if (data.status === STATUS_FINISHED) {
     api.deleteSubscription();
   }
   return {
@@ -79,12 +86,27 @@ export function invalidDataErrorAction() {
   };
 }
 
+export type ResultData = {
+  status: string,
+  message: string,
+  progress: number,
+  result: {
+    OK: boolean,
+    errors: Array<ErrorMessage>,
+  },
+};
+
 export function openWebSocketConnectionAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    api.createSubscription((data: Object) => {
+    api.createSubscription((data: ResultData) => {
       dispatch(updateSubmissionStatusAction(data, api));
+      if (data.status === STATUS_FINISHED && data.result.OK) {
+        if (getState().reviewable === undefined) {
+          dispatch(formDoneAction());
+        }
+      }
     }, () => {
-      if (!getState().submission.finished) {
+      if (getState().submission.status !== STATUS_FINISHED) {
         dispatch(connectionTerminatedPrematurelyAction());
       }
     }, () => {
@@ -104,21 +126,6 @@ export type PostSuccessfulAction = {
 export type PostUnsuccessfulAction = {
   message: string,
   type: string
-};
-
-export type ErrorData = {
-  header: string,
-  errors: Array<string>,
-};
-
-export type ResultData = {
-  status: string,
-  message: string,
-  progress: number,
-  result: {
-    OK: boolean,
-    errors: Array<ErrorData>,
-  },
 };
 
 export type UpdateSubmissionStatusAction = {
@@ -142,7 +149,7 @@ export type AuthenticationErrorAction = {
   type: string
 };
 
-export type Finish = {
+export type FinishAction = {
   type: string
 };
 

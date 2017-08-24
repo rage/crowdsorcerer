@@ -2,7 +2,7 @@
 import React from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import type { ErrorResult } from 'state/submission/reducer';
-import { STATUS_FINISHED, STATUS_ERROR } from 'state/submission/reducer';
+import { STATUS_FINISHED, STATUS_ERROR } from 'state/submission/';
 
 type Props = {
   status: string,

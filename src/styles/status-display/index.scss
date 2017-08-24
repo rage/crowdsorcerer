@@ -92,15 +92,6 @@
   align-items: center;
 }
 
-
-.check-mark {
-  &:after {
-    content: "\2713";
-    font-size: 40px;
-    color: $green;
-  }
-}
-
 .sad-face {
   &:after {
     content: "\2639";

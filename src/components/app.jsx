@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import prefixer from 'utils/class-name-prefixer';
 import type { State } from 'state/reducer';
+import type Review from 'state/review';
+import type FormValue from 'state/form';
 import Form from './assignment-form';
-import Review from './review';
+import PeerReview from './review';
+import CheckMark from './check-mark';
 
 class App extends Component {
 
@@ -12,15 +15,20 @@ class App extends Component {
     review: boolean,
     loggedIn: () => void,
     editableModelSolution: ?string,
+    reviewable: number,
+    formDone: boolean,
+    reviewDone: boolean,
+    reviews: FormValue<Array<Review>>,
   }
 
   render() {
-    if (this.props.editableModelSolution !== undefined ||
-      (this.props.readOnlyCodeTemplate !== undefined && this.props.readOnlyModelSolution !== undefined)) {
+    if ((!this.props.review && this.props.editableModelSolution !== undefined) ||
+      (this.props.review && this.props.reviews !== undefined)) {
       if (this.props.loggedIn) {
         return (
           <div className={prefixer('container')}>
-            {this.props.review ? <Review /> : <Form />}
+            <CheckMark reviewable={this.props.reviewable} formDone={this.props.formDone} reviewDone={this.props.reviewDone} />
+            {this.props.review ? <PeerReview /> : <Form />}
           </div>
         );
       }
@@ -41,6 +49,10 @@ function mapStateToProps(state: State) {
     editableModelSolution: state.form.modelSolution.editableModelSolution,
     readOnlyModelSolution: state.form.modelSolution.readOnlyModelSolution,
     readOnlyCodeTemplate: state.form.modelSolution.readOnlyCodeTemplate,
+    reviewable: state.review.reviewable,
+    formDone: state.form.done,
+    reviewDone: state.review.done,
+    reviews: state.review.reviews,
   };
 }
 

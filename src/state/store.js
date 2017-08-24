@@ -5,7 +5,7 @@ import Api from 'utils/api';
 import { Raw } from 'slate';
 import FormValue from 'domain/form-value';
 import IO from 'domain/io';
-import { STATUS_NONE } from 'state/submission/reducer';
+import { STATUS_NONE } from 'state/submission/';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
 import applicationStateNotComplete from 'utils/application-state-not-complete';
@@ -23,15 +23,11 @@ function saveStateInLocalStorage(storageName: string) {
     const state = store.getState();
     const saveableState = {
       ...state,
-      ...{
-        form: {
-          ...state.form,
-          ...{
-            assignment: {
-              value: Raw.serialize(state.form.assignment.get(), { terse: true }),
-              errors: state.form.assignment.errors,
-            },
-          },
+      form: {
+        ...state.form,
+        assignment: {
+          value: Raw.serialize(state.form.assignment.get(), { terse: true }),
+          errors: state.form.assignment.errors,
         },
       },
     };
@@ -57,31 +53,23 @@ function loadStateFromLocalStorage(storageName: string) {
   });
   return {
     ...state,
-    ...{
-      form: {
-        ...state.form,
-        ...{
-          assignment: new FormValue(assignmentValue, state.form.assignment.errors),
-          inputOutput: ios,
-          tags: new FormValue(state.form.tags.value, state.form.tags.errors),
-          modelSolution: {
-            ...state.form.modelSolution,
-            ...{
-              editableModelSolution: state.form.modelSolution.editableModelSolution
+    form: {
+      ...state.form,
+      assignment: new FormValue(assignmentValue, state.form.assignment.errors),
+      inputOutput: ios,
+      tags: new FormValue(state.form.tags.value, state.form.tags.errors),
+      modelSolution: {
+        ...state.form.modelSolution,
+        editableModelSolution: state.form.modelSolution.editableModelSolution
                 ? new FormValue(state.form.modelSolution.editableModelSolution.value,
                   state.form.modelSolution.editableModelSolution.errors)
                 : undefined,
-            },
-          },
-        },
       },
-      review: {
-        ...state.review,
-        ...{
-          comment: new FormValue(state.review.comment.value, state.review.errors),
-          reviews: new FormValue(state.review.reviews.value, state.review.reviews.errors),
-        },
-      },
+    },
+    review: {
+      ...state.review,
+      comment: new FormValue(state.review.comment.value, state.review.comment.errors),
+      reviews: state.review.reviews ? new FormValue(state.review.reviews.value, state.review.reviews.errors) : undefined,
     },
   };
 }
@@ -102,7 +90,7 @@ export default function makeStore(assignment: string, review: boolean) {
     ),
   );
   store.dispatch(trackLoginStateAction());
-  if (review) {
+  if (review && store.getState().review.reviews === undefined) {
     store.dispatch(setReviewableExerciseAction());
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());

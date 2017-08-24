@@ -11,16 +11,16 @@ import {
   AUTHENTICATION_ERROR,
   FINISH,
   SET_EXERCISE_ID,
-} from 'state/submission';
+  STATUS_ERROR,
+  STATUS_NONE,
+  STATUS_IN_PROGRESS,
+  STATUS_FINISHED,
+} from './actions';
 import type {
     UpdateSubmissionStatusAction,
     SetExerciseAction,
-} from 'state/submission/actions';
-
-export type ErrorMessage = {
-  header: string,
-  messages: string,
-};
+} from './actions';
+import type { ErrorMessage } from './index';
 
 export type ErrorResult = {
   OK: boolean, errors: Array<ErrorMessage>,
@@ -33,11 +33,6 @@ export type State = {
   progress: number,
   result: ErrorResult,
 };
-
-export const STATUS_FINISHED = 'finished';
-export const STATUS_ERROR = 'error';
-export const STATUS_IN_PROGRESS = 'in progress';
-export const STATUS_NONE = '';
 
 const CONNECTION_POST_SENDING_MSG = 'Lähetetään tietoja';
 const CONNECTION_POST_SUCCESSFUL_MSG = 'Tietojen lähetys onnistui';
@@ -87,10 +82,12 @@ export default createReducer(initialState, {
   [UPDATE_SUBMISSION_STATUS](state: State, action: UpdateSubmissionStatusAction): State {
     const errors = action.data.result.errors.map((obj) => {
       const header = obj.header;
-      const errorMessages = obj.errors;
+      const errorMessages = obj.messages;
       return {
         header,
         messages: errorMessages
+        .replace(/\\n/g, '\n')
+        .split('\n')
         .filter(line => !line.replace(/\s+/g, '').startsWith('[mkdir]'))
         .map(line => line.replace(/\[javac\]/g, ''))
         .join('\n'),

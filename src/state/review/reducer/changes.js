@@ -7,6 +7,7 @@ import {
   SET_REVIEW_QUESTIONS,
   SET_REVIEWABLE_EXERCISE,
   RESET_REVIEWABLE,
+  REVIEW_DONE,
 } from 'state/review/actions';
 import type {
   GiveReviewAction,
@@ -18,29 +19,30 @@ import FormValue from 'domain/form-value';
 import type { State } from './index';
 
 const initialState: State = {
-  reviews: new FormValue([
-    { question: 'Greetings from the initial state', review: undefined },
-  ]),
+  reviews: undefined,
   comment: new FormValue(''),
   valid: false,
   showErrors: false,
   reviewable: undefined,
+  done: false,
 };
 
 export default createReducer(initialState, {
   [GIVE_REVIEW](state: State, action: GiveReviewAction): State {
     const oldReviews = state.reviews;
     const reviews = [];
-    oldReviews.get().forEach((obj) => {
-      const question = obj.question;
-      let review = obj.review;
-      if (question === action.question) {
-        review = action.value;
-        reviews.push({ question, review });
-      } else {
-        reviews.push({ question, review });
-      }
-    });
+    if (oldReviews) {
+      oldReviews.get().forEach((obj) => {
+        const question = obj.question;
+        let review = obj.review;
+        if (question === action.question) {
+          review = action.value;
+          reviews.push({ question, review });
+        } else {
+          reviews.push({ question, review });
+        }
+      });
+    }
     return {
       ...state,
       reviews: new FormValue(reviews),
@@ -60,9 +62,11 @@ export default createReducer(initialState, {
   },
   [SET_REVIEW_QUESTIONS](state: State, action: SetReviewQuestions): State {
     const answers = new Map();
-    state.reviews.get().forEach(obj => answers.set(obj.question, obj.review));
+    if (state.reviews) {
+      state.reviews.get().forEach(obj => answers.set(obj.question, obj.review));
+    }
     const reviews = action.questions
-      .map(question => ({ question, review: answers.get(question) ? answers.get(question) : undefined }));
+    .map(question => ({ question, review: answers.get(question) ? answers.get(question) : undefined }));
     return {
       ...state,
       reviews: new FormValue(reviews),
@@ -78,6 +82,12 @@ export default createReducer(initialState, {
     return {
       ...state,
       reviewable: undefined,
+    };
+  },
+  [REVIEW_DONE](state: State): State {
+    return {
+      ...state,
+      done: true,
     };
   },
 });
