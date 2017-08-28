@@ -28,7 +28,7 @@ class AssignmentForm extends Component {
         <ModelSolution />
         <TestFields />
         <ExerciseTags showErrors={this.props.showErrors} />
-        <div className={prefixer('form-component')}>
+        <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>
           <button
             type="button"
             disabled={this.props.showErrors && !this.props.valid}
