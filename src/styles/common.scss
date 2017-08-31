@@ -47,8 +47,10 @@
 
 .container {
   position: relative;
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: 1rem auto;
+  padding-right: 1rem;
+  padding-bottom: 2rem;
+  padding-left: 1rem;
   &.center {
     display: flex;
     justify-content: center;
