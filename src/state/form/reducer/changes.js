@@ -258,11 +258,13 @@ export default createReducer(initialState, {
   },
   [ASSIGNMENT_INFO_RECEIVED](state: State, action: AssignmentInfoReceivedAction): State {
     const cleanPlate = [];
-    action.boilerplate.split('\n').forEach((row) => {
-      if (!isReadOnlyTag(row)) {
-        cleanPlate.push(row);
-      }
-    });
+    if (action.boilerplate) {
+      action.boilerplate.split('\n').forEach((row) => {
+        if (!isReadOnlyTag(row)) {
+          cleanPlate.push(row);
+        }
+      });
+    }
     const plate = cleanPlate.join('\n');
     return {
       ...state,

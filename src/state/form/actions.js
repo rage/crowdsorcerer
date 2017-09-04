@@ -12,6 +12,7 @@ import {
   authenticationError,
   setExerciseAction,
   openWebSocketConnectionAction,
+  assignmentNotFoundAction,
 } from 'state/submission/actions';
 import getReadOnlyLines from 'utils/get-read-only-lines';
 
@@ -169,6 +170,8 @@ export function getAssignmentInfoAction() {
       (error) => {
         if (error.status === 403) {
           dispatch(authenticationError());
+        } else if (error.status === 400) {
+          dispatch(assignmentNotFoundAction());
         } else {
           dispatch(postUnsuccessfulAction());
         }

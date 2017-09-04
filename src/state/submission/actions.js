@@ -20,6 +20,8 @@ export const INVALID_DATA_ERROR = 'INVALID_DATA_ERROR';
 export const AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR';
 export const FINISH = 'FINISH';
 export const SET_EXERCISE_ID = 'SET_EXERCISE_ID';
+export const EXERCISE_NOT_FOUND = 'EXERCISE_NOT_FOUND';
+export const ASSIGNMENT_NOT_FOUND = 'ASSIGNMENT_NOT_FOUND';
 
 export function startSendAction() {
   return {
@@ -83,6 +85,18 @@ export function connectionTerminatedPrematurelyAction() {
 export function invalidDataErrorAction() {
   return {
     type: INVALID_DATA_ERROR,
+  };
+}
+
+export function exerciseNotFoundAction() {
+  return {
+    type: EXERCISE_NOT_FOUND,
+  };
+}
+
+export function assignmentNotFoundAction() {
+  return {
+    type: ASSIGNMENT_NOT_FOUND,
   };
 }
 

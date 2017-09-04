@@ -6,7 +6,7 @@ const START_LOCK = '// START LOCK';
 const END_LOCK = '// END LOCK';
 
 export default (code: string) => {
-  if (code.trim() === '') {
+  if (!code) {
     return [];
   }
   const readOnlyLines = [];
