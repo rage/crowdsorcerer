@@ -58,7 +58,10 @@
 
 .error-info {
   max-height: 13rem;
-  overflow-y: scroll;
+
+  &.long {
+    overflow-y: scroll;
+  }
 }
 
 .error-header {
