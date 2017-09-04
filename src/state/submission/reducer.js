@@ -15,6 +15,8 @@ import {
   STATUS_NONE,
   STATUS_IN_PROGRESS,
   STATUS_FINISHED,
+  EXERCISE_NOT_FOUND,
+  ASSIGNMENT_NOT_FOUND,
 } from './actions';
 import type {
     UpdateSubmissionStatusAction,
@@ -40,6 +42,8 @@ const CONNECTION_POST_UNSUCCESSFUL_MSG = 'Tietojen lähetys ei onnistunut. Yrit�
 const CONNECTION_TERMINATED_MSG = 'Yhteysvirhe';
 const INTERNAL_ERROR_MSG = 'Tapahtui sisäinen virhe.';
 const AUTHENTICATION_ERROR_MSG = 'TMC-tunnuksesi ei kelpaa, ole hyvä ja kirjaudu sisään uudestaan.';
+const EXERCISE_NOT_FOUND_MSG = 'Arvioitavaa tehtävää ei löytynyt.';
+const ASSIGNMENT_NOT_FOUND_MSG = 'Tehtävänantoa ei löytynyt.';
 
 const initialState = {
   status: STATUS_NONE,
@@ -80,19 +84,22 @@ export default createReducer(initialState, {
     };
   },
   [UPDATE_SUBMISSION_STATUS](state: State, action: UpdateSubmissionStatusAction): State {
-    const errors = action.data.result.errors.map((obj) => {
-      const header = obj.header;
-      const errorMessages = obj.messages;
-      return {
-        header,
-        messages: errorMessages
-        .replace(/\\n/g, '\n')
-        .split('\n')
-        .filter(line => !line.replace(/\s+/g, '').startsWith('[mkdir]'))
-        .map(line => line.replace(/\[javac\]/g, ''))
-        .join('\n'),
-      };
-    });
+    let errors = [];
+    if (action.data.result.errors) {
+      errors = action.data.result.errors.map((obj) => {
+        const header = obj.header;
+        const errorMessages = obj.messages ? obj.messages : '';
+        return {
+          header,
+          messages: errorMessages
+          .replace(/\\n/g, '\n')
+          .split('\n')
+          .filter(line => !line.replace(/\s+/g, '').startsWith('[mkdir]'))
+          .map(line => line.replace(/\[javac\]/g, ''))
+          .join('\n'),
+        };
+      });
+    }
     return {
       ...state,
       message: action.data.message,
@@ -138,6 +145,20 @@ export default createReducer(initialState, {
     return {
       ...state,
       exerciseId: action.exerciseId,
+    };
+  },
+  [EXERCISE_NOT_FOUND](state: State): State {
+    return {
+      ...state,
+      status: STATUS_ERROR,
+      message: EXERCISE_NOT_FOUND_MSG,
+    };
+  },
+  [ASSIGNMENT_NOT_FOUND](state: State): State {
+    return {
+      ...state,
+      status: STATUS_ERROR,
+      message: ASSIGNMENT_NOT_FOUND_MSG,
     };
   },
 });

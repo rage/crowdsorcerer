@@ -7,6 +7,7 @@ import {
   postUnsuccessfulAction,
   finishAction,
   invalidDataErrorAction,
+  exerciseNotFoundAction,
 } from 'state/submission/actions';
 import { setFormState, setTagSuggestions } from 'state/form';
 
@@ -67,8 +68,12 @@ export function setReviewableExerciseAction() {
         dispatch(setFormState(resp.exercise, resp.model_solution, resp.template));
         dispatch(setReviewQuestions(resp.peer_review_questions));
         dispatch(setTagSuggestions(resp.tags));
-      }, () => {
-        dispatch(invalidDataErrorAction());
+      }, (error) => {
+        if (error.status === 400) {
+          dispatch(exerciseNotFoundAction());
+        } else {
+          dispatch(invalidDataErrorAction());
+        }
       });
   };
 }

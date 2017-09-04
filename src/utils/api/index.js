@@ -37,7 +37,7 @@ export default class Api {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'omit',
       })
       .then((resp) => {
         if (!resp.ok) {
@@ -58,7 +58,7 @@ export default class Api {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'omit',
       })
       .then((resp) => {
         if (!resp.ok) {
@@ -77,7 +77,7 @@ export default class Api {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'omit',
       })
       .then((resp) => {
         if (!resp.ok) {
@@ -96,7 +96,7 @@ export default class Api {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
+        credentials: 'omit',
       })
       .then((resp) => {
         if (!resp.ok) {
