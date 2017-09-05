@@ -92,7 +92,8 @@ export default createReducer(initialState, {
         return {
           header,
           messages: errorMessages
-          .replace(/\\n/g, '\n')
+          .replace(/\n/g, '\\n')
+          .replace(/<rivinvaihto>/g, '\n')
           .split('\n')
           .filter(line => !line.replace(/\s+/g, '').startsWith('[mkdir]'))
           .map(line => line.replace(/\[javac\]/g, ''))
