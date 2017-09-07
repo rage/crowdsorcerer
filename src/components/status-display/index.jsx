@@ -38,7 +38,7 @@ class StatusDisplay extends Component {
     }
     let errorMessageKey = '';
     let errorInfoClassName = prefixer('error-info');
-    if (this.props.result.errors.length > 0) {
+    if (this.props.result.errors && this.props.result.errors.length > 0) {
       errorInfoClassName += ` ${this.props.result.errors.map(o => o.messages.split('\n').length)
       .reduce((a, b) => a + b) > 8 ? prefixer('long') : ''}`;
     }
