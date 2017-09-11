@@ -3,6 +3,8 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import Api from 'utils/api';
 import { Raw } from 'slate';
+import ReduxActionAnalytics from 'redux-action-analytics';
+import * as storejs from 'store';
 import FormValue from 'domain/form-value';
 import IO from 'domain/io';
 import { STATUS_NONE } from 'state/submission/';
@@ -80,13 +82,31 @@ export default function makeStore(assignment: string, review: boolean) {
   storageName = `${storageName}-${peerReview}`;
   const assignmentId = parseInt(assignment, 10);
   const api = new Api();
+  const identifier = `assignment-${assignment}-review-{review}`;
+  const analytics = new ReduxActionAnalytics(
+    'https://usage.testmycode.io/api/v0/data',
+    'crowdsorcerer',
+    identifier,
+    10000,
+    () => {
+      const user = storejs.get('tmc.user');
+      if (user === undefined) {
+        return {};
+      }
+      return {
+        username: user.username,
+      };
+    });
   /* eslint-disable no-underscore-dangle */
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   /* eslint-enable no-underscore-dangle */
   const store = createStore(
     rootReducer(assignmentId), loadStateFromLocalStorage(storageName),
     composeEnhancers(
-      applyMiddleware(thunk.withExtraArgument({ api }), saveStateInLocalStorage(storageName)),
+      applyMiddleware(
+        analytics.getMiddleware(),
+        thunk.withExtraArgument({ api }),
+        saveStateInLocalStorage(storageName)),
     ),
   );
   store.dispatch(trackLoginStateAction());
