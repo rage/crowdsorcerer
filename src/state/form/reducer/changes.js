@@ -141,8 +141,8 @@ export default createReducer(initialState, {
     } else if (solutionLengthDifferenceToNew >= 0) {
         // text was added
         // text contains the added text
-      let solutionLengthDifference = change.text.length - 1;
-      if (change.removed.length === 2) {
+      let solutionLengthDifference = change.text.length ? change.text.length - 1 : 0;
+      if (change.removed && change.removed.length === 2) {
         solutionLengthDifference--;
       }
       newSolutionRows = state.modelSolution.solutionRows.map((row) => {

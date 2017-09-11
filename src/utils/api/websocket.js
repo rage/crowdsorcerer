@@ -44,7 +44,6 @@ export default class WebSocketConnection {
         onDisconnected();
       },
       received(data) {
-        console.info(data);
         let result = {};
         try {
           result = JSON.parse(data);
@@ -52,7 +51,6 @@ export default class WebSocketConnection {
             throw SyntaxError('Malformed data');
           }
         } catch (error) {
-          console.error(`error: ${error}`);
           onInvalidDataError();
         }
         onUpdate(result);
