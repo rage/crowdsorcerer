@@ -152,6 +152,7 @@ class ModelSolution extends Component {
             Lähdekoodi
           </div>
           {!this.props.readOnly && <button
+            type="button"
             className={prefixer('reset-button')}
             onClick={(e) => {
               e.preventDefault();
