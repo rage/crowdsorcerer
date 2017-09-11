@@ -138,12 +138,15 @@ export default createReducer(initialState, {
         }
         return row;
       });
-    } else if (solutionLengthDifferenceToNew > 0) {
+    } else if (solutionLengthDifferenceToNew >= 0) {
         // text was added
         // text contains the added text
-      const solutionLengthDifference = change.text.length - 1;
+      let solutionLengthDifference = change.text.length ? change.text.length - 1 : 0;
+      if (change.removed && change.removed.length === 2) {
+        solutionLengthDifference--;
+      }
       newSolutionRows = state.modelSolution.solutionRows.map((row) => {
-        if (row > startLine) {
+        if (row >= startLine) {
           return row + solutionLengthDifference;
         }
         return row;

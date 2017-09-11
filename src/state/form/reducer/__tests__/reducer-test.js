@@ -25,12 +25,23 @@ System.out.println('Yo!');
 return world;`;
 const oneLineChangeAdd = { from: { line: 0, ch: 0 }, text: oneLineSolution.split('\n'), to: { line: 0, ch: 15 } };
 const twoLineChangeAdd = { from: { line: 0, ch: 0 }, text: twoLineSolution.split('\n'), to: { line: 1, ch: 12 } };
-const threeLineChangeAdd = { from: { line: 0, ch: 0 }, text: threeLineSolution.split('\n'), to: { line: 2, ch: 12 } };
+const threeLineChangeAddToTwoLine = { from: { line: 1, ch: 12 }, text: threeLineSolution.split('\n'), to: { line: 2, ch: 12 } };
 const twoToThreeChange =
   { from: { line: 0, ch: 15 }, text: "\nSystem.out.println('Yo!');".split('\n'), to: { line: 2, ch: 12 } };
 const threeToTwoChange =
   { from: { line: 0, ch: 15 }, removed: "\nSystem.out.println('Yo!');".split('\n'), to: { line: 2, ch: 12 }, text: [''] };
-const oneLineChangeRemoved = { from: { line: 0, ch: 0 }, removed: oneLineSolution.split('\n'), to: { line: 0, ch: 15 } };
+const oneLineChangeRemoved = {
+  from: {
+    line: 0,
+    ch: 0,
+  },
+  removed: oneLineSolution.split('\n'),
+  text: [''],
+  to: {
+    line: 0,
+    ch: 15,
+  },
+};
 const simpleAssignment = Raw.deserialize({
   nodes: [
     {
@@ -324,7 +335,7 @@ test('Add new line to model solution changes model solution in state', (t) => {
       },
     },
     },
-    { modelSolution: threeLineSolution, change: threeLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
+    { modelSolution: threeLineSolution, change: threeLineChangeAddToTwoLine, type: CHANGE_MODEL_SOLUTION },
   );
 
   t.deepEqual(state.form.modelSolution.editableModelSolution.get(), threeLineSolution);

@@ -70,15 +70,12 @@
 .fatal-error-display {
   font-size: 20px;
   margin: 20%;
-  border-width: 0.1rem;
-  border-style: solid;
-  border-color: $fatal-error;
   border-radius: 0.5em;
 }
 
 .fatal-error-title {
   background-color: $fatal-error;
-  padding: 2rem 0;
+  padding: 1rem 0;
   color:  $white;
   width: 100%;
   font-size: 25px;
@@ -88,4 +85,7 @@
 
 .fatal-error-message {
   padding: 2rem;
+  border-width: 0.1rem;
+  border-style: solid;
+  border-color: $fatal-error;
 }
