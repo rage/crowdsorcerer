@@ -149,7 +149,7 @@ class ModelSolution extends Component {
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
           <div id="modelSolution" className={prefixer('instructions')}>
-            Malliratkaisu
+            Lähdekoodi
           </div>
           {!this.props.readOnly && <button
             className={prefixer('reset-button')}
