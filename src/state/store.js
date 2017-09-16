@@ -82,7 +82,10 @@ export default function makeStore(assignment: string, review: boolean) {
   storageName = `${storageName}-${peerReview}`;
   const assignmentId = parseInt(assignment, 10);
   const api = new Api();
-  const identifier = `assignment-${assignment}-review-{review}`;
+  let identifier = `assignment-${assignment}`;
+  if (review) {
+    identifier += '-review';
+  }
   const analytics = new ReduxActionAnalytics(
     'https://usage.testmycode.io/api/v0/data',
     'crowdsorcerer',
