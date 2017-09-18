@@ -17,7 +17,6 @@
   padding: 0.5rem 2rem;
   color: $white;
   cursor: pointer;
-  font-family: Roboto; //TODO: remove to production
   &:disabled {
     opacity: 0.65;
     cursor: not-allowed;
@@ -61,6 +60,7 @@
 .check-mark {
   float: right;
   &:after {
+    margin: 0.5rem;
     content: "\2713";
     font-size: 40px;
     color: $green;
