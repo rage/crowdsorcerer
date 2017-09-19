@@ -82,6 +82,7 @@
     ],
     "require": [
       "babel-register",
+      "babel-polyfill",
       "./resolve-modules.js",
       "./test/helpers/setup-browser-env.js"
     ],

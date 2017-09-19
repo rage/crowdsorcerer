@@ -14,7 +14,7 @@ import {
   CHANGE_FORM_ERRORS_VISIBILITY,
   REMOVE_TAG,
   ADD_TAG,
-  SET_FORM_STATE,
+  NEW_EXERCISE_RECEIVED,
   ASSIGNMENT_INFO_RECEIVED,
   RESET_TO_BOILERPLATE,
   SET_SHOW_CODE_TEMPLATE,
@@ -31,7 +31,7 @@ import type {
     DeleteHiddenRowAction,
     AddTagAction,
     RemoveTagAction,
-    SetFormStateAction,
+    NewExerciseReceivedAction,
     AssignmentInfoReceivedAction,
     SetShowCodeTemplateAction,
 } from 'state/form/actions';
@@ -244,7 +244,7 @@ export default createReducer(initialState, {
       tags: new FormValue([...state.tags.get().slice(0, action.tagIndex), ...state.tags.get().slice(action.tagIndex + 1)]),
     };
   },
-  [SET_FORM_STATE](state: State, action: SetFormStateAction): State {
+  [NEW_EXERCISE_RECEIVED](state: State, action: NewExerciseReceivedAction): State {
     return {
       ...state,
       valid: false,
@@ -252,6 +252,7 @@ export default createReducer(initialState, {
       showErrors: false,
       inputOutput: action.newState.inputOutput,
       tags: new FormValue([]),
+      tagSuggestions: action.newState.tagSuggestions,
       modelSolution: {
         ...state.modelSolution,
         readOnlyModelSolution: action.newState.readOnlyModelSolution,

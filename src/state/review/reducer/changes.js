@@ -4,16 +4,14 @@ import {
   GIVE_REVIEW,
   CHANGE_COMMENT,
   CHANGE_REVIEW_ERRORS_VISIBILITY,
-  SET_REVIEW_QUESTIONS,
-  SET_REVIEWABLE_EXERCISE,
   RESET_REVIEWABLE,
   REVIEW_DONE,
+  REVIEWABLE_AND_QUESTIONS_RECEIVED,
 } from 'state/review/actions';
 import type {
   GiveReviewAction,
   ChangeCommentAction,
-  SetReviewQuestions,
-  SetReviewableExerciseAction,
+  ReviewableAndQuestionsReceivedAction,
 } from 'state/review/actions';
 import FormValue from 'domain/form-value';
 import type { State } from './index';
@@ -60,24 +58,6 @@ export default createReducer(initialState, {
       showErrors: true,
     };
   },
-  [SET_REVIEW_QUESTIONS](state: State, action: SetReviewQuestions): State {
-    const answers = new Map();
-    if (state.reviews) {
-      state.reviews.get().forEach(obj => answers.set(obj.question, obj.review));
-    }
-    const reviews = action.questions
-    .map(question => ({ question, review: answers.get(question) ? answers.get(question) : undefined }));
-    return {
-      ...state,
-      reviews: new FormValue(reviews),
-    };
-  },
-  [SET_REVIEWABLE_EXERCISE](state: State, action: SetReviewableExerciseAction): State {
-    return {
-      ...state,
-      reviewable: action.exerciseId,
-    };
-  },
   [RESET_REVIEWABLE](state: State): State {
     return {
       ...state,
@@ -88,6 +68,19 @@ export default createReducer(initialState, {
     return {
       ...state,
       done: true,
+    };
+  },
+  [REVIEWABLE_AND_QUESTIONS_RECEIVED](state: State, action: ReviewableAndQuestionsReceivedAction): State {
+    const answers = new Map();
+    if (state.reviews) {
+      state.reviews.get().forEach(obj => answers.set(obj.question, obj.review));
+    }
+    const reviews = action.questions
+    .map(question => ({ question, review: answers.get(question) ? answers.get(question) : undefined }));
+    return {
+      ...state,
+      reviewable: action.reviewable,
+      reviews: new FormValue(reviews),
     };
   },
 });

@@ -16,6 +16,6 @@ export type State = {
   showErrors: boolean,
   reviewable: ?number,
   done: boolean,
-}
+};
 
 export default reduceReducers(changes, validity);
