@@ -88,12 +88,6 @@ export function invalidDataErrorAction() {
   };
 }
 
-export function exerciseNotFoundAction() {
-  return {
-    type: EXERCISE_NOT_FOUND,
-  };
-}
-
 export function assignmentNotFoundAction() {
   return {
     type: ASSIGNMENT_NOT_FOUND,

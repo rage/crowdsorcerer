@@ -50,7 +50,7 @@ class Review extends Component {
           <ReviewComment />
         </div>
         <ExerciseTags showErrors={this.props.showErrors} />
-        <div className={prefixer('form-component')}>
+        <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>
           <button
             type="submit"
             className={prefixer('sender')}

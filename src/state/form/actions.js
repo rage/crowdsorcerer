@@ -27,11 +27,10 @@ export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
 export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
 export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
-export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const NEW_EXERCISE_RECEIVED = 'NEW_EXERCISE_RECEIVED';
 export const RESET_TO_BOILERPLATE = 'RESET_TO_BOILERPLATE';
 export const SET_READ_ONLY_SOLUTION_LINES = 'SET_READ_ONLY_SOLUTION_LINES';
 export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
-export const SET_TAG_SUGGESTIONS = 'SET_TAG_SUGGESTIONS';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
@@ -87,38 +86,33 @@ export function changeFormErrorVisibilityAction() {
   };
 }
 
-type TestIO = {
+export type Tag = {
+  name: string,
+};
+
+export type TestIO = {
   input: string,
   output: string,
 };
 
-type FormStateJSON = {
-  code: string,
-  testIO: Array<TestIO>,
+export type ExerciseJSON = {
+  id: number,
   description: string,
+  testIO: Array<TestIO>,
+  model_solution: string,
+  template: string,
 };
 
-export function setFormState(state: FormStateJSON, modelSolution: string, template: string) {
+export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>) {
   const newState = {};
   newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output)));
   newState.assignment = state.description;
-  newState.readOnlyModelSolution = modelSolution;
-  newState.readOnlyCodeTemplate = template;
+  newState.readOnlyModelSolution = state.model_solution;
+  newState.readOnlyCodeTemplate = state.template;
+  newState.tagSuggestions = tags.map(tag => tag.name);
   return {
     newState,
-    type: SET_FORM_STATE,
-  };
-}
-
-type Tag = {
-  name: string,
-};
-
-export function setTagSuggestions(newTags: Array<Tag>) {
-  const tagSuggestions = newTags.map(tag => tag.name);
-  return {
-    tagSuggestions,
-    type: SET_TAG_SUGGESTIONS,
+    type: NEW_EXERCISE_RECEIVED,
   };
 }
 
@@ -292,15 +286,11 @@ type ReviewForm = {
    readOnlyModelSolution: string,
    readOnlyCodeTemplate: string,
    inputOutput: Array<IO>,
+   tagSuggestions: Array<string>,
 }
 
-export type SetFormStateAction = {
+export type NewExerciseReceivedAction = {
   newState: ReviewForm,
-  type: string,
-};
-
-export type SetTagSuggestions = {
-  tagSuggestions: Array<string>,
   type: string,
 };
 

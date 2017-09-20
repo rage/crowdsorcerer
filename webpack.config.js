@@ -9,7 +9,9 @@ module.exports = {
   watch: isDevelopment,
   devtool: isDevelopment ? 'source-map' : false,
   entry: {
-    app: path.join(__dirname, 'src', 'index.jsx'),
+    app: isDevelopment
+      ? ['babel-polyfill', path.join(__dirname, 'src', 'index.jsx')]
+      : path.join(__dirname, 'src', 'index.jsx'),
   },
   output: {
     path: path.join(__dirname, 'dist'),

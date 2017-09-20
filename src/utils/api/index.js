@@ -70,23 +70,30 @@ export default class Api {
     });
   }
 
-  getReviewableExerciseAndQuestions(assignmentId: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      fetch(`${SERVER}/assignments/${assignmentId}/peer_review_exercise`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+  async getReviewableExerciseAndQuestions(assignmentId: number, exerciseCount: number): Promise<any> {
+    return (
+      fetch(
+        `${SERVER}/assignments/${assignmentId}/peer_review_exercise?count=${exerciseCount}&oauth_token=${this.oauthToken()}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'omit',
         },
-        credentials: 'omit',
-      })
-      .then((resp) => {
+      )
+      .then(async (resp) => {
         if (!resp.ok) {
-          return reject(resp);
+          throw await resp.json();
         }
         return resp.json();
       })
-      .then(resolve, reject);
-    });
+      .then((json) => {
+        if (!json.exercises || json.exercises.some(e => !e)) {
+          throw new Error('Arvioitavia tehtäviä ei löytynyt.');
+        }
+        return json;
+      })
+    );
   }
 
   getAssignmentInformation(assignmentId: number): Promise<any> {

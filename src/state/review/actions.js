@@ -6,19 +6,20 @@ import {
   postSuccessfulAction,
   postUnsuccessfulAction,
   finishAction,
-  invalidDataErrorAction,
-  exerciseNotFoundAction,
 } from 'state/submission/actions';
-import { setFormState, setTagSuggestions } from 'state/form';
+import { newExerciseReceivedAction } from 'state/form';
+import type { Tag, ExerciseJSON } from 'state/form';
+import type PeerReviewQuestion from 'state/review';
 
 export const GIVE_REVIEW = 'GIVE_REVIEW';
 export const CHANGE_COMMENT = 'CHANGE_COMMENT';
 export const CHANGE_REVIEW_ERRORS_VISIBILITY = 'CHANGE_REVIEW_ERRORS_VISIBILITY';
 export const SET_REVIEW_QUESTIONS = 'SET_REVIEW_QUESTIONS';
 export const SET_REVIEWABLE_EXERCISE = 'SET_REVIEWABLE_EXERCISE';
-export const SET_FORM_STATE = 'SET_FORM_STATE';
+export const NEW_EXERCISE_RECEIVED = 'NEW_EXERCISE_RECEIVED';
 export const RESET_REVIEWABLE = 'RESET_REVIEWABLE';
 export const REVIEW_DONE = 'REVIEW_DONE';
+export const REVIEWABLE_AND_QUESTIONS_RECEIVED = 'REVIEWABLE_AND_QUESTIONS_RECEIVED';
 
 export function giveReviewAction(question: string, value: number) {
   return {
@@ -40,41 +41,23 @@ export function changeReviewErrorVisibilityAction() {
     type: CHANGE_REVIEW_ERRORS_VISIBILITY,
   };
 }
-
-export function setReviewableIdAction(exerciseId: number) {
-  return {
-    exerciseId,
-    type: SET_REVIEWABLE_EXERCISE,
-  };
-}
-
-type ReviewQuestion = {
-  question: string,
-};
-
-export function setReviewQuestions(reviewQuestions: Array<ReviewQuestion>) {
+export function reviewableAndQuestionsReceivedAction(reviewable: number, reviewQuestions: Array<Object>) {
   const questions = reviewQuestions.map(rq => rq.question);
   return {
     questions,
-    type: SET_REVIEW_QUESTIONS,
+    reviewable,
+    type: REVIEWABLE_AND_QUESTIONS_RECEIVED,
   };
 }
 
-export function setReviewableExerciseAction() {
-  return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    api.getReviewableExerciseAndQuestions(getState().assignment.assignmentId)
-      .then((resp) => {
-        dispatch(setReviewableIdAction(resp.exercise.id));
-        dispatch(setFormState(resp.exercise, resp.model_solution, resp.template));
-        dispatch(setReviewQuestions(resp.peer_review_questions));
-        dispatch(setTagSuggestions(resp.tags));
-      }, (error) => {
-        if (error.status === 400) {
-          dispatch(exerciseNotFoundAction());
-        } else {
-          dispatch(invalidDataErrorAction());
-        }
-      });
+export function setReviewableExerciseAction(
+  exerciseJSON: ExerciseJSON,
+  peerReviewQuestions: Array<PeerReviewQuestion>,
+  tags: Array<Tag>) {
+  return async function setter(dispatch: Dispatch) {
+    dispatch(reviewableAndQuestionsReceivedAction(exerciseJSON.id, peerReviewQuestions));
+    dispatch(newExerciseReceivedAction(exerciseJSON, tags),
+    );
   };
 }
 
@@ -86,11 +69,9 @@ export function reviewDoneAction() {
 
 export function submitReviewAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
-    console.info('submit');
     dispatch(startSendAction());
     api.postReview(getState().review, getState().form)
-    .then((resp) => {
-      console.info(resp);
+    .then(() => {
       dispatch(postSuccessfulAction());
       dispatch(finishAction());
       dispatch(reviewDoneAction());
@@ -143,5 +124,11 @@ export type SetReviewableExerciseAction = {
 };
 
 export type ResetReviewableAction = {
+  type: string,
+};
+
+export type ReviewableAndQuestionsReceivedAction = {
+  questions: Array<string>,
+  reviewable: number,
   type: string,
 };

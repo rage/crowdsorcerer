@@ -2,7 +2,6 @@
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import Api from 'utils/api';
-import { Raw } from 'slate';
 import ReduxActionAnalytics from 'redux-action-analytics';
 import * as storejs from 'store';
 import FormValue from 'domain/form-value';
@@ -11,9 +10,12 @@ import { STATUS_NONE } from 'state/submission/';
 import { openWebSocketConnectionAction } from 'state/submission/actions';
 import { getAssignmentInfoAction } from 'state/form/actions';
 import applicationStateNotComplete from 'utils/application-state-not-complete';
+import { Raw } from 'slate';
 import rootReducer from './reducer';
 import { trackLoginStateAction } from './user';
-import { setReviewableExerciseAction, resetReviewableAction } from './review';
+import { resetReviewableAction, setReviewableExerciseAction } from './review';
+import type PeerReviewQuestion from './review';
+import type { ExerciseJSON, Tag } from './form';
 
 export type ThunkArgument = {
   api: Api
@@ -76,15 +78,21 @@ function loadStateFromLocalStorage(storageName: string) {
   };
 }
 
-export default function makeStore(assignment: string, review: boolean) {
+export default function makeStore(
+  assignment: string,
+  review: boolean,
+  exerciseJSON: ExerciseJSON,
+  peerReviewQuestions: Array<PeerReviewQuestion>,
+  tags: Array<Tag>,
+  storeCount: number,
+  ) {
   let storageName = `crowdsorcerer-redux-state-${assignment}`;
-  const peerReview = review ? 'review' : 'exercise';
-  storageName = `${storageName}-${peerReview}`;
   const assignmentId = parseInt(assignment, 10);
   const api = new Api();
   let identifier = `assignment-${assignment}`;
   if (review) {
     identifier += '-review';
+    storageName += `-review-${storeCount}`;
   }
   const analytics = new ReduxActionAnalytics(
     'https://usage.testmycode.io/api/v0/data',
@@ -114,7 +122,7 @@ export default function makeStore(assignment: string, review: boolean) {
   );
   store.dispatch(trackLoginStateAction());
   if (review && store.getState().review.reviews === undefined) {
-    store.dispatch(setReviewableExerciseAction());
+    store.dispatch(setReviewableExerciseAction(exerciseJSON, peerReviewQuestions, tags));
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());
   } else if (applicationStateNotComplete(store.getState())) {
