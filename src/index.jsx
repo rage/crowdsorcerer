@@ -8,6 +8,7 @@ import Api from 'utils/api';
 import { State as sState } from 'slate';
 import FatalErrorDisplay from 'components/fatal-error-display';
 import prefixer from 'utils/class-name-prefixer';
+import loggedIn from 'utils/logged-in';
 import type { Tag, TestIO } from './form';
 import './styles';
 import App from './components/app';
@@ -34,7 +35,14 @@ window.initCrowdsorcerer = function initCrowdsorcerer() {
     const assignmentId = e.dataset.assignment;
     const exerciseCount = e.dataset.exercises;
     const review = e.getAttribute('peer-review') !== null;
-    if (review) {
+    if (!loggedIn()) {
+      render(
+        <div className={`${prefixer('container')} ${prefixer('center')}`}>
+          <FatalErrorDisplay message={'Sinun on oltava kirjautuneena nähdäksesi tämän sisällön'} />
+        </div>,
+      e,
+    );
+    } else if (review) {
       const api = new Api();
       api.getReviewableExerciseAndQuestions(assignmentId, exerciseCount).then((resp: ReviewJSON) => {
         const exercises = resp.exercises;
@@ -57,7 +65,7 @@ window.initCrowdsorcerer = function initCrowdsorcerer() {
             <FatalErrorDisplay message={errors} />
           </div>,
         e,
-      );
+        );
       });
     } else {
       const store = makeStore(assignmentId, review);

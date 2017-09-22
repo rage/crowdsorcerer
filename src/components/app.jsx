@@ -28,11 +28,6 @@ class App extends Component {
   render() {
     if ((!this.props.review && this.props.editableModelSolution !== undefined) ||
       (this.props.review && this.props.reviews !== undefined)) {
-      if (!this.props.loggedIn) {
-        return (<div className={`${prefixer('container')} ${prefixer('center')}`}>
-          <FatalErrorDisplay message="Sinun on oltava kirjautuneena nähdäksesi tämän sisällön" />
-        </div>);
-      }
       return (
         <div className={prefixer('container')}>
           <CheckMark reviewable={this.props.reviewable} formDone={this.props.formDone} reviewDone={this.props.reviewDone} />
