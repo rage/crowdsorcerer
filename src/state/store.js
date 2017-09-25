@@ -29,16 +29,16 @@ function getTMCUsername() {
 }
 
 function migrateOldLocalStorageFormat(assignmentId: number, username: string) {
-  const oldStorageValue = storejs.getItem(`crowdsorcerer-redux-state-${assignmentId}`);
+  const oldStorageValue = storejs.get(`crowdsorcerer-redux-state-${assignmentId}`);
   if (oldStorageValue === undefined) {
     return;
   }
   const key = `crowdsorcerer-assignment-${assignmentId}-${username}`;
-  const currentState = storejs.getItem(key);
+  const currentState = storejs.get(key);
   if (currentState !== undefined) {
     return;
   }
-  storejs.setItem(key, oldStorageValue);
+  storejs.set(key, oldStorageValue);
 }
 
 function saveStateInLocalStorage(storageName: string) {
