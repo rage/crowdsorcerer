@@ -31,7 +31,7 @@ class ExerciseTags extends Component {
           handleAddition={this.props.handleAddTag}
           allowNew
           autofocus={false}
-          placeholder="Lisää uusi tagi"
+          placeholder="Lisää uusi tagi (enter lisää)"
         />
         <Errors errors={this.props.tags.errors} show={this.props.showErrors} />
       </div>
