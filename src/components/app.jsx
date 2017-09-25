@@ -26,6 +26,13 @@ class App extends Component {
   }
 
   render() {
+    if (!this.props.loggedIn) {
+      return (
+        <div className={`${prefixer('container')} ${prefixer('center')}`}>
+          <FatalErrorDisplay message="Ole hyvä ja kirjaudu sisään." />
+        </div>
+      );
+    }
     if ((!this.props.review && this.props.editableModelSolution !== undefined) ||
       (this.props.review && this.props.reviews !== undefined)) {
       return (
