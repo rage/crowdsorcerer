@@ -29,7 +29,8 @@ function getTMCUsername() {
 }
 
 function migrateOldLocalStorageFormat(assignmentId: number, username: string) {
-  const oldStorageValue = storejs.get(`crowdsorcerer-redux-state-${assignmentId}-exercise`);
+  const oldKey = `crowdsorcerer-redux-state-${assignmentId}-exercise`;
+  const oldStorageValue = storejs.get(oldKey);
   if (oldStorageValue === undefined) {
     return;
   }
@@ -39,6 +40,7 @@ function migrateOldLocalStorageFormat(assignmentId: number, username: string) {
     return;
   }
   storejs.set(key, oldStorageValue);
+  storejs.remove(oldKey);
 }
 
 function saveStateInLocalStorage(storageName: string) {
@@ -113,9 +115,8 @@ export default function makeStore(
   let identifier = `assignment-${assignment}`;
   if (review) {
     identifier += `-review-${storeCount}`;
-    storageName += identifier;
   }
-  storageName += `-${getTMCUsername()}`;
+  storageName += `${identifier}-${getTMCUsername()}`;
   const analytics = new ReduxActionAnalytics(
     'https://usage.testmycode.io/api/v0/data',
     'crowdsorcerer',
