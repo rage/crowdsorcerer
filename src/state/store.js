@@ -21,6 +21,26 @@ export type ThunkArgument = {
   api: Api
 };
 
+function getTMCUsername() {
+  if (!storejs.get('tmc.user')) {
+    return '';
+  }
+  return storejs.get('tmc.user').username;
+}
+
+function migrateOldLocalStorageFormat(assignmentId: number, username: string) {
+  const oldStorageValue = storejs.getItem(`crowdsorcerer-redux-state-${assignmentId}`);
+  if (oldStorageValue === undefined) {
+    return;
+  }
+  const key = `crowdsorcerer-assignment-${assignmentId}-${username}`;
+  const currentState = storejs.getItem(key);
+  if (currentState !== undefined) {
+    return;
+  }
+  storejs.setItem(key, oldStorageValue);
+}
+
 function saveStateInLocalStorage(storageName: string) {
   return store => next => (action) => {
     next(action);
@@ -53,7 +73,7 @@ function loadStateFromLocalStorage(storageName: string) {
   const ios = state.form.inputOutput.map((io) => {
     const input = new FormValue(io.input.value, io.input.errors);
     const output = new FormValue(io.output.value, io.output.errors);
-    return new IO(input, output);
+    return new IO(input, output, undefined, io.type);
   });
   return {
     ...state,
@@ -86,14 +106,16 @@ export default function makeStore(
   tags: Array<Tag>,
   storeCount: number,
   ) {
-  let storageName = `crowdsorcerer-redux-state-${assignment}`;
+  let storageName = 'crowdsorcerer-';
   const assignmentId = parseInt(assignment, 10);
+  migrateOldLocalStorageFormat(assignmentId, getTMCUsername());
   const api = new Api();
   let identifier = `assignment-${assignment}`;
   if (review) {
-    identifier += '-review';
-    storageName += `-review-${storeCount}`;
+    identifier += `-review-${storeCount}`;
+    storageName += identifier;
   }
+  storageName += `-${getTMCUsername()}`;
   const analytics = new ReduxActionAnalytics(
     'https://usage.testmycode.io/api/v0/data',
     'crowdsorcerer',
@@ -132,4 +154,3 @@ export default function makeStore(
   api.syncStore(store);
   return store;
 }
-

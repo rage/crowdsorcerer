@@ -175,6 +175,9 @@ export default class Api {
   }
 
   oauthToken(): string {
+    if (!storejs.get('tmc.user')) {
+      return '';
+    }
     return storejs.get('tmc.user').accessToken;
   }
 }
