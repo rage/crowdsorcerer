@@ -13,6 +13,7 @@ import {
   setExerciseAction,
   openWebSocketConnectionAction,
   assignmentNotFoundAction,
+  connectionTerminatedPrematurelyAction,
 } from 'state/submission/actions';
 import getReadOnlyLines from 'utils/get-read-only-lines';
 
@@ -34,6 +35,7 @@ export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
+export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 
 export function addTestFieldAction() {
   return {
@@ -167,7 +169,7 @@ export function getAssignmentInfoAction() {
         } else if (error.status === 400) {
           dispatch(assignmentNotFoundAction());
         } else {
-          dispatch(postUnsuccessfulAction());
+          dispatch(connectionTerminatedPrematurelyAction());
         }
       },
     );
