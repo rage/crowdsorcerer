@@ -29,7 +29,7 @@ function getTMCUsername() {
 }
 
 function migrateOldLocalStorageFormat(assignmentId: number, username: string) {
-  const oldStorageValue = storejs.get(`crowdsorcerer-redux-state-${assignmentId}`);
+  const oldStorageValue = storejs.get(`crowdsorcerer-redux-state-${assignmentId}-exercise`);
   if (oldStorageValue === undefined) {
     return;
   }
