@@ -126,6 +126,8 @@ const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
   return markers;
 };
 
+const supportedTestTypes = ['positive', 'negative'];
+
 export default createReducer(initialState, {
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
     return {
