@@ -8,8 +8,10 @@ import {
   testInputChangeAction,
   testOutputChangeAction,
   removeTestFieldAction,
+  testTypeChangedAction,
 } from 'state/form';
 import Errors from 'components/errors';
+import TestTypeButton from './test-type-button';
 
 class InputOutput extends Component {
 
@@ -19,6 +21,7 @@ class InputOutput extends Component {
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
+    onTestTypeButtonClicked: (oldType: string, index: number) => void,
     readOnly: boolean,
     showErrors: boolean,
   };
@@ -47,7 +50,7 @@ class InputOutput extends Component {
               show={this.props.showErrors}
             />
           </div>
-          {this.props.readOnly ? <div className={prefixer('test-field-arrow')}>&rarr;</div> : undefined}
+          <TestTypeButton type={this.props.io.type} onClick={this.props.onTestTypeButtonClicked} index={this.props.index} />
           <div className={prefixer('input-field-wrapper')}>
             <input
               aria-label="testituloste"
@@ -97,6 +100,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onRemoveFieldClick(index) {
       dispatch(removeTestFieldAction(index));
+    },
+    onTestTypeButtonClicked(oldType: string, index: number) {
+      dispatch(testTypeChangedAction(oldType, index));
     },
   };
 }

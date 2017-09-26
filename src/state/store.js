@@ -75,7 +75,7 @@ function loadStateFromLocalStorage(storageName: string) {
   const ios = state.form.inputOutput.map((io) => {
     const input = new FormValue(io.input.value, io.input.errors);
     const output = new FormValue(io.output.value, io.output.errors);
-    return new IO(input, output, undefined, io.type);
+    return new IO(input, output, io.type);
   });
   return {
     ...state,

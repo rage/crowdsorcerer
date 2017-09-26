@@ -19,6 +19,7 @@ import {
   RESET_TO_BOILERPLATE,
   SET_SHOW_CODE_TEMPLATE,
   FORM_DONE,
+  TEST_TYPE_CHANGED,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -34,6 +35,7 @@ import type {
     NewExerciseReceivedAction,
     AssignmentInfoReceivedAction,
     SetShowCodeTemplateAction,
+    TestTypeChangedAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -71,6 +73,8 @@ const initialState: State = {
   },
   done: false,
 };
+
+const supportedTestTypes = ['positive', 'negative'];
 
 export default createReducer(initialState, {
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
@@ -178,7 +182,7 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
       .map((io, i) => {
         if (i === action.index) {
-          return new IO(new FormValue(action.testInput), new FormValue(io.output.get()), io.hash());
+          return new IO(new FormValue(action.testInput), new FormValue(io.output.get()), io.type, io.hash());
         }
         return io;
       });
@@ -191,7 +195,7 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
       .map((io, i) => {
         if (i === action.index) {
-          return new IO(new FormValue(io.input.get()), new FormValue(action.testOutput), io.hash());
+          return new IO(new FormValue(io.input.get()), new FormValue(action.testOutput), io.type, io.hash());
         }
         return io;
       });
@@ -309,6 +313,28 @@ export default createReducer(initialState, {
     return {
       ...state,
       done: true,
+    };
+  },
+  [TEST_TYPE_CHANGED](state: State, action: TestTypeChangedAction): State {
+    const inputOutput = state.inputOutput.map((io, i) => {
+      if (i === action.index) {
+        let newType = action.oldType;
+        supportedTestTypes.forEach((type, j) => {
+          if (type === action.oldType) {
+            if (j < supportedTestTypes.length - 1) {
+              newType = supportedTestTypes[j + 1];
+            } else {
+              newType = supportedTestTypes[0];
+            }
+          }
+        });
+        return new IO(io.input, io.output, newType, io.hash());
+      }
+      return io;
+    });
+    return {
+      ...state,
+      inputOutput,
     };
   },
 });

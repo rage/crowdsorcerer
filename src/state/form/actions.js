@@ -95,6 +95,7 @@ export type Tag = {
 export type TestIO = {
   input: string,
   output: string,
+  type: string,
 };
 
 export type ExerciseJSON = {
@@ -228,9 +229,15 @@ export function formDoneAction() {
   };
 }
 
+<<<<<<< HEAD
 export function testTypeChangedAction(testType: string, index: number) {
   return {
     testType,
+=======
+export function testTypeChangedAction(oldType: string, index: number) {
+  return {
+    oldType,
+>>>>>>> Add toggling test type
     index,
     type: TEST_TYPE_CHANGED,
   };
@@ -318,6 +325,10 @@ export type SetShowCodeTemplateAction = {
 
 export type TestTypeChangedAction = {
   index: number,
+<<<<<<< HEAD
   testType: string,
+=======
+  oldType: string,
+>>>>>>> Add toggling test type
   type: string,
 };
