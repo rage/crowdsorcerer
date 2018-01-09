@@ -16,20 +16,20 @@ export default (code: string) => {
   lines
     .map(l => l.trim())
     .forEach((line, index) => {
-      if (line.localeCompare(LOCK_TO_END) === 0) {
+      if (line === LOCK_TO_END) {
         for (let i = index + 1; i < lines.length - 1; i++) {
           readOnlyLines.push(i - amountOfTags);
         }
         amountOfTags++;
-      } else if (line.localeCompare(LOCK_FROM_BEGINNING) === 0) {
+      } else if (line === LOCK_FROM_BEGINNING) {
         for (let i = 0; i < index; i++) {
           readOnlyLines.push(i - amountOfTags);
         }
         amountOfTags++;
-      } else if (line.localeCompare(START_LOCK) === 0) {
+      } else if (line === START_LOCK) {
         amountOfTags++;
         lockStarted = true;
-      } else if (line.localeCompare(END_LOCK) === 0) {
+      } else if (line === END_LOCK) {
         amountOfTags++;
         lockStarted = false;
       } else if (lockStarted) {
@@ -41,8 +41,8 @@ export default (code: string) => {
 
 export function isReadOnlyTag(line: string) {
   const cleaned = line.trim();
-  return cleaned.localeCompare(LOCK_FROM_BEGINNING) === 0 ||
-    cleaned.localeCompare(LOCK_TO_END) === 0 ||
-    cleaned.localeCompare(START_LOCK) === 0 ||
-    cleaned.localeCompare(END_LOCK) === 0;
+  return cleaned === LOCK_FROM_BEGINNING ||
+    cleaned === LOCK_TO_END ||
+    cleaned === START_LOCK ||
+    cleaned === END_LOCK;
 }

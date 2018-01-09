@@ -61,9 +61,9 @@ const initialState: State = {
   tags: new FormValue([]),
   inputOutput: [new IO(new FormValue(''), new FormValue(''))],
   modelSolution: {
+    solutionRows: new FormValue([]),
     editableModelSolution: undefined,
     boilerplate: { code: '', readOnlyLines: [] },
-    solutionRows: [],
     readOnlyModelSolutionLines: [],
     readOnlyModelSolution: undefined,
     readOnlyCodeTemplate: undefined,
@@ -108,7 +108,7 @@ export default createReducer(initialState, {
     // prevent the removal of the last editable line
     const change = action.change;
     const startLine = change.from.line;
-    let newSolutionRows = state.modelSolution.solutionRows;
+    let newSolutionRows = state.modelSolution.solutionRows.get();
     let newReadOnlyRows = state.modelSolution.readOnlyModelSolutionLines;
     const rowsInOldModelSolution = modelSolution.get().split('\n');
     const rowsInNewModelSolution = action.modelSolution.split('\n');
@@ -145,7 +145,7 @@ export default createReducer(initialState, {
       if (change.removed && change.removed.length === 2) {
         solutionLengthDifference--;
       }
-      newSolutionRows = state.modelSolution.solutionRows.map((row) => {
+      newSolutionRows = state.modelSolution.solutionRows.get().map((row) => {
         if (row >= startLine) {
           return row + solutionLengthDifference;
         }
@@ -163,7 +163,7 @@ export default createReducer(initialState, {
       modelSolution: {
         ...state.modelSolution,
         editableModelSolution: new FormValue(action.modelSolution),
-        solutionRows: newSolutionRows,
+        solutionRows: new FormValue(newSolutionRows),
         readOnlyModelSolutionLines: newReadOnlyRows,
       },
     };
@@ -208,17 +208,20 @@ export default createReducer(initialState, {
       ...state,
       modelSolution: {
         ...state.modelSolution,
-        solutionRows: [...state.modelSolution.solutionRows, action.row],
+        solutionRows: new FormValue([...state.modelSolution.solutionRows.get(), action.row]),
       },
     };
   },
   [DELETE_HIDDEN_ROW](state: State, action: DeleteHiddenRowAction): State {
-    const i = state.modelSolution.solutionRows.findIndex(x => x === action.row);
+    const i = state.modelSolution.solutionRows.get().findIndex(x => x === action.row);
     return {
       ...state,
       modelSolution: {
         ...state.modelSolution,
-        solutionRows: [...state.modelSolution.solutionRows.slice(0, i), ...state.modelSolution.solutionRows.slice(i + 1)],
+        solutionRows: new FormValue(
+          [...state.modelSolution.solutionRows.get().slice(0, i),
+            ...state.modelSolution.solutionRows.get().slice(i + 1)],
+        ),
       },
     };
   },
@@ -277,7 +280,7 @@ export default createReducer(initialState, {
         ...state.modelSolution,
         editableModelSolution: new FormValue(plate),
         readOnlyModelSolutionLines: action.readOnlyLines,
-        solutionRows: [],
+        solutionRows: new FormValue([]),
         boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
       },
     };
@@ -289,7 +292,7 @@ export default createReducer(initialState, {
         ...state.modelSolution,
         editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
         readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
-        solutionRows: [],
+        solutionRows: new FormValue([]),
       },
     };
   },
