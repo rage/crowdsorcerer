@@ -90,6 +90,7 @@ function loadStateFromLocalStorage(storageName: string) {
                 ? new FormValue(state.form.modelSolution.editableModelSolution.value,
                   state.form.modelSolution.editableModelSolution.errors)
                 : undefined,
+        solutionRows: new FormValue(state.form.modelSolution.solutionRows.value, state.form.modelSolution.solutionRows.errors),
       },
     },
     review: {

@@ -48,7 +48,7 @@ class ModelSolution extends Component {
     let count = 0;
     this.textInput.getCodeMirror().getDoc().eachLine(() => {
       const element = document.createElement('div');
-      if (this.props.solutionRows.includes(count)) {
+      if (this.props.solutionRows.get().includes(count)) {
         element.innerHTML = '\u2611'; // ☑
       } else {
         element.innerHTML = '\u2610'; // ☐
@@ -68,7 +68,7 @@ class ModelSolution extends Component {
       codeDocument.removeLineClass(i, 'background', prefixer('hiddenRow'));
       codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
     }
-    this.props.solutionRows.forEach((row) => {
+    this.props.solutionRows.get().forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('hiddenRow'));
     });
     this.props.readOnlyLines.forEach((row) => {
@@ -80,7 +80,7 @@ class ModelSolution extends Component {
     if (this.props.readOnly) {
       return;
     }
-    if (this.props.solutionRows.includes(line)) {
+    if (this.props.solutionRows.get().includes(line)) {
       this.props.onDeleteHiddenRow(line);
     } else {
       this.props.onNewHiddenRow(line);
@@ -122,7 +122,7 @@ class ModelSolution extends Component {
 
   props: {
     editableModelSolution: FormValue<string>,
-    solutionRows: Array<number>,
+    solutionRows: FormValue<Array<number>>,
     onModelSolutionChange: (string) => void,
     onNewHiddenRow: (row: number) => void,
     onDeleteHiddenRow: (row: number) => void,
@@ -141,7 +141,9 @@ class ModelSolution extends Component {
       ? this.props.readOnlyCodeTemplate
       : this.props.readOnlyModelSolution;
     value = this.props.reviewable === undefined ? this.props.editableModelSolution.get() : value;
-    const errors = this.props.editableModelSolution ? this.props.editableModelSolution.errors : [];
+    const modelSolutionErrors = this.props.editableModelSolution ? this.props.editableModelSolution.errors : [];
+    const errors =
+      [...modelSolutionErrors, ...this.props.solutionRows.errors];
     const gutters = this.props.readOnly
       ? ['CodeMirror-linenumbers']
       : ['CodeMirror-linenumbers', 'modelsolution-lines'];

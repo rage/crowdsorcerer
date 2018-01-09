@@ -13,8 +13,14 @@ export default (validators: Array<FieldValidator>, state: FormState | ReviewStat
   validators.forEach((entry) => {
     const fieldName = entry.field;
     const validator = entry.validator;
+    const fieldsArray = fieldName.split(':');
     let errors;
-    const field = state[fieldName];
+    let field;
+    if (fieldsArray.length === 1) {
+      field = state[fieldName];
+    } else {
+      field = fieldsArray.reduce((a, c) => a[c], state);
+    }
     if (field instanceof Array) {
       field.forEach((entity) => {
         if (entity instanceof FormValue) {
