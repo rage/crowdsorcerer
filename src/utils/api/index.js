@@ -139,7 +139,7 @@ export default class Api {
       return {};
     }
     const parsedForm =
-      formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows);
+      formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows.get());
     return (
     {
       oauth_token: this.oauthToken(),
