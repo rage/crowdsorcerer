@@ -1,3 +1,5 @@
+// @flow
+
 const TEMPLATE_BEGIN_TAG = '// BEGIN SOLUTION';
 const TEMPLATE_END_TAG = '// END SOLUTION';
 const TEMPLATE_RETURN_STUB = '// STUB: return ';
@@ -47,7 +49,7 @@ function isMethodDefinitonWithReturnType(words: Array<string>) {
   return false;
 }
 
-function findMethodSignature(modelLines: Array<string>, startIndex: number) {
+function findMethodSignature(modelLines: Array<string>, startIndex: number): { returnType: ?string, index: number } {
   const retObject = { returnType: undefined, index: -1 };
 
   for (let i = startIndex; i < modelLines.length; i++) {
@@ -71,7 +73,7 @@ function findMethodSignature(modelLines: Array<string>, startIndex: number) {
   return retObject;
 }
 
-function generateReturnValue(type: string) {
+function generateReturnValue(type: ?string) {
   let returnValue;
 
   switch (type) {
