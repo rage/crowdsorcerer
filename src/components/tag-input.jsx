@@ -24,6 +24,7 @@ class ExerciseTags extends Component {
     const tagSuggestions = this.props.tagSuggestions.map(tag => ({ name: tag }));
     return (
       <div className={prefixer('form-component')}>
+        <div>Lisää uusi tagi kirjoittamalla mikä tahansa sana, tai sanoja, ja painamalla enter. </div>
         <ReactTags
           tags={tags}
           suggestions={tagSuggestions}
@@ -31,7 +32,7 @@ class ExerciseTags extends Component {
           handleAddition={this.props.handleAddTag}
           allowNew
           autofocus={false}
-          placeholder="Lisää uusi tagi (enter lisää)"
+          placeholder="Lisää tehtävälle tageja"
         />
         <Errors errors={this.props.tags.errors} show={this.props.showErrors} />
       </div>
