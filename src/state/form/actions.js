@@ -173,6 +173,27 @@ export function assignmentInfoReceivedAction(
   };
 }
 
+export function resetCodeToBoilerplateAction(boilerplate: String) {
+  return {
+    boilerplate,
+    type: RESET_TO_BOILERPLATE,
+  };
+}
+
+export function fetchBoilerPlateAction() {
+  return async function fetcher(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.getAssignmentInformation(getState().assignment.assignmentId)
+    .then(
+      (response) => {
+        dispatch(resetCodeToBoilerplateAction(response.template));
+      },
+      () => {
+        dispatch(connectionTerminatedPrematurelyAction());
+      },
+    );
+  };
+}
+
 export function resetToBoilerplateAction() {
   return {
     type: RESET_TO_BOILERPLATE,
@@ -422,5 +443,10 @@ export type ChangeTestNameAction = {
 
 export type ChangePreviewStateAction = {
   state: boolean,
+  type: string,
+}
+
+export type ResetCodeToBoilerplateAction = {
+  boilerplate: string,
   type: string,
 }
