@@ -17,7 +17,7 @@ export default (code: string) => {
     .map(l => l.trim())
     .forEach((line, index) => {
       if (line === LOCK_TO_END) {
-        for (let i = index + 1; i < lines.length - 1; i++) {
+        for (let i = index; i < lines.length - 1; i++) {
           readOnlyLines.push(i - amountOfTags);
         }
         amountOfTags++;

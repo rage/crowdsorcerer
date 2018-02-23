@@ -13,6 +13,7 @@ import {
   setExerciseAction,
   openWebSocketConnectionAction,
   assignmentNotFoundAction,
+  connectionTerminatedPrematurelyAction,
 } from 'state/submission/actions';
 import getReadOnlyLines from 'utils/get-read-only-lines';
 
@@ -145,6 +146,27 @@ export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: s
     boilerplate,
     readOnlyLines,
     type: ASSIGNMENT_INFO_RECEIVED,
+  };
+}
+
+export function resetCodeToBoilerplateAction(boilerplate: String) {
+  return {
+    boilerplate,
+    type: RESET_TO_BOILERPLATE,
+  };
+}
+
+export function fetchBoilerPlateAction() {
+  return async function fetcher(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.getAssignmentInformation(getState().assignment.assignmentId)
+    .then(
+      (response) => {
+        dispatch(resetCodeToBoilerplateAction(response.template));
+      },
+      () => {
+        dispatch(connectionTerminatedPrematurelyAction());
+      },
+    );
   };
 }
 
@@ -305,3 +327,8 @@ export type SetShowCodeTemplateAction = {
   show: boolean,
   type: string,
 };
+
+export type ResetCodeToBoilerplateAction = {
+  boilerplate: string,
+  type: string,
+}
