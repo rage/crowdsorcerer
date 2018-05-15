@@ -94,6 +94,9 @@ const initialState: State = {
     markers: [],
     testArray: [],
   },
+  unitTests: {
+    editableUnitTests: undefined,
+  },
   done: false,
   exerciseType: '',
   previewState: false,

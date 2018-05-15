@@ -26,6 +26,7 @@ export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
 export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
+export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
 export const NEW_EXERCISE_RECEIVED = 'NEW_EXERCISE_RECEIVED';
@@ -36,7 +37,6 @@ export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
 export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
-export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 export const ADD_MARKERS = 'ADD_MARKERS';
 export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
@@ -91,6 +91,14 @@ export function testOutputChangeAction(testOutput: string, index: number) {
 export function changeFormErrorVisibilityAction() {
   return {
     type: CHANGE_FORM_ERRORS_VISIBILITY,
+  };
+}
+
+export function unitTestsChangeAction(unitTests: string, change: Change) {
+  return {
+    unitTests,
+    change,
+    type: CHANGE_UNIT_TESTS,
   };
 }
 
@@ -280,14 +288,6 @@ export function testTypeChangedAction(newType: string, index: number) {
     newType,
     index,
     type: TEST_TYPE_CHANGED,
-  };
-}
-
-export function unitTestsChangeAction(unitTests: string, change: Change) {
-  return {
-    unitTests,
-    change,
-    type: CHANGE_UNIT_TESTS,
   };
 }
 
