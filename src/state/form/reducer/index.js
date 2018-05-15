@@ -43,6 +43,14 @@ export type State = {
       readOnlyLines: number[]
     },
   },
+  unitTests: {
+    editableUnitTests: ?FormValue<string>,
+    boilerplate: {
+      code: string,
+      readOnlyLines: number[],
+    },
+    readOnlyLines: number[],
+  },
   done: boolean,
 };
 

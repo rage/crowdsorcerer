@@ -20,6 +20,7 @@ import {
   SET_SHOW_CODE_TEMPLATE,
   FORM_DONE,
   TEST_TYPE_CHANGED,
+  CHANGE_UNIT_TESTS,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -36,6 +37,7 @@ import type {
     AssignmentInfoReceivedAction,
     SetShowCodeTemplateAction,
     TestTypeChangedAction,
+    UnitTestsChangeAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -70,6 +72,9 @@ const initialState: State = {
     readOnlyModelSolution: undefined,
     readOnlyCodeTemplate: undefined,
     showTemplate: false,
+  },
+  unitTests: {
+    editableUnitTests: undefined,
   },
   done: false,
 };
@@ -202,6 +207,15 @@ export default createReducer(initialState, {
     return {
       ...state,
       inputOutput: newInputOutput,
+    };
+  },
+  [CHANGE_UNIT_TESTS](state: State, action: UnitTestsChangeAction): State {
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        editableUnitTests: new FormValue(action.unitTests),
+      },
     };
   },
   [ADD_HIDDEN_ROW](state: State, action: AddHiddenRowAction): State {

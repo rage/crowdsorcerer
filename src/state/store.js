@@ -92,6 +92,13 @@ function loadStateFromLocalStorage(storageName: string) {
                 : undefined,
         solutionRows: new FormValue(state.form.modelSolution.solutionRows.value, state.form.modelSolution.solutionRows.errors),
       },
+      unitTests: {
+        ...state.form.unitTests,
+        editableUnitTests: state.form.unitTests.editableUnitTests
+                ? new FormValue(state.form.unitTests.editableUnitTests.value,
+                state.form.unitTests.editableUnitTests.errors)
+                : undefined,
+      },
     },
     review: {
       ...state.review,

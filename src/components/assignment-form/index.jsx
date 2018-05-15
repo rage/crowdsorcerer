@@ -10,6 +10,7 @@ import StatusDisplay from '../status-display';
 import ModelSolution from './model-solution';
 import Assignment from './assignment';
 import TestFields from './test-fields';
+import UnitTests from './unit-tests';
 
 class AssignmentForm extends Component {
 
@@ -26,6 +27,7 @@ class AssignmentForm extends Component {
       <form onSubmit={this.props.handleSubmit} >
         <Assignment />
         <ModelSolution />
+        <UnitTests />
         <TestFields />
         <ExerciseTags showErrors={this.props.showErrors} />
         <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>
