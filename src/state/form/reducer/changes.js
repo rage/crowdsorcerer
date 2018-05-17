@@ -96,6 +96,11 @@ const initialState: State = {
   },
   unitTests: {
     editableUnitTests: undefined,
+    boilerplate: {
+      code: '',
+      readOnlyLines: [],
+    },
+    readOnlyLines: [],
   },
   done: false,
   exerciseType: '',
@@ -416,6 +421,27 @@ export default createReducer(initialState, {
     }
 
     const plate = getCleanPlate(action.boilerplate);
+    if (action.testTemplate) {
+      return {
+        ...state,
+        tagSuggestions: action.tagSuggestions,
+        modelSolution: {
+          ...state.modelSolution,
+          editableModelSolution: new FormValue(plate),
+          readOnlyModelSolutionLines: action.readOnlyLines,
+          solutionRows: [],
+          boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
+        },
+        unitTests: {
+          ...state.unitTests,
+          editableUnitTests: new FormValue(action.testTemplate),
+          boilerplate: {
+            code: action.testTemplate,
+            readOnlyLines: [],
+          },
+        },
+      };
+    }
     return {
       ...state,
       tagSuggestions: action.tagSuggestions,
