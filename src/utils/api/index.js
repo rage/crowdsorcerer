@@ -149,7 +149,7 @@ export default class Api {
         code: parsedForm,
         testIO: IOArray,
         tags: formState.tags.get(),
-        unit_tests: formState.unitTests.get(),
+        unit_tests: formState.unitTests,
       },
     }
     );

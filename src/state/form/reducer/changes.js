@@ -37,7 +37,7 @@ import type {
     AssignmentInfoReceivedAction,
     SetShowCodeTemplateAction,
     TestTypeChangedAction,
-    UnitTestsChangeAction,
+    ChangeUnitTestsAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -75,6 +75,11 @@ const initialState: State = {
   },
   unitTests: {
     editableUnitTests: undefined,
+    boilerplate: {
+      code: '',
+      readOnlyLines: [],
+    },
+    readOnlyLines: [],
   },
   done: false,
 };
@@ -209,7 +214,7 @@ export default createReducer(initialState, {
       inputOutput: newInputOutput,
     };
   },
-  [CHANGE_UNIT_TESTS](state: State, action: UnitTestsChangeAction): State {
+  [CHANGE_UNIT_TESTS](state: State, action: ChangeUnitTestsAction): State {
     return {
       ...state,
       unitTests: {
@@ -291,6 +296,28 @@ export default createReducer(initialState, {
       });
     }
     const plate = cleanPlate.join('\n');
+    console.log(action);
+    if (action.testTemplate) {
+      return {
+        ...state,
+        tagSuggestions: action.tagSuggestions,
+        modelSolution: {
+          ...state.modelSolution,
+          editableModelSolution: new FormValue(plate),
+          readOnlyModelSolutionLines: action.readOnlyLines,
+          solutionRows: [],
+          boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
+        },
+        unitTests: {
+          ...state.unitTests,
+          editableUnitTests: new FormValue(action.testTemplate),
+          boilerplate: {
+            code: action.testTemplate,
+            readOnlyLines: [],
+          },
+        },
+      };
+    }
     return {
       ...state,
       tagSuggestions: action.tagSuggestions,

@@ -61,6 +61,7 @@ class UnitTests extends Component {
     editableUnitTests: FormValue<string>,
     onUnitTestsChange: (string) => void,
     showErrors: boolean,
+    readOnlyLines: number[],
   }
 
   render() {
@@ -83,7 +84,6 @@ class UnitTests extends Component {
               lineNumbers: true,
               tabSize: 4,
               indentUnit: 4,
-              readOnly: this.props.readOnly,
               dragDrop: false,
             }}
             value={value}
@@ -107,6 +107,7 @@ function mapStateToProps(state: State) {
   return {
     editableUnitTests: state.form.unitTests.editableUnitTests,
     showErrors: state.form.showErrors,
+    readOnlyLines: state.form.unitTests.readOnlyLines,
   };
 }
 

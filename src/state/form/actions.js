@@ -26,7 +26,6 @@ export const CHANGE_TEST_OUTPUT = 'CHANGE_TEST_OUTPUT';
 export const ADD_HIDDEN_ROW = 'ADD_HIDDEN_ROW';
 export const DELETE_HIDDEN_ROW = 'DELETE_HIDDEN_ROW';
 export const CHANGE_FORM_ERRORS_VISIBILITY = 'CHANGE_FORM_ERRORS_VISIBILITY';
-export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 export const ADD_TAG = 'ADD_TAG';
 export const REMOVE_TAG = 'REMOVE_TAG';
 export const NEW_EXERCISE_RECEIVED = 'NEW_EXERCISE_RECEIVED';
@@ -37,6 +36,7 @@ export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
 export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
+export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 
 export function addTestFieldAction() {
   return {
@@ -86,14 +86,6 @@ export function testOutputChangeAction(testOutput: string, index: number) {
 export function changeFormErrorVisibilityAction() {
   return {
     type: CHANGE_FORM_ERRORS_VISIBILITY,
-  };
-}
-
-export function unitTestsChangeAction(unitTests: string, change: Change) {
-  return {
-    unitTests,
-    change,
-    type: CHANGE_UNIT_TESTS,
   };
 }
 
@@ -149,13 +141,14 @@ export function submitFormAction() {
   };
 }
 
-export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string) {
+export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string, testTemplate: ?string) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyLines = getReadOnlyLines(boilerplate);
   return {
     tagSuggestions,
     boilerplate,
     readOnlyLines,
+    testTemplate,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -171,7 +164,11 @@ export function getAssignmentInfoAction() {
     api.getAssignmentInformation(getState().assignment.assignmentId)
     .then(
       (response) => {
-        dispatch(assignmentInfoReceivedAction(response.tags, response.template));
+        // TODO:
+        // if (response.test_template === undefined) {
+        //   dispatch(assignmentInfoReceivedAction(response.tags, response.template));
+        // }
+        dispatch(assignmentInfoReceivedAction(response.tags, response.template, response.test_template));
       },
       (error) => {
         if (error.status === 403) {
@@ -243,6 +240,14 @@ export function testTypeChangedAction(oldType: string, index: number) {
     oldType,
     index,
     type: TEST_TYPE_CHANGED,
+  };
+}
+
+export function unitTestsChangeAction(unitTests: string, change: Change) {
+  return {
+    unitTests,
+    change,
+    type: CHANGE_UNIT_TESTS,
   };
 }
 
@@ -339,3 +344,9 @@ export type TestTypeChangedAction = {
 >>>>>>> Add toggling test type
   type: string,
 };
+
+export type ChangeUnitTestsAction = {
+  unitTests: string,
+  change: Change,
+  type: string,
+}
