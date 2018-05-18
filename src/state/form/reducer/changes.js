@@ -421,27 +421,19 @@ export default createReducer(initialState, {
     }
 
     const plate = getCleanPlate(action.boilerplate);
+
+    let unitTests = { ...state.unitTests };
     if (action.testTemplate) {
-      return {
-        ...state,
-        tagSuggestions: action.tagSuggestions,
-        modelSolution: {
-          ...state.modelSolution,
-          editableModelSolution: new FormValue(plate),
-          readOnlyModelSolutionLines: action.readOnlyLines,
-          solutionRows: [],
-          boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
-        },
-        unitTests: {
-          ...state.unitTests,
-          editableUnitTests: new FormValue(action.testTemplate),
-          boilerplate: {
-            code: action.testTemplate,
-            readOnlyLines: [],
-          },
+      unitTests = {
+        ...state.unitTests,
+        editableUnitTests: new FormValue(action.testTemplate),
+        boilerplate: {
+          code: action.testTemplate,
+          readOnlyLines: [],
         },
       };
     }
+
     return {
       ...state,
       tagSuggestions: action.tagSuggestions,
