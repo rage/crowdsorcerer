@@ -164,10 +164,6 @@ export function getAssignmentInfoAction() {
     api.getAssignmentInformation(getState().assignment.assignmentId)
     .then(
       (response) => {
-        // TODO:
-        // if (response.test_template === undefined) {
-        //   dispatch(assignmentInfoReceivedAction(response.tags, response.template));
-        // }
         dispatch(assignmentInfoReceivedAction(response.tags, response.template, response.test_template));
       },
       (error) => {
@@ -323,6 +319,7 @@ export type AssignmentInfoReceivedAction = {
   boilerplate: string,
   readOnlyLines: number[],
   tagSuggestions: Array<string>,
+  testTemplate: ?string,
   type: string,
 };
 

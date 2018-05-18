@@ -140,6 +140,12 @@ export default class Api {
     }
     const parsedForm =
       formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows.get());
+
+    let unitTests;
+    if (formState.unitTests.editableUnitTests) {
+      unitTests = formState.unitTests.editableUnitTests.get();
+    }
+
     return (
     {
       oauth_token: this.oauthToken(),
@@ -149,7 +155,7 @@ export default class Api {
         code: parsedForm,
         testIO: IOArray,
         tags: formState.tags.get(),
-        unit_tests: formState.unitTests,
+        unit_tests: unitTests,
       },
     }
     );

@@ -296,28 +296,19 @@ export default createReducer(initialState, {
       });
     }
     const plate = cleanPlate.join('\n');
-    console.log(action);
+
+    let unitTests = { ...state.unitTests };
     if (action.testTemplate) {
-      return {
-        ...state,
-        tagSuggestions: action.tagSuggestions,
-        modelSolution: {
-          ...state.modelSolution,
-          editableModelSolution: new FormValue(plate),
-          readOnlyModelSolutionLines: action.readOnlyLines,
-          solutionRows: [],
-          boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
-        },
-        unitTests: {
-          ...state.unitTests,
-          editableUnitTests: new FormValue(action.testTemplate),
-          boilerplate: {
-            code: action.testTemplate,
-            readOnlyLines: [],
-          },
+      unitTests = {
+        ...state.unitTests,
+        editableUnitTests: new FormValue(action.testTemplate),
+        boilerplate: {
+          code: action.testTemplate,
+          readOnlyLines: [],
         },
       };
     }
+
     return {
       ...state,
       tagSuggestions: action.tagSuggestions,
@@ -328,6 +319,7 @@ export default createReducer(initialState, {
         solutionRows: new FormValue([]),
         boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
       },
+      unitTests,
     };
   },
   [RESET_TO_BOILERPLATE](state: State): State {
