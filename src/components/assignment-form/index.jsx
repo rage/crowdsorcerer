@@ -20,15 +20,24 @@ class AssignmentForm extends Component {
     handleSubmit: () => void,
     valid: boolean,
     showErrors: boolean,
+    testTemplate: {
+      code: string,
+      readOnlyLines: number[],
+    },
   }
 
   render() {
+    let tests;
+    if (this.props.testTemplate.code) {
+      tests = <UnitTests />;
+    } else {
+      tests = <TestFields />;
+    }
     return (
       <form onSubmit={this.props.handleSubmit} >
         <Assignment />
         <ModelSolution />
-        <UnitTests />
-        <TestFields />
+        {tests}
         <ExerciseTags showErrors={this.props.showErrors} />
         <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>
           <button
@@ -53,6 +62,7 @@ function mapStateToProps(state: State) {
   return {
     valid: state.form.valid,
     showErrors: state.form.showErrors,
+    testTemplate: state.form.unitTests.boilerplate,
   };
 }
 
