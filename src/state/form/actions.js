@@ -143,12 +143,17 @@ export function submitFormAction() {
 
 export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string, testTemplate: ?string) {
   const tagSuggestions = newTags.map(tag => tag.name);
-  const readOnlyLines = getReadOnlyLines(boilerplate);
+  const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
+  let readOnlyUnitTestsLines;
+  if (testTemplate) {
+    readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
+  }
   return {
     tagSuggestions,
     boilerplate,
-    readOnlyLines,
+    readOnlyModelSolutionLines,
     testTemplate,
+    readOnlyUnitTestsLines,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -317,9 +322,10 @@ export type NewExerciseReceivedAction = {
 
 export type AssignmentInfoReceivedAction = {
   boilerplate: string,
-  readOnlyLines: number[],
+  readOnlyModelSolutionLines: number[],
   tagSuggestions: Array<string>,
   testTemplate: ?string,
+  readOnlyUnitTestsLines: number[],
   type: string,
 };
 

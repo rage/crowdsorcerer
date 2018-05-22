@@ -18,12 +18,23 @@ class UnitTests extends Component {
   }
 
   componentDidMount() {
+    this.showMarkers();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('beforeChange', this.handleUnitTestsChange);
   }
 
   componentDidUpdate() {
+    this.showMarkers();
+  }
 
+  showMarkers() {
+    const codeDocument = this.textInput.getCodeMirror().getDoc();
+    for (let i = 0; i <= codeDocument.getEditor().lineCount(); i++) {
+      codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
+    }
+    this.props.readOnlyLines.forEach((row) => {
+      codeDocument.addLineClass(row, 'background', prefixer('readOnly'));
+    });
   }
 
   // copy-pasted from model-solution.jsx

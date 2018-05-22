@@ -298,13 +298,21 @@ export default createReducer(initialState, {
     const plate = cleanPlate.join('\n');
 
     let unitTests = { ...state.unitTests };
+    const cleanTestTemplate = [];
     if (action.testTemplate) {
+      action.testTemplate.split('\n').forEach((row) => {
+        if (!isReadOnlyTag(row)) {
+          cleanTestTemplate.push(row);
+        }
+      });
+      const testTemplate = cleanTestTemplate.join('\n');
       unitTests = {
         ...state.unitTests,
-        editableUnitTests: new FormValue(action.testTemplate),
+        editableUnitTests: new FormValue(testTemplate),
+        readOnlyLines: action.readOnlyUnitTestsLines,
         boilerplate: {
-          code: action.testTemplate,
-          readOnlyLines: [],
+          code: testTemplate,
+          readOnlyLines: action.readOnlyUnitTestsLines,
         },
       };
     }
@@ -315,9 +323,9 @@ export default createReducer(initialState, {
       modelSolution: {
         ...state.modelSolution,
         editableModelSolution: new FormValue(plate),
-        readOnlyModelSolutionLines: action.readOnlyLines,
+        readOnlyModelSolutionLines: action.readOnlyModelSolutionLines,
         solutionRows: new FormValue([]),
-        boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
+        boilerplate: { code: plate, readOnlyLines: action.readOnlyModelSolutionLines },
       },
       unitTests,
     };
