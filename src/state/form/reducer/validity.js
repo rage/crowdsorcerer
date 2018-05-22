@@ -20,17 +20,16 @@ import {
 import { CHANGE_REVIEW_ERRORS_VISIBILITY } from 'state/review/actions';
 import type {
   AddTestFieldAction,
-  RemoveTestFieldAction,
-  TestInputChangeAction,
-  TestOutputChangeAction,
-  AssignmentChangeAction,
-  ModelSolutionChangeAction,
-  AddHiddenRowAction,
-  DeleteHiddenRowAction,
-  ChangeErrorsVisibilityAction,
-  AddTagAction,
-  RemoveTagAction,
-  ChangeUnitTestsAction,
+    RemoveTestFieldAction,
+    TestInputChangeAction,
+    TestOutputChangeAction,
+    AssignmentChangeAction,
+    ModelSolutionChangeAction,
+    AddHiddenRowAction,
+    DeleteHiddenRowAction,
+    ChangeErrorsVisibilityAction,
+    AddTagAction,
+    RemoveTagAction,
   ChangeTestNameAction,
 } from 'state/form/actions';
 import type { State } from './index';

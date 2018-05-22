@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
+import CodeMirror from '@skidding/react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import type { Change } from 'state/form/reducer';
 import { connect } from 'react-redux';
@@ -18,7 +18,10 @@ class UnitTests extends Component {
   }
 
   componentDidMount() {
+<<<<<<< 9e6f097f0294daaa5494bf6f9c91896195bac6e0
     this.showMarkers();
+=======
+>>>>>>> Show either unit tests -field or input-output -fields
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('beforeChange', this.handleUnitTestsChange);
   }
@@ -109,7 +112,7 @@ class UnitTests extends Component {
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
           <div id="unitTests" className={prefixer('instructions')}>
-            Testikoodi
+            Testit
           </div>
         </div>
         <div tabIndex="0">
