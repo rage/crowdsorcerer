@@ -68,7 +68,7 @@
     "extract-text-webpack-plugin": "^2.1.0",
     "flow-bin": "^0.45.0",
     "html-webpack-plugin": "^2.29.0",
-    "node-sass": "^4.5.1",
+    "node-sass": "^4.9.0",
     "nyc": "^10.3.2",
     "postcss-class-prefix": "^0.3.0",
     "postcss-loader": "^2.0.3",
