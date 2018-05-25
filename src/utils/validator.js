@@ -44,7 +44,7 @@ export default (validators: Array<FieldValidator>, state: FormState | ReviewStat
     } else if (field !== undefined) {
       Object.entries(field).forEach(([, value]) => {
         if (value instanceof FormValue) {
-          errors = validator(value);
+          errors = validator(value, state);
           value._setErrors(errors);
           validationResults.push(errors.length === 0);
         }

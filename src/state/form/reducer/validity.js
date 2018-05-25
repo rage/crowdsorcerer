@@ -46,22 +46,29 @@ import type {
 } from 'state/form/actions';
 import type { State } from './index';
 
+
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
 const MIN_UNIT_TEST_AMOUNT = 1;
+const MIN_UNIT_TESTS_WORD_AMOUNT = 5;
 const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
   MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
+<<<<<<< cbc68fe7a30ffa212b7e701c855a60826fac4792
 <<<<<<< c14c28c0e751f5ae9375685ff075f9c5e3ac0c92
 const EMPTY_TEMPLATE_ERROR = 'Muista merkitä, mitkä rivit tehtävästä kuuluvat vain mallivastaukseen, sillä ' +
   'muuten tehtävän koko ratkaisu näkyy tehtäväpohjassa. Lisää tietoa ohjeistuksessa.';
 =======
 const UNIT_TESTS_ERRORS = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`; // TODO: toteuta
 >>>>>>> Show either unit tests -field or input-output -fields
+=======
+const UNIT_TEST_AMOUNT_ERROR = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`;
+const UNIT_TESTS_WORD_ERROR = `Testikoodin tulee olla vähintään ${MIN_UNIT_TESTS_WORD_AMOUNT} sanaa pitkä.`;
+>>>>>>> Validate model solution and tests written by the user
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
@@ -89,6 +96,23 @@ function isFormAction(actionContainer: AnyAction) {
     action === CHANGE_UNIT_TESTS;
 }
 
+// TBD: is this function a good idea?
+function getDifferenceBetweenStrings(original: string, submitted: string): string {
+  const orig = original.replace(/\r?\n|\r/g, '\n');
+  const sub = submitted.replace(/\r?\n|\r/g, '\n');
+  let result = '';
+  let i = 0;
+  let j;
+  for (j = 0; j < sub.length; j++) {
+    if (orig[i] !== sub[j] || i === orig.length) {
+      result += sub[j];
+    } else {
+      i++;
+    }
+  }
+  return result;
+}
+
 function assignmentErrors(assignment: FormValue<sState>): Array<string> {
   const errors = [];
   const words = Plain.serialize(assignment.get()).split(/[ \n]+/).filter(Boolean);
@@ -110,11 +134,15 @@ function checkModelSolutionLength(words: Array<string>, lines: Array<string>): ?
   return undefined;
 }
 
-function modelSolutionErrors(modelSolution: FormValue<*>): Array<string> {
+function modelSolutionErrors(modelSolution: FormValue<*>, state: State): Array<string> {
   const errors = [];
-  const words = modelSolution.get().split(/[ \n]+/).filter(Boolean);
-  const lines = modelSolution.get().split('\n').filter(Boolean);
+
+  const insertedCode = getDifferenceBetweenStrings(state.modelSolution.boilerplate.code, modelSolution.get());
+  const words = insertedCode.split(/[ \n]+/).filter(Boolean);
+  const lines = insertedCode.split('\n').filter(Boolean);
+
   const errorMessage = checkModelSolutionLength(words, lines);
+  
   if (errorMessage) {
     errors.push(errorMessage);
   }
@@ -128,15 +156,21 @@ function solutionRowErrors(solutionRows: FormValue<Array<Number>>): Array<string
   return [];
 }
 
-function unitTestsErrors(unitTests: FormValue<*>): Array<string> { // TODO: millä ehdolla yksikkötestit on valideja?
+function unitTestsErrors(unitTests: FormValue<*>, state: State): Array<string> {
   const errors = [];
   let errorMessage;
 
+  const insertedCode = getDifferenceBetweenStrings(state.unitTests.boilerplate.code, unitTests.get());
+
+  const words = insertedCode.split(/[ \n]+/).filter(Boolean);
   const testAmount = unitTests.get().split(/[ \n]+/).filter(word => word === '@Test').length;
 
   if (testAmount < MIN_UNIT_TEST_AMOUNT) {
-    errorMessage = UNIT_TESTS_ERRORS;
+    errorMessage = UNIT_TEST_AMOUNT_ERROR;
+  } else if (words.length < MIN_UNIT_TESTS_WORD_AMOUNT) {
+    errorMessage = UNIT_TESTS_WORD_ERROR;
   }
+
   if (errorMessage) {
     errors.push(errorMessage);
   }
@@ -157,13 +191,20 @@ export default function (state: State, action: AnyAction) {
     return state;
   }
   // separate nested fields with ":"
+
+  let tests;
+  if (state.unitTests.editableUnitTests && state.unitTests.editableUnitTests.get().length > 0) {
+    tests = { field: 'unitTests', validator: unitTestsErrors };
+  } else {
+    tests = { field: 'inputOutput', validator: checkNotBlank };
+  }
+
   const validators = [
     { field: 'assignment', validator: assignmentErrors },
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
     { field: 'tags', validator: checkNotBlank },
-    { field: 'inputOutput', validator: checkNotBlank },
-    { field: 'unitTests', validator: unitTestsErrors },
+    tests,
   ];
 
   const valid = validator(validators, state);

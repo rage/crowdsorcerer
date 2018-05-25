@@ -107,6 +107,17 @@ test('Add a single empty field to intial state test input/output array', (t) => 
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
         editableModelSolution: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -126,6 +137,17 @@ test('Add new test input to the first test input/output array', (t) => {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -145,6 +167,17 @@ test('Add new test output to the first test input/output array', (t) => {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -166,6 +199,17 @@ test('Add new hidden row to selection adds to solutionsRows in state', (t) => {
         editabelModelSolution: new FormValue(twoLineSolution),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -185,6 +229,17 @@ test('Delete hidden row from selection deletes form solutionRows in state', (t) 
         editableModelSolution: twoLineSolution,
         solutionRows: new FormValue([0, 1]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -204,6 +259,17 @@ test('Changing assigment changes assignment in state', (t) => {
         editableModelSolution: twoLineSolution,
         solutionRows: [0, 1],
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -222,7 +288,18 @@ test('Changing model solution changes model solution in state', (t) => {
       modelSolution: {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([0, 1]),
-        readOnlyModelSolutionLines: [] },
+        readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        } },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
     },
     },
     { modelSolution: twoLineSolution, change: twoLineChangeAdd, type: CHANGE_MODEL_SOLUTION },
@@ -240,6 +317,17 @@ test('Removing one selected line from model solution changes model solution and 
         editableModelSolution: new FormValue(threeLineSolution.concat('\n')),
         solutionRows: new FormValue([1, 2]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -263,6 +351,17 @@ test('Removing two selected lines from model solution changes model solution and
         editableModelSolution: new FormValue(threeLineSolution),
         solutionRows: new FormValue([0, 1, 2]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -291,6 +390,16 @@ test('Removing model solution changes model solution in state', (t) => {
         editableModelSolution: new FormValue(oneLineSolution),
         readOnlyModelSolutionLines: [],
         solutionRows: new FormValue([]),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        } },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -310,6 +419,17 @@ test('Change model solution without selected rows changes model solution in stat
         editableModelSolution: new FormValue(threeLineSolution),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -333,6 +453,17 @@ test('Add new line to model solution changes model solution in state', (t) => {
         editableModelSolution: new FormValue(twoLineSolution),
         solutionRows: new FormValue([0]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -353,6 +484,17 @@ test('Remove a single empty field from intial state test input/output array', (t
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -371,6 +513,17 @@ test('Remove only field from intial state test input/output array', (t) => {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -389,6 +542,17 @@ test('form not valid without assignment', (t) => {
         editableModelSolution: new FormValue('asdf \n asf asdf'),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -407,6 +571,17 @@ test('form not valid without assignment', (t) => {
         editableModelSolution: new FormValue('asdf'),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -425,6 +600,17 @@ test('form not valid without model solution', (t) => {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -443,6 +629,17 @@ test('form not valid without tests', (t) => {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
     },
     },
@@ -461,6 +658,17 @@ test('form not valid without tags', (t) => {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
         readOnlyModelSolutionLines: [],
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
       },
       tags: new FormValue([]),
     },
@@ -483,6 +691,13 @@ test('resetting to boilerplate overrides old modelSolution', (t) => {
         boilerplate: {
           code: boilerplate,
           readOnlyLines: [0],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
         },
       },
       tags: new FormValue([]),
@@ -508,6 +723,13 @@ test('readOnlyLines move up when lines removed above them', (t) => {
           readOnlyLines: [1],
         },
       },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
       tags: new FormValue([]),
     },
     },
@@ -529,6 +751,13 @@ test('readOnlyLines move down when lines added above them', (t) => {
         boilerplate: {
           code: boilerplate,
           readOnlyLines: [1],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
         },
       },
       tags: new FormValue([]),
@@ -554,6 +783,13 @@ test('solutionRows move up when lines removed above them', (t) => {
           readOnlyLines: [1],
         },
       },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
+        },
+      },
       tags: new FormValue([]),
     },
     },
@@ -575,6 +811,13 @@ test('solutionRows move down when lines added above them', (t) => {
         boilerplate: {
           code: boilerplate,
           readOnlyLines: [1],
+        },
+      },
+      unitTests: {
+        editableUnitTests: new FormValue(''),
+        boilerplate: {
+          code: '',
+          readOnlyLines: [],
         },
       },
       tags: new FormValue([]),
