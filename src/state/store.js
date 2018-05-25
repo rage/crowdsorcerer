@@ -134,13 +134,18 @@ export default function makeStore(
   /* eslint-disable no-underscore-dangle */
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   /* eslint-enable no-underscore-dangle */
+
+  const middlewares = [thunk.withExtraArgument({ api }), saveStateInLocalStorage(storageName)];
+  if (window['research-agreement-agreed']) {
+    middlewares.unshift(analytics.getMiddleware());
+  }
+
   const store = createStore(
     rootReducer(assignmentId), loadStateFromLocalStorage(storageName),
     composeEnhancers(
       applyMiddleware(
-        analytics.getMiddleware(),
-        thunk.withExtraArgument({ api }),
-        saveStateInLocalStorage(storageName)),
+        ...middlewares,
+      ),
     ),
   );
   store.dispatch(trackLoginStateAction());
