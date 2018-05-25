@@ -215,11 +215,51 @@ export default createReducer(initialState, {
     };
   },
   [CHANGE_UNIT_TESTS](state: State, action: ChangeUnitTestsAction): State {
+    // controls the movement of marked unit test code rows when unit test code is changed
+    const unitTests = state.unitTests.editableUnitTests;
+    if (unitTests === undefined || unitTests === null) {
+      return state;
+    }
+    // prevent the removal of the last editable line
+    const change = action.change;
+    const startLine = change.from.line;
+    let newReadOnlyRows = state.unitTests.readOnlyLines;
+    const rowsInOldUnitTests = unitTests.get().split('\n');
+    const rowsInNewUnitTests = action.unitTests.split('\n');
+    const lengthDifferenceToNew = rowsInNewUnitTests.length - rowsInOldUnitTests.length;
+
+    if (lengthDifferenceToNew < 0) {
+      // text was removed
+      const lengthDifference = change.removed.length - change.text.length;
+      newReadOnlyRows = state.unitTests.readOnlyLines.map((row) => {
+        if (row >= startLine + lengthDifference) {
+          if (row - lengthDifference >= 0) {
+            return row - lengthDifference;
+          }
+          return 0;
+        }
+        return row;
+      });
+    } else if (lengthDifferenceToNew >= 0) {
+      // text was added
+      let lengthDifference = change.text.length ? change.text.length - 1 : 0;
+      if (change.removed && change.removed.length === 2) {
+        lengthDifference--;
+      }
+      newReadOnlyRows = state.unitTests.readOnlyLines.map((row) => {
+        if (row >= startLine) {
+          return row + lengthDifference;
+        }
+        return row;
+      });
+    }
+
     return {
       ...state,
       unitTests: {
         ...state.unitTests,
         editableUnitTests: new FormValue(action.unitTests),
+        readOnlyLines: newReadOnlyRows,
       },
     };
   },
