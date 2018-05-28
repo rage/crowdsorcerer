@@ -336,15 +336,7 @@ export type SetShowCodeTemplateAction = {
 
 export type TestTypeChangedAction = {
   index: number,
-<<<<<<< 8d0c17feb46c3df117f13bb57a667fca79d8733a
   oldType: string,
-=======
-<<<<<<< f51b3240e892f11151fb4cbff53ae5b44c59a9a8
-  testType: string,
-=======
-  oldType: string,
->>>>>>> Add toggling test type
->>>>>>> Add toggling test type
   type: string,
 };
 

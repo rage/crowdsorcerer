@@ -253,7 +253,6 @@ export default createReducer(initialState, {
         return row;
       });
     }
-
     return {
       ...state,
       unitTests: {

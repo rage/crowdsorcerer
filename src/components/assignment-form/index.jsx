@@ -28,7 +28,7 @@ class AssignmentForm extends Component {
 
   render() {
     let tests;
-    if (this.props.testTemplate.code) {
+    if (this.props.testTemplate && this.props.testTemplate.code) {
       tests = <UnitTests />;
     } else {
       tests = <TestFields />;
