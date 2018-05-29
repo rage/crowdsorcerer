@@ -94,14 +94,6 @@ const initialState: State = {
     markers: [],
     testArray: [],
   },
-  unitTests: {
-    editableUnitTests: undefined,
-    boilerplate: {
-      code: '',
-      readOnlyLines: [],
-    },
-    readOnlyLines: [],
-  },
   done: false,
   exerciseType: '',
   previewState: false,
@@ -133,8 +125,6 @@ const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
   }
   return markers;
 };
-
-const supportedTestTypes = ['positive', 'negative'];
 
 export default createReducer(initialState, {
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
@@ -421,26 +411,6 @@ export default createReducer(initialState, {
     }
 
     const plate = getCleanPlate(action.boilerplate);
-
-    let unitTests = { ...state.unitTests };
-    const cleanTestTemplate = [];
-    if (action.testTemplate) {
-      action.testTemplate.split('\n').forEach((row) => {
-        if (!isReadOnlyTag(row)) {
-          cleanTestTemplate.push(row);
-        }
-      });
-      const testTemplate = cleanTestTemplate.join('\n');
-      unitTests = {
-        ...state.unitTests,
-        editableUnitTests: new FormValue(testTemplate),
-        readOnlyLines: action.readOnlyUnitTestsLines,
-        boilerplate: {
-          code: testTemplate,
-          readOnlyLines: action.readOnlyUnitTestsLines,
-        },
-      };
-    }
 
     return {
       ...state,

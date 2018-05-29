@@ -21,6 +21,7 @@ class UnitTests extends Component {
     this.showMarkers();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('beforeChange', this.handleUnitTestsChange);
+    console.info(this.markers);
   }
 
   componentDidUpdate() {
