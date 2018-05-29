@@ -50,6 +50,7 @@ export type State = {
       readOnlyLines: number[],
     },
     readOnlyLines: number[],
+    markers: Array<Object>,
   },
   done: boolean,
 };

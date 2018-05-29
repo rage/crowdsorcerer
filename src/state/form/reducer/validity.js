@@ -163,7 +163,7 @@ function unitTestsErrors(unitTests: FormValue<*>, state: State): Array<string> {
   const insertedCode = getDifferenceBetweenStrings(state.unitTests.boilerplate.code, unitTests.get());
 
   const words = insertedCode.split(/[ \n]+/).filter(Boolean);
-  const testAmount = unitTests.get().split(/[ \n]+/).filter(word => word === '@Test').length;
+  const testAmount = unitTests.get().split(/[ \n]+/).filter(word => word.includes('@Test')).length;
 
   if (testAmount < MIN_UNIT_TEST_AMOUNT) {
     errorMessage = UNIT_TEST_AMOUNT_ERROR;

@@ -21,6 +21,7 @@ import {
   FORM_DONE,
   TEST_TYPE_CHANGED,
   CHANGE_UNIT_TESTS,
+  ADD_MARKER,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -38,6 +39,7 @@ import type {
     SetShowCodeTemplateAction,
     TestTypeChangedAction,
     ChangeUnitTestsAction,
+    AddMarkerAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -80,6 +82,7 @@ const initialState: State = {
       readOnlyLines: [],
     },
     readOnlyLines: [],
+    markers: [],
   },
   done: false,
 };
@@ -415,6 +418,16 @@ export default createReducer(initialState, {
     return {
       ...state,
       inputOutput,
+    };
+  },
+  [ADD_MARKER](state: State, action: AddMarkerAction): State {
+    const newMarker = { line: action.row, ch: action.col };
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        markers: [...state.unitTests.markers, newMarker],
+      },
     };
   },
 });

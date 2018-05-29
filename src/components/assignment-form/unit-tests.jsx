@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
-import CodeMirror from '@skidding/react-codemirror';
+import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import type { Change } from 'state/form/reducer';
 import { connect } from 'react-redux';
@@ -21,6 +21,7 @@ class UnitTests extends Component {
     this.showMarkers();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('beforeChange', this.handleUnitTestsChange);
+    console.info(this.markers);
   }
 
   componentDidUpdate() {
@@ -32,9 +33,23 @@ class UnitTests extends Component {
     for (let i = 0; i <= codeDocument.getEditor().lineCount(); i++) {
       codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
     }
+    if (this.markers) {
+      this.markers.forEach(marker => marker.clear());
+    }
+
     this.props.readOnlyLines.forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('readOnly'));
     });
+    this.markers = this.props.markerRanges.map(range => (
+      codeDocument.markText(
+        // { line: 0, ch: 0 },
+        // { line: 0, ch: 2 },
+        // { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+        { line: range.row, ch: range.col },
+        { line: range.row, ch: range.col + 1 },
+        { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+      )
+    ));
   }
 
   // copy-pasted from model-solution.jsx
@@ -67,12 +82,14 @@ class UnitTests extends Component {
 
   textInput: CodeMirror;
   handleUnitTestsChange: (CodeMirror, Change) => void;
+  markers: TextMarker;
 
   props: {
     editableUnitTests: FormValue<string>,
     onUnitTestsChange: (string) => void,
     showErrors: boolean,
     readOnlyLines: number[],
+    markerRanges: Array<Object>,
   }
 
   render() {
@@ -119,6 +136,7 @@ function mapStateToProps(state: State) {
     editableUnitTests: state.form.unitTests.editableUnitTests,
     showErrors: state.form.showErrors,
     readOnlyLines: state.form.unitTests.readOnlyLines,
+    markerRanges: state.form.unitTests.markers,
   };
 }
 

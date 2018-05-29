@@ -37,6 +37,7 @@ export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
 export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
+export const ADD_MARKER = 'ADD_MARKER';
 
 export function addTestFieldAction() {
   return {
@@ -252,6 +253,14 @@ export function unitTestsChangeAction(unitTests: string, change: Change) {
   };
 }
 
+export function addMarkerAction(row: number, col: number) {
+  return {
+    row,
+    col,
+    type: ADD_MARKER,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -345,3 +354,9 @@ export type ChangeUnitTestsAction = {
   change: Change,
   type: string,
 }
+
+export type AddMarkerAction = {
+  row: number,
+  col: number,
+  type: string
+};

@@ -41,6 +41,8 @@ class StatusDisplay extends Component {
     if (this.props.result.errors && this.props.result.errors.length > 0) {
       errorInfoClassName += ` ${this.props.result.errors.map(o => o.messages.split('\n').length)
       .reduce((a, b) => a + b) > 8 ? prefixer('long') : ''}`;
+      // TODO: add markers (make some crazy cool function that parses the errormessage
+      // from backend and then dispatches some ACTION)
     }
     return (
       <div className={statusDisplay}>
