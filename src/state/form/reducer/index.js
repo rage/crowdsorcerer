@@ -54,15 +54,6 @@ export type State = {
     markers: Array<Object>,
     testArray: Array<Object>,
   },
-  unitTests: {
-    editableUnitTests: ?FormValue<string>,
-    boilerplate: {
-      code: string,
-      readOnlyLines: number[],
-    },
-    readOnlyLines: number[],
-    markers: Array<Object>,
-  },
   done: boolean,
   exerciseType: string,
   previewState: boolean
