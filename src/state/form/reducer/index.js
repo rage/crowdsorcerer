@@ -42,6 +42,7 @@ export type State = {
       code: string,
       readOnlyLines: number[]
     },
+    markers: Array<Object>,
   },
   unitTests: {
     editableUnitTests: ?FormValue<string>,

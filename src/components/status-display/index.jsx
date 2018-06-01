@@ -6,8 +6,11 @@ import type { State, Dispatch } from 'state/reducer';
 import type { ErrorResult } from 'state/submission/reducer';
 import prefixer from 'utils/class-name-prefixer';
 import { resetSubmissionStatusAction } from 'state/submission';
+import getMarkers from 'utils/get-markers';
+import { addMarkersAction } from 'state/form/actions';
 import ProgressBar from './progress-bar';
 import ResultIcon from './result-icon';
+
 
 class StatusDisplay extends Component {
 
@@ -39,10 +42,12 @@ class StatusDisplay extends Component {
     let errorMessageKey = '';
     let errorInfoClassName = prefixer('error-info');
     if (this.props.result.errors && this.props.result.errors.length > 0) {
-      errorInfoClassName += ` ${this.props.result.errors.map(o => o.messages.split('\n').length)
-      .reduce((a, b) => a + b) > 8 ? prefixer('long') : ''}`;
-      // TODO: add markers (make some crazy cool function that parses the errormessage
-      // from backend and then dispatches some ACTION)
+      const lengths = [];
+      this.props.result.errors.forEach((error) => {
+        lengths.push(error.messages.map(m => m.message).join('\n').length);
+      });
+      errorInfoClassName += ` ${lengths
+        .reduce((a, b) => a + b) > 8 ? prefixer('long') : ''}`;
     }
     return (
       <div className={statusDisplay}>
@@ -52,11 +57,12 @@ class StatusDisplay extends Component {
           </div>
           <div className={errorInfoClassName}>
             {this.props.result.errors.map((e) => {
-              errorMessageKey += ` ${e.messages}`;
+              const messages = e.messages.map(m => m.message).join('\n');
+              errorMessageKey += ` ${messages}`;
               return (
                 <div key={errorMessageKey}>
                   <div className={prefixer('error-header')}>{e.header}</div>
-                  <div className={prefixer('error-message')}>{e.messages}</div>
+                  <div className={prefixer('error-message')}>{messages}</div>
                 </div>);
             },
           )}
@@ -70,7 +76,7 @@ class StatusDisplay extends Component {
               className={finishButton}
               onClick={(e) => {
                 e.preventDefault();
-                this.props.onOKButtonClick();
+                this.props.onOKButtonClick(getMarkers(this.props.result.errors));
               }}
             > OK </button>
           </div>
@@ -91,8 +97,9 @@ function mapStateToProps(state: State) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    onOKButtonClick() {
+    onOKButtonClick(markers: Array<Object>) {
       dispatch(resetSubmissionStatusAction());
+      dispatch(addMarkersAction(markers));
     },
   };
 }

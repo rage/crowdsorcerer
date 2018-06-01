@@ -4,6 +4,7 @@ import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { formSubmitButtonPressedAction } from 'state/form';
+import { deleteMarkersAction } from 'state/form/actions';
 import 'codemirror/mode/clike/clike';
 import ExerciseTags from 'components/tag-input';
 import StatusDisplay from '../status-display';
@@ -69,6 +70,7 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
     handleSubmit() {
+      dispatch(deleteMarkersAction());
       dispatch(formSubmitButtonPressedAction());
     },
   };

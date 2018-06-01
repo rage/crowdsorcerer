@@ -21,7 +21,6 @@ class UnitTests extends Component {
     this.showMarkers();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('beforeChange', this.handleUnitTestsChange);
-    console.info(this.markers);
   }
 
   componentDidUpdate() {
@@ -40,16 +39,16 @@ class UnitTests extends Component {
     this.props.readOnlyLines.forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('readOnly'));
     });
-    this.markers = this.props.markerRanges.map(range => (
-      codeDocument.markText(
-        // { line: 0, ch: 0 },
-        // { line: 0, ch: 2 },
-        // { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
-        { line: range.row, ch: range.col },
-        { line: range.row, ch: range.col + 1 },
-        { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
-      )
-    ));
+
+    if (this.props.markers && this.props.markers.length > 0) {
+      this.markers = this.props.markers.map(marker => (
+        codeDocument.markText(
+          { line: marker.line, ch: (marker.char - 1) },
+          { line: marker.line, ch: (marker.char + 1) },
+          { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+        )
+      ));
+    }
   }
 
   // copy-pasted from model-solution.jsx
@@ -89,7 +88,7 @@ class UnitTests extends Component {
     onUnitTestsChange: (string) => void,
     showErrors: boolean,
     readOnlyLines: number[],
-    markerRanges: Array<Object>,
+    markers: Array<Object>,
   }
 
   render() {
@@ -136,7 +135,7 @@ function mapStateToProps(state: State) {
     editableUnitTests: state.form.unitTests.editableUnitTests,
     showErrors: state.form.showErrors,
     readOnlyLines: state.form.unitTests.readOnlyLines,
-    markerRanges: state.form.unitTests.markers,
+    markers: state.form.unitTests.markers,
   };
 }
 

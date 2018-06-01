@@ -68,12 +68,26 @@ class ModelSolution extends Component {
       codeDocument.removeLineClass(i, 'background', prefixer('hiddenRow'));
       codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
     }
+    if (this.markers) {
+      this.markers.forEach(marker => marker.clear());
+    }
+
     this.props.solutionRows.get().forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('hiddenRow'));
     });
     this.props.readOnlyLines.forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('readOnly'));
     });
+
+    if (this.props.markers && this.props.markers.length > 0) {
+      this.markers = this.props.markers.map(marker => (
+        codeDocument.markText(
+          { line: marker.line, ch: (marker.char - 1) },
+          { line: marker.line, ch: (marker.char + 1) },
+          { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+        )
+      ));
+    }
   }
 
   handleAddNewHiddenRow(cm: CodeMirror, line: number) {
@@ -134,6 +148,7 @@ class ModelSolution extends Component {
     readOnlyCodeTemplate: string,
     onResetModelSolution: () => void,
     onSetShowCodeTemplate: () => void,
+    markers: Array<Object>,
   };
 
   render() {
@@ -210,6 +225,7 @@ function mapStateToProps(state: State) {
     readOnlyLines: state.form.modelSolution.readOnlyModelSolutionLines,
     reviewable: state.review.reviewable,
     showCodeTemplate: state.form.modelSolution.showTemplate,
+    markers: state.form.modelSolution.markers,
   };
 }
 

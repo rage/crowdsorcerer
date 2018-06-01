@@ -21,7 +21,8 @@ import {
   FORM_DONE,
   TEST_TYPE_CHANGED,
   CHANGE_UNIT_TESTS,
-  ADD_MARKER,
+  ADD_MARKERS,
+  DELETE_MARKERS,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -39,7 +40,7 @@ import type {
     SetShowCodeTemplateAction,
     TestTypeChangedAction,
     ChangeUnitTestsAction,
-    AddMarkerAction,
+    AddMarkersAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -74,6 +75,7 @@ const initialState: State = {
     readOnlyModelSolution: undefined,
     readOnlyCodeTemplate: undefined,
     showTemplate: false,
+    markers: [],
   },
   unitTests: {
     editableUnitTests: undefined,
@@ -420,13 +422,44 @@ export default createReducer(initialState, {
       inputOutput,
     };
   },
-  [ADD_MARKER](state: State, action: AddMarkerAction): State {
-    const newMarker = { line: action.row, ch: action.col };
+  [ADD_MARKERS](state: State, action: AddMarkersAction): State {
+    if (action.markers.some(m => m.inSourceCode)) {
+      return {
+        ...state,
+        modelSolution: {
+          ...state.modelSolution,
+          markers: action.markers.map(m => (
+            {
+              line: m.line,
+              char: m.char,
+            }
+          )),
+        },
+      };
+    }
     return {
       ...state,
       unitTests: {
         ...state.unitTests,
-        markers: [...state.unitTests.markers, newMarker],
+        markers: action.markers.map(m => (
+          {
+            line: m.line,
+            char: m.char,
+          }
+          )),
+      },
+    };
+  },
+  [DELETE_MARKERS](state: State): State {
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        markers: [],
+      },
+      modelSolution: {
+        ...state.modelSolution,
+        markers: [],
       },
     };
   },

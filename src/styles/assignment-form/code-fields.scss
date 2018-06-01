@@ -2,5 +2,7 @@
 @import "color-constants";
 
 .wrong {
-  background-color: #fcbcbc;
+  text-decoration-line: underline;
+  text-decoration-color: red;
+  text-decoration-style: double;
 }

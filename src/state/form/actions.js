@@ -37,7 +37,8 @@ export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
 export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
-export const ADD_MARKER = 'ADD_MARKER';
+export const ADD_MARKERS = 'ADD_MARKERS';
+export const DELETE_MARKERS = 'DELETE_MARKERS';
 
 export function addTestFieldAction() {
   return {
@@ -253,11 +254,16 @@ export function unitTestsChangeAction(unitTests: string, change: Change) {
   };
 }
 
-export function addMarkerAction(row: number, col: number) {
+export function addMarkersAction(markers: Array<Object>) {
   return {
-    row,
-    col,
-    type: ADD_MARKER,
+    markers,
+    type: ADD_MARKERS,
+  };
+}
+
+export function deleteMarkersAction() {
+  return {
+    type: DELETE_MARKERS,
   };
 }
 
@@ -355,8 +361,11 @@ export type ChangeUnitTestsAction = {
   type: string,
 }
 
-export type AddMarkerAction = {
-  row: number,
-  col: number,
+export type AddMarkersAction = {
+  markers: Array<Object>,
   type: string
 };
+
+export type DeleteMarkersAction = {
+  type: string
+}

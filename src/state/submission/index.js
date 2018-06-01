@@ -5,5 +5,5 @@ export type { State } from './reducer';
 
 export type ErrorMessage = {
   header: string,
-  messages: string,
+  messages: [{message: string, line: number, char: number}],
 };
