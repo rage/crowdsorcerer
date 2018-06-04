@@ -32,7 +32,7 @@ export type State = {
   tags: FormValue<Array<string>>,
   tagSuggestions: Array<string>,
   modelSolution: {
-    solutionRows: Array<number>,
+    solutionRows: FormValue<Array<number>>,
     editableModelSolution: ?FormValue<string>,
     readOnlyModelSolutionLines: Array<number>,
     readOnlyModelSolution: ?string,

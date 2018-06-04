@@ -1,3 +1,5 @@
+// @flow
+
 import type { State } from 'state/reducer';
 
 export default (state: State) => (

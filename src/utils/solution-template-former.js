@@ -1,3 +1,5 @@
+// @flow
+
 const TEMPLATE_BEGIN_TAG = '// BEGIN SOLUTION';
 const TEMPLATE_END_TAG = '// END SOLUTION';
 const TEMPLATE_RETURN_STUB = '// STUB: return ';
@@ -12,8 +14,7 @@ function addTemplateTags(modelLines: string, solutionRows: Array<number>) {
   for (let i = 0; i < lines.length; i++) {
     if (solutionRows.includes(i)) {
       addTag = true;
-
-      if (finalLines.length - 1 >= 0 && finalLines[finalLines.length - 1].localeCompare(TEMPLATE_END_TAG) === 0) {
+      if (finalLines.length - 1 >= 0 && finalLines[finalLines.length - 1] === TEMPLATE_END_TAG) {
         finalLines.splice(-1, 1);
       } else {
         finalLines.push(TEMPLATE_BEGIN_TAG);
@@ -34,8 +35,8 @@ function addTemplateTags(modelLines: string, solutionRows: Array<number>) {
 function isMethodDefinitonWithReturnType(words: Array<string>) {
   if (words.length > 0) {
     const firstWord = words[0];
-    const noReturnValue = firstWord.localeCompare('class') === 0 || firstWord.localeCompare('void') === 0;
-    const isMethodCall = words[words.length - 1].localeCompare(';') === 0 || firstWord.includes(';') || firstWord.includes('(');
+    const noReturnValue = firstWord === 'class' || firstWord === 'void';
+    const isMethodCall = words[words.length - 1] === ';' || firstWord.includes(';') || firstWord.includes('(');
     let methodSyntaxException = false;
 
     if (words[1]) {
@@ -48,7 +49,7 @@ function isMethodDefinitonWithReturnType(words: Array<string>) {
   return false;
 }
 
-function findMethodSignature(modelLines: Array<string>, startIndex: number) {
+function findMethodSignature(modelLines: Array<string>, startIndex: number): { returnType: ?string, index: number } {
   const retObject = { returnType: undefined, index: -1 };
 
   for (let i = startIndex; i < modelLines.length; i++) {
@@ -72,7 +73,7 @@ function findMethodSignature(modelLines: Array<string>, startIndex: number) {
   return retObject;
 }
 
-function generateReturnValue(type: string) {
+function generateReturnValue(type: ?string) {
   let returnValue;
 
   switch (type) {
