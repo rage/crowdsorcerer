@@ -13,6 +13,7 @@ import {
   setExerciseAction,
   openWebSocketConnectionAction,
   assignmentNotFoundAction,
+  connectionTerminatedPrematurelyAction,
 } from 'state/submission/actions';
 import getReadOnlyLines from 'utils/get-read-only-lines';
 
@@ -34,6 +35,7 @@ export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
+export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 
 export function addTestFieldAction() {
   return {
@@ -93,6 +95,7 @@ export type Tag = {
 export type TestIO = {
   input: string,
   output: string,
+  type: string,
 };
 
 export type ExerciseJSON = {
@@ -105,7 +108,7 @@ export type ExerciseJSON = {
 
 export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>) {
   const newState = {};
-  newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output)));
+  newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output), io.type));
   newState.assignment = state.description;
   newState.readOnlyModelSolution = state.model_solution;
   newState.readOnlyCodeTemplate = state.template;
@@ -167,7 +170,7 @@ export function getAssignmentInfoAction() {
         } else if (error.status === 400) {
           dispatch(assignmentNotFoundAction());
         } else {
-          dispatch(postUnsuccessfulAction());
+          dispatch(connectionTerminatedPrematurelyAction());
         }
       },
     );
@@ -223,6 +226,14 @@ export function setShowCodeTemplateAction(show: boolean) {
 export function formDoneAction() {
   return {
     type: FORM_DONE,
+  };
+}
+
+export function testTypeChangedAction(oldType: string, index: number) {
+  return {
+    oldType,
+    index,
+    type: TEST_TYPE_CHANGED,
   };
 }
 
@@ -303,5 +314,11 @@ export type AssignmentInfoReceivedAction = {
 
 export type SetShowCodeTemplateAction = {
   show: boolean,
+  type: string,
+};
+
+export type TestTypeChangedAction = {
+  index: number,
+  oldType: string,
   type: string,
 };

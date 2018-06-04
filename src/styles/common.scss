@@ -89,3 +89,26 @@
   border-style: solid;
   border-color: $fatal-error;
 }
+
+
+.test-type-button {
+  border: none;
+  font-size: 40px;
+  text-align: center;
+  background-color: $white;
+  position: relative;
+  top: -10;
+  outline-width: 0;
+  .positive {
+    color: #2ecc71;
+    &:after {
+      content: "\21d2";
+    }
+  }
+  .negative {
+    color: #c0392b;
+    &:after {
+      content: "\21cf";
+    }
+  }
+}
