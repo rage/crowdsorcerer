@@ -91,6 +91,30 @@ const initialState: State = {
 
 const supportedTestTypes = ['positive', 'negative'];
 
+const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
+    // - if a line with marked char is edited remove markers from that line
+    // - if a line is added/removed move all markers after it
+  let markers = stateMarkers;
+  for (let i = 0; i < stateMarkers.length; i++) {
+    const m = stateMarkers[i];
+    if (m.line === change.from.line
+      || (m.line > change.from.line && m.line <= change.to.line)
+      || (change.removed[1] && m.line === change.to.line && m.char < change.to.ch
+        && change.removed[1].length >= change.from.ch - m.char)
+          ) {
+      markers = markers.filter(marker => marker !== m);
+    } else if (change.from.line < m.line) {
+      const line = m.line;
+      const char = m.char;
+
+      if (!(change.from.line === line && change.from.ch >= char)) {
+        m.line += change.text.length - change.removed.length;
+      }
+    }
+  }
+  return markers;
+};
+
 export default createReducer(initialState, {
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
     return {
@@ -132,6 +156,9 @@ export default createReducer(initialState, {
     const rowsInOldModelSolution = modelSolution.get().split('\n');
     const rowsInNewModelSolution = action.modelSolution.split('\n');
     const solutionLengthDifferenceToNew = rowsInNewModelSolution.length - rowsInOldModelSolution.length;
+
+    const markers = handleMarkers(state.modelSolution.markers, change);
+
     if (solutionLengthDifferenceToNew < 0) {
         // text was removed
         // removed contains the deleted text
@@ -184,6 +211,7 @@ export default createReducer(initialState, {
         editableModelSolution: new FormValue(action.modelSolution),
         solutionRows: new FormValue(newSolutionRows),
         readOnlyModelSolutionLines: newReadOnlyRows,
+        markers,
       },
     };
   },
@@ -233,6 +261,8 @@ export default createReducer(initialState, {
     const rowsInNewUnitTests = action.unitTests.split('\n');
     const lengthDifferenceToNew = rowsInNewUnitTests.length - rowsInOldUnitTests.length;
 
+    const markers = handleMarkers(state.unitTests.markers, change);
+
     if (lengthDifferenceToNew < 0) {
       // text was removed
       const lengthDifference = change.removed.length - change.text.length;
@@ -264,6 +294,7 @@ export default createReducer(initialState, {
         ...state.unitTests,
         editableUnitTests: new FormValue(action.unitTests),
         readOnlyLines: newReadOnlyRows,
+        markers,
       },
     };
   },
@@ -446,7 +477,7 @@ export default createReducer(initialState, {
             line: m.line,
             char: m.char,
           }
-          )),
+        )),
       },
     };
   },

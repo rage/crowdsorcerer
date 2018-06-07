@@ -6,8 +6,8 @@ import type { State, Dispatch } from 'state/reducer';
 import type { ErrorResult } from 'state/submission/reducer';
 import prefixer from 'utils/class-name-prefixer';
 import { resetSubmissionStatusAction } from 'state/submission';
-import getMarkers from 'utils/get-markers';
 import { addMarkersAction } from 'state/form/actions';
+import getMarkers from 'utils/get-markers';
 import ProgressBar from './progress-bar';
 import ResultIcon from './result-icon';
 

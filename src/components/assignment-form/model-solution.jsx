@@ -69,8 +69,11 @@ class ModelSolution extends Component {
       codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
     }
     if (this.markers) {
-      this.markers.forEach(marker => marker.clear());
+      this.markers.forEach((marker) => {
+        marker.clear();
+      });
     }
+    this.markers = [];
 
     this.props.solutionRows.get().forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('hiddenRow'));
@@ -80,13 +83,23 @@ class ModelSolution extends Component {
     });
 
     if (this.props.markers && this.props.markers.length > 0) {
-      this.markers = this.props.markers.map(marker => (
-        codeDocument.markText(
-          { line: marker.line, ch: (marker.char - 1) },
-          { line: marker.line, ch: (marker.char + 1) },
-          { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
-        )
-      ));
+      this.props.markers.forEach((marker) => {
+        const line = marker.line;
+        let charRange;
+
+        const lastLine = codeDocument.children[0].lines[codeDocument.children[0].lines.length - 1].text;
+        if (lastLine.length === marker.char) {
+          charRange = [marker.char - 1, marker.char];
+        } else {
+          charRange = [marker.char - 1, marker.char + 1];
+        }
+
+        this.markers.push(codeDocument.markText(
+              { line, ch: charRange[0] },
+              { line, ch: charRange[1] },
+              { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+            ));
+      });
     }
   }
 
