@@ -110,7 +110,7 @@ class UnitTests extends Component {
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
           <div id="unitTests" className={prefixer('instructions')}>
-            Testit
+            Testikoodi
           </div>
         </div>
         <div tabIndex="0">

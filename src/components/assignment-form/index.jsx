@@ -12,6 +12,7 @@ import ModelSolution from './model-solution';
 import Assignment from './assignment';
 import TestFields from './test-fields';
 import UnitTests from './unit-tests';
+import IOAndCode from './io-and-code';
 
 class AssignmentForm extends Component {
 
@@ -21,19 +22,19 @@ class AssignmentForm extends Component {
     handleSubmit: () => void,
     valid: boolean,
     showErrors: boolean,
-    testTemplate: {
-      code: string,
-      readOnlyLines: number[],
-    },
+    exerciseType: string,
   }
 
   render() {
     let tests;
-    if (this.props.testTemplate && this.props.testTemplate.code) {
+    if (this.props.exerciseType === 'unit_tests') {
       tests = <UnitTests />;
-    } else {
+    } else if (this.props.exerciseType === 'input_output') {
       tests = <TestFields />;
+    } else { // else if this.props.exerciseType === 'io_and_code'
+      tests = <IOAndCode />;
     }
+
     return (
       <form onSubmit={this.props.handleSubmit} >
         <Assignment />
@@ -63,7 +64,7 @@ function mapStateToProps(state: State) {
   return {
     valid: state.form.valid,
     showErrors: state.form.showErrors,
-    testTemplate: state.form.unitTests.boilerplate,
+    exerciseType: state.form.exerciseType,
   };
 }
 

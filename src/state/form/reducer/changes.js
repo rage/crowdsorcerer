@@ -87,6 +87,7 @@ const initialState: State = {
     markers: [],
   },
   done: false,
+  exerciseType: '',
 };
 
 const supportedTestTypes = ['positive', 'negative'];
@@ -403,6 +404,7 @@ export default createReducer(initialState, {
         boilerplate: { code: plate, readOnlyLines: action.readOnlyModelSolutionLines },
       },
       unitTests,
+      exerciseType: action.exerciseType,
     };
   },
   [RESET_TO_BOILERPLATE](state: State): State {

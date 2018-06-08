@@ -54,6 +54,7 @@ export type State = {
     markers: Array<Object>,
   },
   done: boolean,
+  exerciseType: string
 };
 
 export default reduceReducers(changes, validity);

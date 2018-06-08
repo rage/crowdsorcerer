@@ -1,0 +1,17 @@
+@import "../../node_modules/codemirror/lib/codemirror";
+@import "color-constants";
+
+.io-and-code-component {
+  position: relative;
+  z-index: 0;
+}
+
+.test-code {
+    margin: 0 0.5rem;
+    .CodeMirror {
+      height: 80px;
+      // border: 0.1rem solid $border-grey;
+      // border-radius: 0.15rem;
+      // background-color: transparent;
+    }
+  }

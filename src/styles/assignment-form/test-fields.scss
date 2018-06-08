@@ -11,4 +11,6 @@
   color: $white;
   cursor: pointer;
   font-family: Roboto; // poista lopulliseen
+  position: relative;
+  z-index: 1;
 }

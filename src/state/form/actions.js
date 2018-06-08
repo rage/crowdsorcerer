@@ -143,7 +143,9 @@ export function submitFormAction() {
   };
 }
 
-export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string, testTemplate: ?string) {
+export function assignmentInfoReceivedAction(
+  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, exerciseType: string,
+) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
   let readOnlyUnitTestsLines;
@@ -156,6 +158,7 @@ export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: s
     readOnlyModelSolutionLines,
     testTemplate,
     readOnlyUnitTestsLines,
+    exerciseType,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -171,7 +174,9 @@ export function getAssignmentInfoAction() {
     api.getAssignmentInformation(getState().assignment.assignmentId)
     .then(
       (response) => {
-        dispatch(assignmentInfoReceivedAction(response.tags, response.template, response.test_template));
+        dispatch(assignmentInfoReceivedAction(
+          response.tags, response.template, response.test_template, response.exercise_type,
+        ));
       },
       (error) => {
         if (error.status === 403) {
@@ -342,6 +347,7 @@ export type AssignmentInfoReceivedAction = {
   testTemplate: ?string,
   readOnlyUnitTestsLines: number[],
   type: string,
+  exerciseType: string,
 };
 
 export type SetShowCodeTemplateAction = {
