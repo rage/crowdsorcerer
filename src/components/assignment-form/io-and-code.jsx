@@ -15,6 +15,7 @@ class IOAndCode extends Component {
   props: {
     inputOutput: Array<IO>,
     onAddFieldClick: () => void,
+    tests: Array<string>,
   }
 
   render() {
@@ -37,8 +38,10 @@ class IOAndCode extends Component {
             }}
             leave={{ opacity: -1, height: 0 }}
           >
-            {this.props.inputOutput.map((io: IO, index: number) =>
-              (
+            {this.props.inputOutput.map((io: IO, index: number) => {
+              const test = this.props.tests[index];
+
+              return (
                 <div key={io.hash()}>
                   {<InputOutput readOnly={false} index={index} io={io} />}
                   {<CodeMirror
@@ -52,10 +55,11 @@ class IOAndCode extends Component {
                       dragDrop: false,
                       readOnly: 'nocursor',
                     }}
-                    value={'@Test\npublic void testi1() {\n    assertEquals("jea", "jea");\n}'}
+                    value={test}
                   />}
                 </div>
-              ),
+              );
+            },
             )}
           </Transition>
         </div>
@@ -74,6 +78,7 @@ class IOAndCode extends Component {
 function mapStateToProps(state: State) {
   return {
     inputOutput: state.form.inputOutput,
+    tests: state.form.unitTests.testArray,
   };
 }
 

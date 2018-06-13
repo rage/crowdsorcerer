@@ -62,7 +62,6 @@ class UnitTests extends Component {
     }
   }
 
-  // copy-pasted from model-solution.jsx
   handleUnitTestsChange(cm, change) {
     let deletedReadOnly = false;
 

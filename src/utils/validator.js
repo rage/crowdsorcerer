@@ -38,7 +38,7 @@ export default (validators: Array<FieldValidator>, state: FormState | ReviewStat
         }
       });
     } else if (field instanceof FormValue) {
-      errors = validator(field);
+      errors = validator(field, state);
       field._setErrors(errors);
       validationResults.push(errors.length === 0);
     } else if (field !== undefined) {

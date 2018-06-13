@@ -52,6 +52,7 @@ export type State = {
     },
     readOnlyLines: number[],
     markers: Array<Object>,
+    testArray: Array<string>,
   },
   done: boolean,
   exerciseType: string

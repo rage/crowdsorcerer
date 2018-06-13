@@ -23,6 +23,7 @@ import {
   CHANGE_UNIT_TESTS,
   ADD_MARKERS,
   DELETE_MARKERS,
+  CHANGE_TEST_IN_TEST_ARRAY,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -41,6 +42,7 @@ import type {
     TestTypeChangedAction,
     ChangeUnitTestsAction,
     AddMarkersAction,
+    ChangeTestInTestArrayAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -85,6 +87,7 @@ const initialState: State = {
     },
     readOnlyLines: [],
     markers: [],
+    testArray: [],
   },
   done: false,
   exerciseType: '',
@@ -120,8 +123,10 @@ export default createReducer(initialState, {
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
     return {
       ...state,
-      ...{
-        inputOutput: [...state.inputOutput, action.field],
+      inputOutput: [...state.inputOutput, action.field],
+      unitTests: {
+        ...state.unitTests,
+        testArray: [...state.unitTests.testArray, state.unitTests.boilerplate.code],
       },
     };
   },
@@ -136,10 +141,39 @@ export default createReducer(initialState, {
         ...state.inputOutput.slice(action.index + 1),
       ];
     }
+
+    // update indexes of the tests in the testArray
+    let testArray = [];
+    for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      const test = state.unitTests.testArray[i];
+
+      if (i !== action.index) {
+        let modifiedTest = '';
+        const wordsInTest = test.split(' ');
+
+        for (let j = 0; j < wordsInTest.length; j++) {
+          const w = wordsInTest[j];
+          if (w.includes('testi') && w.includes('()')) {
+            if (i < action.index) {
+              modifiedTest += `testi${i + 1}() `;
+            } else {
+              modifiedTest += `testi${i}() `;
+            }
+          } else {
+            modifiedTest += `${w} `;
+          }
+        }
+
+        testArray = [...testArray, modifiedTest];
+      }
+    }
+
     return {
       ...state,
-      ...{
-        inputOutput,
+      inputOutput,
+      unitTests: {
+        ...state.unitTests,
+        testArray,
       },
     };
   },
@@ -390,6 +424,7 @@ export default createReducer(initialState, {
           code: testTemplate,
           readOnlyLines: action.readOnlyUnitTestsLines,
         },
+        testArray: action.testArray,
       };
     }
 
@@ -493,6 +528,49 @@ export default createReducer(initialState, {
       modelSolution: {
         ...state.modelSolution,
         markers: [],
+      },
+    };
+  },
+
+  [CHANGE_TEST_IN_TEST_ARRAY](state: State, action: ChangeTestInTestArrayAction): State {
+    let tests = [];
+
+    for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      const test = state.unitTests.testArray[i];
+
+      if (i === action.index) {
+        let assert = '';
+        const input = state.inputOutput[i].input;
+        const output = state.inputOutput[i].output;
+
+        if (input || output) {
+          assert = `assertEquals("${input.get()}", "${output.get()}");`;
+        }
+
+        let modifiedTest = '';
+        const wordsInTest = test.split(' ');
+
+        for (let j = 0; j < wordsInTest.length; j++) {
+          const w = wordsInTest[j];
+          if (w.includes('testi') && w.includes('()')) {
+            modifiedTest += `testi${action.index + 1}() {\n    ${assert}\n}\n`;
+            break;
+          } else {
+            modifiedTest += `${w} `;
+          }
+        }
+
+        tests = [...tests, modifiedTest];
+      } else {
+        tests = [...tests, test];
+      }
+    }
+
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        testArray: tests,
       },
     };
   },

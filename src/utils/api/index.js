@@ -142,7 +142,9 @@ export default class Api {
       formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows.get());
 
     let unitTests;
-    if (formState.unitTests.editableUnitTests) {
+    if (formState.unitTests.testArray.length > 0) {
+      unitTests = formState.unitTests.testArray.join('\n');
+    } else if (formState.unitTests.editableUnitTests) {
       unitTests = formState.unitTests.editableUnitTests.get();
     }
 

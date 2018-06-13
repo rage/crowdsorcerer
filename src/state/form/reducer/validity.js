@@ -19,18 +19,6 @@ import {
 import { CHANGE_REVIEW_ERRORS_VISIBILITY } from 'state/review/actions';
 import type {
   AddTestFieldAction,
-<<<<<<< c14c28c0e751f5ae9375685ff075f9c5e3ac0c92
-    RemoveTestFieldAction,
-    TestInputChangeAction,
-    TestOutputChangeAction,
-    AssignmentChangeAction,
-    ModelSolutionChangeAction,
-    AddHiddenRowAction,
-    DeleteHiddenRowAction,
-    ChangeErrorsVisibilityAction,
-    AddTagAction,
-    RemoveTagAction,
-=======
   RemoveTestFieldAction,
   TestInputChangeAction,
   TestOutputChangeAction,
@@ -42,7 +30,6 @@ import type {
   AddTagAction,
   RemoveTagAction,
   ChangeUnitTestsAction,
->>>>>>> Show either unit tests -field or input-output -fields
 } from 'state/form/actions';
 import type { State } from './index';
 
@@ -58,27 +45,16 @@ const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
   MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
-<<<<<<< cbc68fe7a30ffa212b7e701c855a60826fac4792
-<<<<<<< c14c28c0e751f5ae9375685ff075f9c5e3ac0c92
 const EMPTY_TEMPLATE_ERROR = 'Muista merkitä, mitkä rivit tehtävästä kuuluvat vain mallivastaukseen, sillä ' +
   'muuten tehtävän koko ratkaisu näkyy tehtäväpohjassa. Lisää tietoa ohjeistuksessa.';
-=======
-const UNIT_TESTS_ERRORS = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`; // TODO: toteuta
->>>>>>> Show either unit tests -field or input-output -fields
-=======
 const UNIT_TEST_AMOUNT_ERROR = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`;
 const UNIT_TESTS_WORD_ERROR = `Testikoodin tulee olla vähintään ${MIN_UNIT_TESTS_WORD_AMOUNT} sanaa pitkä.`;
->>>>>>> Validate model solution and tests written by the user
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
   | AssignmentChangeAction | ModelSolutionChangeAction
-<<<<<<< c14c28c0e751f5ae9375685ff075f9c5e3ac0c92
-  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction;
-=======
   | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction
   | ChangeUnitTestsAction ;
->>>>>>> Show either unit tests -field or input-output -fields
 
 function isFormAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
@@ -136,13 +112,12 @@ function checkModelSolutionLength(words: Array<string>, lines: Array<string>): ?
 
 function modelSolutionErrors(modelSolution: FormValue<*>, state: State): Array<string> {
   const errors = [];
-
   const insertedCode = getDifferenceBetweenStrings(state.modelSolution.boilerplate.code, modelSolution.get());
   const words = insertedCode.split(/[ \n]+/).filter(Boolean);
   const lines = insertedCode.split('\n').filter(Boolean);
 
   const errorMessage = checkModelSolutionLength(words, lines);
-  
+
   if (errorMessage) {
     errors.push(errorMessage);
   }
@@ -193,7 +168,7 @@ export default function (state: State, action: AnyAction) {
   // separate nested fields with ":"
 
   let tests;
-  if (state.unitTests.editableUnitTests && state.unitTests.editableUnitTests.get().length > 0) {
+  if (state.exerciseType === 'unit_tests') {
     tests = { field: 'unitTests', validator: unitTestsErrors };
   } else {
     tests = { field: 'inputOutput', validator: checkNotBlank };

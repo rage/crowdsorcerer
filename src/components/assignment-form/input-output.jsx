@@ -9,6 +9,7 @@ import {
   testOutputChangeAction,
   removeTestFieldAction,
   testTypeChangedAction,
+  changeTestInTestArrayAction,
 } from 'state/form';
 import Errors from 'components/errors';
 import TestTypeButton from './test-type-button';
@@ -94,9 +95,11 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onTestInputChange(input: string, index: number) {
       dispatch(testInputChangeAction(input, index));
+      dispatch(changeTestInTestArrayAction(input, '', index));
     },
     onTestOutputChange(output: string, index: number) {
       dispatch(testOutputChangeAction(output, index));
+      dispatch(changeTestInTestArrayAction('', output, index));
     },
     onRemoveFieldClick(index) {
       dispatch(removeTestFieldAction(index));

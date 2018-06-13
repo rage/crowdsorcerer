@@ -39,6 +39,7 @@ export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 export const ADD_MARKERS = 'ADD_MARKERS';
 export const DELETE_MARKERS = 'DELETE_MARKERS';
+export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
 
 export function addTestFieldAction() {
   return {
@@ -152,6 +153,7 @@ export function assignmentInfoReceivedAction(
   if (testTemplate) {
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
+  const testArray = [testTemplate];
   return {
     tagSuggestions,
     boilerplate,
@@ -159,6 +161,7 @@ export function assignmentInfoReceivedAction(
     testTemplate,
     readOnlyUnitTestsLines,
     exerciseType,
+    testArray,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -272,6 +275,15 @@ export function deleteMarkersAction() {
   };
 }
 
+export function changeTestInTestArrayAction(input: string, output: string, index: number) {
+  return {
+    input,
+    output,
+    index,
+    type: CHANGE_TEST_IN_TEST_ARRAY,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -348,6 +360,7 @@ export type AssignmentInfoReceivedAction = {
   readOnlyUnitTestsLines: number[],
   type: string,
   exerciseType: string,
+  testArray: Array<string>
 };
 
 export type SetShowCodeTemplateAction = {
@@ -373,5 +386,12 @@ export type AddMarkersAction = {
 };
 
 export type DeleteMarkersAction = {
+  type: string
+}
+
+export type ChangeTestInTestArrayAction = {
+  input: string,
+  output: string,
+  index: number,
   type: string
 }
