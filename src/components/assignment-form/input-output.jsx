@@ -9,10 +9,7 @@ import {
   testOutputChangeAction,
   removeTestFieldAction,
   testTypeChangedAction,
-<<<<<<< 3017c2281b7474dea712a5559b4ef1d26ef6ab0e
   changeTestInTestArrayAction,
-=======
->>>>>>> Add toggling test type
 } from 'state/form';
 import Errors from 'components/errors';
 import TestTypeButton from './test-type-button';
