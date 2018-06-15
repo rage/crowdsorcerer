@@ -153,7 +153,7 @@ export function assignmentInfoReceivedAction(
   if (testTemplate) {
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
-  const testArray = [testTemplate];
+  const testArray = [{ code: testTemplate, input: '<input>', output: '<output>' }];
   return {
     tagSuggestions,
     boilerplate,
@@ -360,7 +360,7 @@ export type AssignmentInfoReceivedAction = {
   readOnlyUnitTestsLines: number[],
   type: string,
   exerciseType: string,
-  testArray: Array<string>
+  testArray: Array<Object>
 };
 
 export type SetShowCodeTemplateAction = {

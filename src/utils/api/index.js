@@ -143,7 +143,9 @@ export default class Api {
 
     let unitTests;
     if (formState.unitTests.testArray.length > 0) {
-      unitTests = formState.unitTests.testArray.join('\n');
+      unitTests = formState.unitTests.testArray.map(
+        t => t.code.replace('<input>', t.input).replace('<output>', t.output),
+      ).join('\n');
     } else if (formState.unitTests.editableUnitTests) {
       unitTests = formState.unitTests.editableUnitTests.get();
     }

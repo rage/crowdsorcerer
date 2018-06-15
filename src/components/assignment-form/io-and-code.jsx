@@ -15,13 +15,19 @@ class IOAndCode extends Component {
   props: {
     inputOutput: Array<IO>,
     onAddFieldClick: () => void,
-    tests: Array<string>,
+    tests: Array<Object>,
   }
 
   render() {
     return (
       <div className={prefixer('form-component')}>
-        <div className={prefixer('io-and-code-component')} >
+        <div className={prefixer('same-line')}>
+          <div id="unitTests" className={prefixer('instructions')}>
+            Testit
+          </div>
+        </div>
+
+        <div className={prefixer('io-and-code-components')} >
           <Transition
             appear={{
               opacity: 0,
@@ -31,7 +37,7 @@ class IOAndCode extends Component {
             }}
             enter={{
               overflow: 'hidden',
-              height: 120,
+              height: 150,
               opacity: 1,
               translateX: 0,
               translateY: spring(0, { stiffness: 120, damping: 15 }),
@@ -39,10 +45,22 @@ class IOAndCode extends Component {
             leave={{ opacity: -1, height: 0 }}
           >
             {this.props.inputOutput.map((io: IO, index: number) => {
-              const test = this.props.tests[index];
+              let test = '';
+              if (this.props.tests && this.props.tests.length > 0) {
+                let input = this.props.tests[index].input;
+                if (this.props.tests[index].input === '<input>') {
+                  input = '';
+                }
+                let output = this.props.tests[index].output;
+                if (this.props.tests[index].output === '<output>') {
+                  output = '';
+                }
+
+                test = this.props.tests[index].code.replace('<input>', input).replace('<output>', output);
+              }
 
               return (
-                <div key={io.hash()}>
+                <div key={io.hash()} className={prefixer('io-and-code')}>
                   {<InputOutput readOnly={false} index={index} io={io} />}
                   {<CodeMirror
                     aria-labelledby="testCode"

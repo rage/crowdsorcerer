@@ -126,7 +126,11 @@ export default createReducer(initialState, {
       inputOutput: [...state.inputOutput, action.field],
       unitTests: {
         ...state.unitTests,
-        testArray: [...state.unitTests.testArray, state.unitTests.boilerplate.code],
+        testArray: [...state.unitTests.testArray,
+          { code: state.unitTests.boilerplate.code,
+            input: '<input>',
+            output: '<output>' },
+        ],
       },
     };
   },
@@ -149,7 +153,7 @@ export default createReducer(initialState, {
 
       if (i !== action.index) {
         let modifiedTest = '';
-        const wordsInTest = test.split(' ');
+        const wordsInTest = test.code.split(' ');
 
         for (let j = 0; j < wordsInTest.length; j++) {
           const w = wordsInTest[j];
@@ -164,8 +168,16 @@ export default createReducer(initialState, {
           }
         }
 
-        testArray = [...testArray, modifiedTest];
+        testArray = [...testArray, { code: modifiedTest, input: test.input, output: test.output }];
       }
+    }
+
+    if (testArray.length === 0) {
+      testArray = [{
+        code: state.unitTests.boilerplate.code,
+        input: '<input>',
+        output: '<output>',
+      }];
     }
 
     return {
@@ -539,26 +551,20 @@ export default createReducer(initialState, {
       const test = state.unitTests.testArray[i];
 
       if (i === action.index) {
-        let assert = '';
-        const input = state.inputOutput[i].input;
-        const output = state.inputOutput[i].output;
-
-        if (input || output) {
-          assert = `assertEquals("${input.get()}", "${output.get()}");`;
+        let newInput = test.input;
+        if (state.inputOutput[i].input.get().length > 0) {
+          newInput = state.inputOutput[i].input.get();
+        }
+        let newOutput = test.output;
+        if (state.inputOutput[i].output.get().length > 0) {
+          newOutput = state.inputOutput[i].output.get();
         }
 
-        let modifiedTest = '';
-        const wordsInTest = test.split(' ');
-
-        for (let j = 0; j < wordsInTest.length; j++) {
-          const w = wordsInTest[j];
-          if (w.includes('testi') && w.includes('()')) {
-            modifiedTest += `testi${action.index + 1}() {\n    ${assert}\n}\n`;
-            break;
-          } else {
-            modifiedTest += `${w} `;
-          }
-        }
+        const modifiedTest = {
+          code: test.code.replace('testi()', `testi${action.index + 1}()`),
+          input: newInput,
+          output: newOutput,
+        };
 
         tests = [...tests, modifiedTest];
       } else {
