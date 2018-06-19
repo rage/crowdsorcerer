@@ -93,7 +93,7 @@ const initialState: State = {
   exerciseType: '',
 };
 
-const supportedTestTypes = ['positive', 'negative'];
+const supportedTestTypes = ['contains', 'notContains', 'equals'];
 
 const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
     // - if a line with marked char is edited remove markers from that line
@@ -551,14 +551,8 @@ export default createReducer(initialState, {
       const test = state.unitTests.testArray[i];
 
       if (i === action.index) {
-        let newInput = test.input;
-        if (state.inputOutput[i].input.get().length > 0) {
-          newInput = state.inputOutput[i].input.get();
-        }
-        let newOutput = test.output;
-        if (state.inputOutput[i].output.get().length > 0) {
-          newOutput = state.inputOutput[i].output.get();
-        }
+        const newInput = state.inputOutput[i].input.get();
+        const newOutput = state.inputOutput[i].output.get();
 
         const modifiedTest = {
           code: test.code.replace('testi()', `testi${action.index + 1}()`),

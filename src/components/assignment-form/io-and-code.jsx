@@ -7,6 +7,7 @@ import CodeMirror from '@skidding/react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction } from 'state/form';
 import prefixer from 'utils/class-name-prefixer';
+import assertionGenerator from 'utils/assertion-generator';
 import IO from 'domain/io';
 import InputOutput from './input-output';
 
@@ -37,12 +38,12 @@ class IOAndCode extends Component {
             }}
             enter={{
               overflow: 'hidden',
-              height: 150,
+              height: 165,
               opacity: 1,
               translateX: 0,
               translateY: spring(0, { stiffness: 120, damping: 15 }),
             }}
-            leave={{ opacity: -1, height: 0 }}
+            leave={{ opacity: 0, height: 0 }}
           >
             {this.props.inputOutput.map((io: IO, index: number) => {
               let test = '';
@@ -56,7 +57,10 @@ class IOAndCode extends Component {
                   output = '';
                 }
 
-                test = this.props.tests[index].code.replace('<input>', input).replace('<output>', output);
+                test = this.props.tests[index].code
+                .replace('<assertion>', assertionGenerator(io.type))
+                .replace(/<input>/g, input)
+                .replace(/<output>/g, output);
               }
 
               return (

@@ -178,7 +178,8 @@ export function getAssignmentInfoAction() {
     .then(
       (response) => {
         dispatch(assignmentInfoReceivedAction(
-          response.tags, response.template, response.test_template, response.exercise_type,
+          response.tags, response.template, response.test_template.slice(0, response.test_template.length - 1),
+          response.exercise_type,
         ));
       },
       (error) => {

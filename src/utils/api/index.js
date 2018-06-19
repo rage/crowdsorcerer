@@ -7,6 +7,7 @@ import type { State as AssignmentState } from 'state/assignment';
 import formSolutionTemplate from 'utils/solution-template-former';
 import * as storejs from 'store';
 import formValueToObject from 'utils/form-value-to-object';
+import assertionGenerator from 'utils/assertion-generator';
 import WebSocketConnection from './websocket';
 
 let SERVER;
@@ -143,8 +144,10 @@ export default class Api {
 
     let unitTests;
     if (formState.unitTests.testArray.length > 0) {
-      unitTests = formState.unitTests.testArray.map(
-        t => t.code.replace('<input>', t.input).replace('<output>', t.output),
+      unitTests = formState.unitTests.testArray.map((t, index) =>
+        t.code
+        .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
+        .replace(/<input>/g, t.input).replace(/<output>/g, t.output),
       ).join('\n');
     } else if (formState.unitTests.editableUnitTests) {
       unitTests = formState.unitTests.editableUnitTests.get();
