@@ -36,14 +36,14 @@ export type State = {
   result: ErrorResult,
 };
 
-const CONNECTION_POST_SENDING_MSG = 'Lähetetään tietoja';
-const CONNECTION_POST_SUCCESSFUL_MSG = 'Tietojen lähetys onnistui';
-const CONNECTION_POST_UNSUCCESSFUL_MSG = 'Tietojen lähetys ei onnistunut. Yritä hetken päästä uudelleen.';
-const CONNECTION_TERMINATED_MSG = 'Yhteysvirhe';
-const INTERNAL_ERROR_MSG = 'Tapahtui sisäinen virhe.';
-const AUTHENTICATION_ERROR_MSG = 'TMC-tunnuksesi ei kelpaa, ole hyvä ja kirjaudu sisään uudestaan.';
-const EXERCISE_NOT_FOUND_MSG = 'Arvioitavaa tehtävää ei löytynyt.';
-const ASSIGNMENT_NOT_FOUND_MSG = 'Tehtävänantoa ei löytynyt.';
+const CONNECTION_POST_SENDING_MSG = 'Sending submission';
+const CONNECTION_POST_SUCCESSFUL_MSG = 'Submission successfully sent';
+const CONNECTION_POST_UNSUCCESSFUL_MSG = 'Sending submission failed. Please try again.';
+const CONNECTION_TERMINATED_MSG = 'Connection error';
+const INTERNAL_ERROR_MSG = 'Internal error';
+const AUTHENTICATION_ERROR_MSG = 'Your TMC account is not valid, please log in again.';
+const EXERCISE_NOT_FOUND_MSG = 'Reviewable exercise not found';
+const ASSIGNMENT_NOT_FOUND_MSG = 'Assignment not found';
 
 const initialState = {
   status: STATUS_NONE,

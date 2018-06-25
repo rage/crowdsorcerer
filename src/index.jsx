@@ -44,7 +44,7 @@ const initReview = (e, assignmentId, exerciseCount, review) => {
       );
     });
   }, (err) => {
-    let errors = err.message ? err.message : 'Tapahtui sisäinen virhe';
+    let errors = err.message ? err.message : 'An internal error occurred';
     if (err.errors) {
       errors = err.errors.map(error => error.message).join('\n');
     }

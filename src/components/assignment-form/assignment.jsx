@@ -183,7 +183,7 @@ class Assignment extends Component {
     <Editor
       spellCheck={false}
       id="assignment"
-      placeholder={'Kirjoita tähän tehtävänanto'}
+      placeholder={'Write an assignment here'}
       schema={schema}
       state={this.props.assignment.get()}
       onChange={(editorState) => {
@@ -199,7 +199,7 @@ class Assignment extends Component {
       <div className={prefixer('form-component')}>
         <div>
           <div id="assignment" className={prefixer('instructions')}>
-            Tehtävänanto
+            Assignment
           </div>
           <div>
             {this.props.readOnly ? undefined : this.renderToolbar()}

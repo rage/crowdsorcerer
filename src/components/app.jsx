@@ -29,7 +29,7 @@ class App extends Component {
     if (!this.props.loggedIn) {
       return (
         <div className={`${prefixer('container')} ${prefixer('center')}`}>
-          <FatalErrorDisplay message="Ole hyvä ja kirjaudu sisään." />
+          <FatalErrorDisplay message="Please log in." />
         </div>
       );
     }

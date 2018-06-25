@@ -21,7 +21,7 @@ class TestFields extends Component {
     return (
       <div className={prefixer('form-component')}>
         <div className={prefixer('instructions')}>
-          Testit
+          Tests
         </div>
         <div className={prefixer('io-component')}>
           <Transition
@@ -54,7 +54,7 @@ class TestFields extends Component {
           className={prefixer('add-field')}
           onClick={(e) => { e.preventDefault(); this.props.onAddFieldClick(); }}
         >
-        + Lisää kenttä
+        + Add a field
         </button>
         }
       </div>

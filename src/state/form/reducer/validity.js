@@ -34,12 +34,12 @@ import type { State } from './index';
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
-const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT} sanaa pitkä.`;
-const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
-const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
-const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
-  MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
-const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
+const ASSIGNMENT_ERROR = `The assignment must be at least ${MIN_ASSIGNMENT_WORD_AMOUNT} words long.`;
+const MODEL_SOLUTION_WORD_ERROR = `The model solution must be at least ${MIN_MODEL_SOLUTION_WORD_AMOUNT} words long.`;
+const MODEL_SOLUTION_LINE_ERROR = `The model solution must be at least ${MIN_MODEL_SOLUTION_LINE_AMOUNT} lines long.`;
+const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `The model solution must be at least ${
+  MIN_MODEL_SOLUTION_LINE_AMOUNT} lines and ${MIN_MODEL_SOLUTION_WORD_AMOUNT} words long.`;
+const CANNOT_BE_BLANK_ERROR = 'This field cannot be blank.';
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction

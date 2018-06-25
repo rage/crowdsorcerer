@@ -38,7 +38,7 @@ class AssignmentForm extends Component {
               this.props.handleSubmit();
             }}
           >
-            Lähetä
+            Send
           </button>
         </div>
         <StatusDisplay showProgress />

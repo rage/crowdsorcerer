@@ -34,7 +34,7 @@ class InputOutput extends Component {
               readOnly={this.props.readOnly}
               className={prefixer('input-field')}
               type="text"
-              placeholder="Syöte"
+              placeholder="Input"
               name={`input ${this.props.index}`}
               value={this.props.io.input.get()}
               onChange={(event) => {
@@ -55,7 +55,7 @@ class InputOutput extends Component {
               readOnly={this.props.readOnly}
               className={prefixer('input-field')}
               type="text"
-              placeholder="Tulos"
+              placeholder="Output"
               name={`output ${this.props.index}`}
               value={this.props.io.output.get()}
               onChange={(event) => {
