@@ -24,7 +24,7 @@ export default ({ readOnly, onShowCodeTemplate, showCodeTemplate }:
             onShowCodeTemplate(true);
           }}
         >
-        Tehtäväpohja
+        Code template
       </button>
         <button
           className={modelSolutionButtonClass}
@@ -33,7 +33,7 @@ export default ({ readOnly, onShowCodeTemplate, showCodeTemplate }:
             onShowCodeTemplate(false);
           }}
         >
-        Mallivastaus
+        Model solution
       </button>
       </div>
     </div>

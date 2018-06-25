@@ -18,12 +18,12 @@ class ReviewInfo extends Component {
           <ZipLoadButton
             exerciseId={this.props.exerciseId}
             zipType="model_solution"
-            message="Lataa mallivastauksen ZIP"
+            message="Download model solution ZIP"
           />
           <ZipLoadButton
             exerciseId={this.props.exerciseId}
             zipType="template"
-            message="Lataa tehtäväpohjan ZIP"
+            message="Download code template ZIP"
           />
         </div>
       </div>

@@ -38,7 +38,7 @@ class Review extends Component {
         <TestFields readOnly />
         <div className={prefixer('peer-review-component')}>
           <div className={prefixer('peer-review-content')}>
-            <div className={prefixer('peer-review-title')}>Anna palautetta</div>
+            <div className={prefixer('peer-review-title')}>Review</div>
             <div className={prefixer('likert-scale')}>
               <LikertReact
                 reviews={this.props.reviews.get()}
@@ -59,7 +59,7 @@ class Review extends Component {
               e.preventDefault();
               this.props.handleSubmit();
             }}
-          >Lähetä
+          >Send
           </button>
         </div>
         <StatusDisplay />
