@@ -14,8 +14,8 @@ let SOCKET_SERVER;
 
 /* eslint-disable no-const-assign */
 if (process.env.NODE_ENV === 'production') {
-  SERVER = 'https://crowdsorcerer.testmycode.io/api/v0';
-  SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
+  SERVER = 'https://crowdsorceress-demo.testmycode.io/api/v0';
+  SOCKET_SERVER = 'wss://crowdsorceress-demo.testmycode.io/cable';
 } else {
   SERVER = 'http://localhost:3000/api/v0';
   SOCKET_SERVER = 'ws://localhost:3000/cable';
