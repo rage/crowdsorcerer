@@ -73,7 +73,7 @@ export default class Api {
   async getReviewableExerciseAndQuestions(assignmentId: number, exerciseCount: number): Promise<any> {
     return (
       fetch(
-        `${SERVER}/assignments/${assignmentId}/peer_review_exercise?count=${exerciseCount}&oauth_token=${this.oauthToken()}`, {
+        `${SERVER}/assignments/${assignmentId}/peer_review_exercise?count=${exerciseCount}&username=${this.username()}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ export default class Api {
     onInvalidDataError: () => void,
     sentExerciseId: number,
   ): void {
-    this.ws = new WebSocketConnection(this.oauthToken(), SOCKET_SERVER);
+    this.ws = new WebSocketConnection(this.username(), SOCKET_SERVER);
     this.ws.createSubscription(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
   }
 
@@ -142,7 +142,7 @@ export default class Api {
       formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows);
     return (
     {
-      oauth_token: this.oauthToken(),
+      username: this.username(),
       exercise: {
         assignment_id: assignmentState.assignmentId,
         description: Raw.serialize(formState.assignment.get(), { terse: true }),
@@ -161,7 +161,7 @@ export default class Api {
     }
     return (
     {
-      oauth_token: this.oauthToken(),
+      username: this.username(),
       exercise: {
         exercise_id: reviewState.reviewable,
         tags: formState.tags.get(),
@@ -174,10 +174,10 @@ export default class Api {
     );
   }
 
-  oauthToken(): string {
+  username(): string {
     if (!storejs.get('tmc.user')) {
       return '';
     }
-    return storejs.get('tmc.user').accessToken;
+    return storejs.get('tmc.user').username;
   }
 }
