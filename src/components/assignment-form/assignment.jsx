@@ -183,7 +183,7 @@ class Assignment extends Component {
     <Editor
       spellCheck={false}
       id="assignment"
-      placeholder={'Write an assignment here'}
+      placeholder={'Write the assignment here'}
       schema={schema}
       state={this.props.assignment.get()}
       onChange={(editorState) => {

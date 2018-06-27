@@ -18,7 +18,7 @@ class ReviewComment extends Component {
   render() {
     return (
       <div className={prefixer('peer-review-content')}>
-        <div className={prefixer('peer-review-title')} >Other feedback</div>
+        <div className={prefixer('peer-review-title')} >Written feedback</div>
         <textarea
           aria-required
           className={prefixer('comment-field')}
