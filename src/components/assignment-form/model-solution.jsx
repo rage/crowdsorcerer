@@ -159,7 +159,7 @@ class ModelSolution extends Component {
               this.props.onResetModelSolution();
             }}
           >
-          Reset model solution
+          Reset source code field
           </button>
           }
         </div>

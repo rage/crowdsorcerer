@@ -21,8 +21,8 @@ type AnyAction = GiveReviewAction |
                 SetReviewableExerciseAction;
 
 const MIN_COMMENT_WORD_AMOUNT = 3;
-const COMMENT_ERROR = `Kommentin tulee olla vähintään ${MIN_COMMENT_WORD_AMOUNT.toString()} sanaa pitkä.`;
-const REVIEW_ERROR = 'Vastaa kaikkiin vertaisarviointikysymyksiin.';
+const COMMENT_ERROR = `The comment must be at least ${MIN_COMMENT_WORD_AMOUNT.toString()} words long.`;
+const REVIEW_ERROR = 'Please answer to all the peer review questions.';
 
 function isReviewAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
