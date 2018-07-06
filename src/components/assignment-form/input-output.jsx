@@ -12,7 +12,6 @@ import {
   changeTestInTestArrayAction,
 } from 'state/form';
 import Errors from 'components/errors';
-import TestTypeButton from './test-type-button';
 
 class InputOutput extends Component {
 
@@ -22,7 +21,6 @@ class InputOutput extends Component {
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
-    onTestTypeButtonClicked: (oldType: string, index: number) => void,
     readOnly: boolean,
     showErrors: boolean,
     exerciseType: string,
