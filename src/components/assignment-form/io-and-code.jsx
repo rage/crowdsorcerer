@@ -10,6 +10,7 @@ import prefixer from 'utils/class-name-prefixer';
 import assertionGenerator from 'utils/assertion-generator';
 import IO from 'domain/io';
 import InputOutput from './input-output';
+import TestNameAndType from './test-name-and-type';
 
 class IOAndCode extends Component {
 
@@ -65,6 +66,7 @@ class IOAndCode extends Component {
 
               return (
                 <div key={io.hash()} className={prefixer('io-and-code')}>
+                  {<TestNameAndType index={index} io={io} />}
                   {<InputOutput readOnly={false} index={index} io={io} />}
                   {<CodeMirror
                     aria-labelledby="testCode"

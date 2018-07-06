@@ -153,7 +153,7 @@ export function assignmentInfoReceivedAction(
   if (testTemplate) {
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
-  const testArray = [{ code: testTemplate, input: '<input>', output: '<output>' }];
+  const testArray = [{ name: '', code: testTemplate, input: '<input>', output: '<output>' }];
   return {
     tagSuggestions,
     boilerplate,
@@ -247,9 +247,9 @@ export function formDoneAction() {
   };
 }
 
-export function testTypeChangedAction(oldType: string, index: number) {
+export function testTypeChangedAction(newType: string, index: number) {
   return {
-    oldType,
+    newType,
     index,
     type: TEST_TYPE_CHANGED,
   };
@@ -276,8 +276,9 @@ export function deleteMarkersAction() {
   };
 }
 
-export function changeTestInTestArrayAction(input: string, output: string, index: number) {
+export function changeTestInTestArrayAction(name: string, input: string, output: string, index: number) {
   return {
+    name,
     input,
     output,
     index,
@@ -371,7 +372,7 @@ export type SetShowCodeTemplateAction = {
 
 export type TestTypeChangedAction = {
   index: number,
-  oldType: string,
+  newType: string,
   type: string,
 };
 
@@ -391,6 +392,7 @@ export type DeleteMarkersAction = {
 }
 
 export type ChangeTestInTestArrayAction = {
+  name: string,
   input: string,
   output: string,
   index: number,

@@ -95,11 +95,11 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onTestInputChange(input: string, index: number) {
       dispatch(testInputChangeAction(input, index));
-      dispatch(changeTestInTestArrayAction(input, '', index));
+      dispatch(changeTestInTestArrayAction('', input, '', index));
     },
     onTestOutputChange(output: string, index: number) {
       dispatch(testOutputChangeAction(output, index));
-      dispatch(changeTestInTestArrayAction('', output, index));
+      dispatch(changeTestInTestArrayAction('', '', output, index));
     },
     onRemoveFieldClick(index) {
       dispatch(removeTestFieldAction(index));

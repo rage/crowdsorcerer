@@ -93,7 +93,8 @@ const initialState: State = {
   exerciseType: '',
 };
 
-const supportedTestTypes = ['contains', 'notContains', 'equals'];
+// left here for future purposes
+// const supportedTestTypes = ['contains', 'notContains', 'equals'];
 
 const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
     // - if a line with marked char is edited remove markers from that line
@@ -127,7 +128,8 @@ export default createReducer(initialState, {
       unitTests: {
         ...state.unitTests,
         testArray: [...state.unitTests.testArray,
-          { code: state.unitTests.boilerplate.code,
+          { name: '',
+            code: state.unitTests.boilerplate.code,
             input: '<input>',
             output: '<output>' },
         ],
@@ -147,6 +149,7 @@ export default createReducer(initialState, {
     }
 
     // update indexes of the tests in the testArray
+    // TODO: how to handle this when students can name the tests?
     let testArray = [];
     for (let i = 0; i < state.unitTests.testArray.length; i++) {
       const test = state.unitTests.testArray[i];
@@ -174,6 +177,7 @@ export default createReducer(initialState, {
 
     if (testArray.length === 0) {
       testArray = [{
+        name: '',
         code: state.unitTests.boilerplate.code,
         input: '<input>',
         output: '<output>',
@@ -483,17 +487,7 @@ export default createReducer(initialState, {
   [TEST_TYPE_CHANGED](state: State, action: TestTypeChangedAction): State {
     const inputOutput = state.inputOutput.map((io, i) => {
       if (i === action.index) {
-        let newType = action.oldType;
-        supportedTestTypes.forEach((type, j) => {
-          if (type === action.oldType) {
-            if (j < supportedTestTypes.length - 1) {
-              newType = supportedTestTypes[j + 1];
-            } else {
-              newType = supportedTestTypes[0];
-            }
-          }
-        });
-        return new IO(io.input, io.output, newType, io.hash());
+        return new IO(io.input, io.output, action.newType, io.hash());
       }
       return io;
     });
@@ -555,6 +549,7 @@ export default createReducer(initialState, {
         const newOutput = state.inputOutput[i].output.get();
 
         const modifiedTest = {
+          name: action.name,
           code: test.code.replace('testi()', `testi${action.index + 1}()`),
           input: newInput,
           output: newOutput,
