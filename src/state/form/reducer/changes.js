@@ -24,6 +24,7 @@ import {
   ADD_MARKERS,
   DELETE_MARKERS,
   CHANGE_TEST_IN_TEST_ARRAY,
+  CHANGE_TEST_NAME,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -43,6 +44,7 @@ import type {
     ChangeUnitTestsAction,
     AddMarkersAction,
     ChangeTestInTestArrayAction,
+    ChangeTestNameAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -549,8 +551,7 @@ export default createReducer(initialState, {
         const newOutput = state.inputOutput[i].output.get();
 
         const modifiedTest = {
-          name: action.name,
-          code: test.code.replace('testi()', `testi${action.index + 1}()`),
+          ...test,
           input: newInput,
           output: newOutput,
         };
@@ -560,6 +561,32 @@ export default createReducer(initialState, {
         tests = [...tests, test];
       }
     }
+
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        testArray: tests,
+      },
+    };
+  },
+
+  [CHANGE_TEST_NAME](state: State, action: ChangeTestNameAction): State {
+    let tests = [];
+
+    for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      if (i === action.index) {
+        const modifiedTest = {
+          ...state.unitTests.testArray[i],
+          name: action.name,
+        };
+
+        tests = [...tests, modifiedTest];
+      } else {
+        tests = [...tests, state.unitTests.testArray[i]];
+      }
+    }
+
 
     return {
       ...state,

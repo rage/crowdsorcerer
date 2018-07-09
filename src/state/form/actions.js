@@ -40,6 +40,7 @@ export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 export const ADD_MARKERS = 'ADD_MARKERS';
 export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
+export const CHANGE_TEST_NAME = 'CHANGE_TEST_NAME';
 
 export function addTestFieldAction() {
   return {
@@ -153,7 +154,12 @@ export function assignmentInfoReceivedAction(
   if (testTemplate) {
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
-  const testArray = [{ name: '', code: testTemplate, input: '<input>', output: '<output>' }];
+  const testArray = [{
+    name: '<placeholderTestName>',
+    code: testTemplate,
+    input: '<placeholderInput>',
+    output: '<placeholderOutput>',
+  }];
   return {
     tagSuggestions,
     boilerplate,
@@ -178,7 +184,7 @@ export function getAssignmentInfoAction() {
     .then(
       (response) => {
         dispatch(assignmentInfoReceivedAction(
-          response.tags, response.template, response.test_template.slice(0, response.test_template.length - 1),
+          response.tags, response.template, response.test_template,
           response.exercise_type,
         ));
       },
@@ -276,13 +282,18 @@ export function deleteMarkersAction() {
   };
 }
 
-export function changeTestInTestArrayAction(name: string, input: string, output: string, index: number) {
+export function changeTestInTestArrayAction(index: number) {
   return {
-    name,
-    input,
-    output,
     index,
     type: CHANGE_TEST_IN_TEST_ARRAY,
+  };
+}
+
+export function changeTestNameAction(name: string, index: number) {
+  return {
+    name,
+    index,
+    type: CHANGE_TEST_NAME,
   };
 }
 
@@ -392,9 +403,11 @@ export type DeleteMarkersAction = {
 }
 
 export type ChangeTestInTestArrayAction = {
-  name: string,
-  input: string,
-  output: string,
   index: number,
   type: string
+}
+
+export type ChangeTestNameAction = {
+  name: string,
+  type: string,
 }

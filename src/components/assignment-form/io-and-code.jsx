@@ -50,18 +50,19 @@ class IOAndCode extends Component {
               let test = '';
               if (this.props.tests && this.props.tests.length > 0) {
                 let input = this.props.tests[index].input;
-                if (this.props.tests[index].input === '<input>') {
+                if (this.props.tests[index].input === '<placeholderInput>') {
                   input = '';
                 }
                 let output = this.props.tests[index].output;
-                if (this.props.tests[index].output === '<output>') {
+                if (this.props.tests[index].output === '<placeholderOutput>') {
                   output = '';
                 }
-
+                const name = this.props.tests[index].name === '<placeholderTestName>' ? 'test' : this.props.tests[index].name;
                 test = this.props.tests[index].code
                 .replace('<assertion>', assertionGenerator(io.type))
-                .replace(/<input>/g, input)
-                .replace(/<output>/g, output);
+                .replace(/<placeholderInput>/g, input)
+                .replace(/<placeholderOutput>/g, output)
+                .replace('<placeholderTestName>', `${name}()`);
               }
 
               return (

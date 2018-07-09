@@ -12,7 +12,6 @@ import {
   changeTestInTestArrayAction,
 } from 'state/form';
 import Errors from 'components/errors';
-import TestTypeButton from './test-type-button';
 
 class InputOutput extends Component {
 
@@ -22,7 +21,6 @@ class InputOutput extends Component {
     onTestInputChange: (input: string, index: number) => void,
     onTestOutputChange: (output: string, index: number) => void,
     onRemoveFieldClick: (index: number) => void,
-    onTestTypeButtonClicked: (oldType: string, index: number) => void,
     readOnly: boolean,
     showErrors: boolean,
   };
@@ -32,6 +30,9 @@ class InputOutput extends Component {
       <div >
         <div className={prefixer('field-container')}>
           <div className={prefixer('input-field-wrapper')}>
+            <div className={prefixer('label')}>
+              Syöte
+            </div>
             <input
               aria-label="testisyöte"
               aria-required
@@ -51,8 +52,10 @@ class InputOutput extends Component {
               show={this.props.showErrors}
             />
           </div>
-          <TestTypeButton type={this.props.io.type} onClick={this.props.onTestTypeButtonClicked} index={this.props.index} />
           <div className={prefixer('input-field-wrapper')}>
+            <div className={prefixer('label')}>
+              Tulos
+            </div>
             <input
               aria-label="testituloste"
               aria-required
@@ -95,11 +98,11 @@ function mapDispatchToProps(dispatch: Dispatch) {
   return {
     onTestInputChange(input: string, index: number) {
       dispatch(testInputChangeAction(input, index));
-      dispatch(changeTestInTestArrayAction('', input, '', index));
+      dispatch(changeTestInTestArrayAction(index));
     },
     onTestOutputChange(output: string, index: number) {
       dispatch(testOutputChangeAction(output, index));
-      dispatch(changeTestInTestArrayAction('', '', output, index));
+      dispatch(changeTestInTestArrayAction(index));
     },
     onRemoveFieldClick(index) {
       dispatch(removeTestFieldAction(index));
