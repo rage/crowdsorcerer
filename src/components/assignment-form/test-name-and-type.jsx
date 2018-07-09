@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import Select from 'react-select';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import { changeTestNameAction, testTypeChangedAction } from 'state/form';
@@ -21,13 +22,23 @@ class TestNameAndType extends Component {
     ? ''
     : this.props.tests[this.props.index].name;
 
+    const options = [
+      { value: 'contains', label: 'Contains' },
+      { value: 'notContains', label: 'Does not contain' },
+      { value: 'equals', label: 'Equals' },
+    ];
+
+    const getOption = (type) => {
+      options.find(o => o.value === type);
+    };
+
     return (
       <div className={prefixer('field-container')}>
         <div className={prefixer('test-name-and-type')}>
           <div>
             <div className={prefixer('label')}>
-            Nimi
-          </div>
+              Nimi
+            </div>
             <input
               aria-label="testin nimi"
               aria-required
@@ -44,19 +55,19 @@ class TestNameAndType extends Component {
 
           <div>
             <div className={prefixer('label')}>
-            Tyyppi
-          </div>
+              Tyyppi
+            </div>
 
-            <select
-              value={this.props.io.type}
-              onChange={(event) => {
-                this.props.onTestTypeChange(event.currentTarget.value, this.props.index);
+            <Select
+              className={prefixer('test-type')}
+              classNamePrefix={''}
+              options={options}
+              defaultValue={options[0]}
+              value={getOption(this.props.io.type)}
+              onChange={(newType: any) => {
+                this.props.onTestTypeChange(newType.value, this.props.index);
               }}
-            >
-              <option value="contains">Contains</option>
-              <option value="notContains">Does not contain</option>
-              <option value="equals">Equals</option>
-            </select>
+            />
           </div>
         </div>
       </div>

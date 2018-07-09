@@ -130,10 +130,10 @@ export default createReducer(initialState, {
       unitTests: {
         ...state.unitTests,
         testArray: [...state.unitTests.testArray,
-          { name: '',
+          { name: '<placeholderTestName>',
             code: state.unitTests.boilerplate.code,
-            input: '<input>',
-            output: '<output>' },
+            input: '<placeholderInput>',
+            output: '<placeholderOutput>' },
         ],
       },
     };
@@ -141,49 +141,25 @@ export default createReducer(initialState, {
 
   [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
     let inputOutput;
+    let testArray;
+
     if (state.inputOutput.length === 1) {
       inputOutput = [new IO()];
+      testArray = [{
+        name: '<placeholderTestName>',
+        code: state.unitTests.boilerplate.code,
+        input: '<placeholderInput>',
+        output: '<placeholderOutput>',
+      }];
     } else {
       inputOutput = [
         ...state.inputOutput.slice(0, action.index),
         ...state.inputOutput.slice(action.index + 1),
       ];
-    }
-
-    // update indexes of the tests in the testArray
-    // TODO: how to handle this when students can name the tests?
-    let testArray = [];
-    for (let i = 0; i < state.unitTests.testArray.length; i++) {
-      const test = state.unitTests.testArray[i];
-
-      if (i !== action.index) {
-        let modifiedTest = '';
-        const wordsInTest = test.code.split(' ');
-
-        for (let j = 0; j < wordsInTest.length; j++) {
-          const w = wordsInTest[j];
-          if (w.includes('testi') && w.includes('()')) {
-            if (i < action.index) {
-              modifiedTest += `testi${i + 1}() `;
-            } else {
-              modifiedTest += `testi${i}() `;
-            }
-          } else {
-            modifiedTest += `${w} `;
-          }
-        }
-
-        testArray = [...testArray, { code: modifiedTest, input: test.input, output: test.output }];
-      }
-    }
-
-    if (testArray.length === 0) {
-      testArray = [{
-        name: '',
-        code: state.unitTests.boilerplate.code,
-        input: '<input>',
-        output: '<output>',
-      }];
+      testArray = [
+        ...state.unitTests.testArray.slice(0, action.index),
+        ...state.unitTests.testArray.slice(action.index + 1),
+      ];
     }
 
     return {

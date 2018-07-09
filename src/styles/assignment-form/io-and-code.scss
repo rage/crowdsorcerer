@@ -35,6 +35,17 @@
     border-radius: 0.15rem;
     padding: .3rem;
   }
+
+  .test-type {
+    position: relative;
+    z-index: 5;
+    width: 160px;
+    font-size: 14px;
+  }
+}
+
+.Select-control {
+  height: 10px;
 }
   
 .label {
