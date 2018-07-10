@@ -130,7 +130,7 @@ export default createReducer(initialState, {
       unitTests: {
         ...state.unitTests,
         testArray: [...state.unitTests.testArray,
-          { name: '<placeholderTestName>',
+          { name: new FormValue('<placeholderTestName>'),
             code: state.unitTests.boilerplate.code,
             input: '<placeholderInput>',
             output: '<placeholderOutput>' },
@@ -146,7 +146,7 @@ export default createReducer(initialState, {
     if (state.inputOutput.length === 1) {
       inputOutput = [new IO()];
       testArray = [{
-        name: '<placeholderTestName>',
+        name: new FormValue('<placeholderTestName>'),
         code: state.unitTests.boilerplate.code,
         input: '<placeholderInput>',
         output: '<placeholderOutput>',
@@ -551,15 +551,17 @@ export default createReducer(initialState, {
     let tests = [];
 
     for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      const test = state.unitTests.testArray[i];
+
       if (i === action.index) {
         const modifiedTest = {
-          ...state.unitTests.testArray[i],
-          name: action.name,
+          ...test,
+          name: new FormValue(action.name),
         };
 
         tests = [...tests, modifiedTest];
       } else {
-        tests = [...tests, state.unitTests.testArray[i]];
+        tests = [...tests, test];
       }
     }
 

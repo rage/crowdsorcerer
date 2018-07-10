@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
+// FlowIgnore
 import Select from 'react-select';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import { changeTestNameAction, testTypeChangedAction } from 'state/form';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
+import Errors from 'components/errors';
 
 class TestNameAndType extends Component {
 
@@ -14,13 +16,14 @@ class TestNameAndType extends Component {
     tests: Array<Object>,
     onTestNameChange: (name: string, index: number) => void,
     onTestTypeChange: (type: string, index: number) => void,
-    io: IO
+    io: IO,
+    showErrors: boolean,
   }
 
   render() {
-    const testName = this.props.tests[this.props.index].name === '<placeholderTestName>'
+    const testName = this.props.tests[this.props.index].name.get() === '<placeholderTestName>'
     ? ''
-    : this.props.tests[this.props.index].name;
+    : this.props.tests[this.props.index].name.get();
 
     const options = [
       { value: 'contains', label: 'Contains' },
@@ -35,7 +38,7 @@ class TestNameAndType extends Component {
     return (
       <div className={prefixer('field-container')}>
         <div className={prefixer('test-name-and-type')}>
-          <div>
+          <div className={prefixer('label-and-field-wrapper')}>
             <div className={prefixer('label')}>
               Nimi
             </div>
@@ -50,6 +53,11 @@ class TestNameAndType extends Component {
               onChange={(event) => {
                 this.props.onTestNameChange(event.currentTarget.value, this.props.index);
               }}
+            />
+            <Errors
+              errors={this.props.tests[this.props.index].name.errors}
+              keyBase={`${this.props.io.hash()} name`}
+              show={this.props.showErrors}
             />
           </div>
 
@@ -67,6 +75,7 @@ class TestNameAndType extends Component {
               onChange={(newType: any) => {
                 this.props.onTestTypeChange(newType.value, this.props.index);
               }}
+              isSearchable={false}
             />
           </div>
         </div>
@@ -78,6 +87,7 @@ class TestNameAndType extends Component {
 function mapStateToProps(state: State) {
   return {
     tests: state.form.unitTests.testArray,
+    showErrors: state.form.showErrors,
   };
 }
 

@@ -39,7 +39,7 @@ class IOAndCode extends Component {
             }}
             enter={{
               overflow: 'hidden',
-              height: 165,
+              height: 250,
               opacity: 1,
               translateX: 0,
               translateY: spring(0, { stiffness: 120, damping: 15 }),
@@ -57,7 +57,9 @@ class IOAndCode extends Component {
                 if (this.props.tests[index].output === '<placeholderOutput>') {
                   output = '';
                 }
-                const name = this.props.tests[index].name === '<placeholderTestName>' ? 'test' : this.props.tests[index].name;
+                const name = this.props.tests[index].name.get() === '<placeholderTestName>'
+                ? 'test'
+                : this.props.tests[index].name.get();
                 test = this.props.tests[index].code
                 .replace('<assertion>', assertionGenerator(io.type))
                 .replace(/<placeholderInput>/g, input)

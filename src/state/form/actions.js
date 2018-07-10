@@ -155,7 +155,7 @@ export function assignmentInfoReceivedAction(
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
   const testArray = [{
-    name: '<placeholderTestName>',
+    name: new FormValue('<placeholderTestName>'),
     code: testTemplate,
     input: '<placeholderInput>',
     output: '<placeholderOutput>',

@@ -15,6 +15,7 @@ import {
   ADD_TAG,
   REMOVE_TAG,
   CHANGE_UNIT_TESTS,
+  CHANGE_TEST_NAME,
 } from 'state/form/actions';
 import { CHANGE_REVIEW_ERRORS_VISIBILITY } from 'state/review/actions';
 import type {
@@ -30,6 +31,7 @@ import type {
   AddTagAction,
   RemoveTagAction,
   ChangeUnitTestsAction,
+  ChangeTestNameAction,
 } from 'state/form/actions';
 import type { State } from './index';
 
@@ -54,7 +56,7 @@ type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
   | AssignmentChangeAction | ModelSolutionChangeAction
   | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction
-  | ChangeUnitTestsAction ;
+  | ChangeUnitTestsAction | ChangeTestNameAction;
 
 function isFormAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
@@ -69,7 +71,8 @@ function isFormAction(actionContainer: AnyAction) {
     action === CHANGE_FORM_ERRORS_VISIBILITY ||
     action === ADD_TAG ||
     action === REMOVE_TAG ||
-    action === CHANGE_UNIT_TESTS;
+    action === CHANGE_UNIT_TESTS ||
+    action === CHANGE_TEST_NAME;
 }
 
 // TBD: is this function a good idea?
@@ -154,7 +157,7 @@ function unitTestsErrors(unitTests: FormValue<*>, state: State): Array<string> {
 
 export function checkNotBlank(formValue: FormValue<*>): Array<string> {
   const errors = [];
-  if (formValue.get().length === 0) {
+  if (formValue.get().length === 0 || formValue.get() === '<placeholderTestName>') {
     errors.push(CANNOT_BE_BLANK_ERROR);
   }
   return errors;
@@ -169,9 +172,14 @@ export default function (state: State, action: AnyAction) {
 
   let tests;
   if (state.exerciseType === 'unit_tests') {
-    tests = { field: 'unitTests', validator: unitTestsErrors };
-  } else {
-    tests = { field: 'inputOutput', validator: checkNotBlank };
+    tests = [{ field: 'unitTests', validator: unitTestsErrors }];
+  } else if (state.exerciseType === 'input_output') {
+    tests = [{ field: 'inputOutput', validator: checkNotBlank }];
+  } else { // else if state.exerciseType === 'io_and_code'
+    tests = [
+      { field: 'inputOutput', validator: checkNotBlank },
+      { field: 'unitTests:testArray', validator: checkNotBlank },
+    ];
   }
 
   const validators = [
@@ -179,8 +187,7 @@ export default function (state: State, action: AnyAction) {
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
     { field: 'tags', validator: checkNotBlank },
-    tests,
-  ];
+  ].concat(tests);
 
   const valid = validator(validators, state);
   return { ...state, ...{ valid } };

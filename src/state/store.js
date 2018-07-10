@@ -79,13 +79,19 @@ function loadStateFromLocalStorage(storageName: string) {
   });
 
   let editableUnitTests;
+  let testArray;
   if (state.form.unitTests) {
     editableUnitTests = state.form.unitTests.editableUnitTests
                         ? new FormValue(state.form.unitTests.editableUnitTests.value,
                           state.form.unitTests.editableUnitTests.errors)
                         : undefined;
+    testArray = state.form.unitTests.testArray.map((test) => {
+      const name = new FormValue(test.name.value, test.name.errors);
+      return { name, code: test.code, input: test.input, output: test.output };
+    });
   } else {
     editableUnitTests = undefined;
+    testArray = [];
   }
 
   return {
@@ -106,6 +112,7 @@ function loadStateFromLocalStorage(storageName: string) {
       unitTests: {
         ...state.form.unitTests,
         editableUnitTests,
+        testArray,
       },
     },
     review: {

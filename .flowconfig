@@ -1,5 +1,9 @@
 [ignore]
-
+.*/node_modules/react-select
+.*/node_modules/create-emotion
+.*/node_modules/babel-plugin-emotion
+.*/node_modules/emotion
+.*/node_modules/@emotion
 [include]
 
 [libs]
@@ -7,3 +11,4 @@
 [options]
 module.system.node.resolve_dirname=./node_modules
 module.system.node.resolve_dirname=./src
+suppress_comment= \\(.\\|\n\\)*\\FlowIgnore
