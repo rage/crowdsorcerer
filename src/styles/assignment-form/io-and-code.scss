@@ -11,7 +11,7 @@
     margin-top: 0.1rem;
 
     .CodeMirror {
-      height: fit-content;
+      height: 105px;
     }
 }
 
@@ -55,6 +55,20 @@
       border: 0.1rem solid $border-grey;
       border-radius: 0.15rem;
       background-color: $white;
+      overflow: hidden;
+
+      & > div {
+        position: initial;
+
+        & > div {
+          padding: 4px;
+        }
+      }
+
+      & * span {
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
     }
 
     & > div:nth-of-type(2) {
@@ -68,4 +82,21 @@
   margin-left: 2px;
   font-size: 13px;
   padding-bottom: 1px;
+}
+
+.card-close-button {
+  border: 0;
+  background: transparent;
+  color: $close-button-color;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.25rem;
+  transition: color 0.2s;
+  line-height: 2rem;
+  &:hover {
+    color: darken($close-button-color, 10%);
+  }
+  position: absolute;
+  top: 0px;
+  right: 0px;
 }

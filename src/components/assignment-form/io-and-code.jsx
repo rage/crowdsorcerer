@@ -81,6 +81,7 @@ class IOAndCode extends Component {
                       indentUnit: 4,
                       dragDrop: false,
                       readOnly: 'nocursor',
+                      scrollbarStyle: 'null',
                     }}
                     value={test}
                   />}

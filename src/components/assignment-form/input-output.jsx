@@ -23,9 +23,18 @@ class InputOutput extends Component {
     onRemoveFieldClick: (index: number) => void,
     readOnly: boolean,
     showErrors: boolean,
+    exerciseType: string,
   };
 
   render() {
+    let buttonClassName;
+
+    if (this.props.exerciseType === 'input_output') {
+      buttonClassName = 'close-button';
+    } else {
+      buttonClassName = 'card-close-button';
+    }
+
     return (
       <div >
         <div className={prefixer('field-container')}>
@@ -77,7 +86,7 @@ class InputOutput extends Component {
           </div>
           {!this.props.readOnly && <button
             type="button"
-            className={prefixer('close-button')}
+            className={prefixer(buttonClassName)}
             onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
           >
             &#10006;
@@ -91,6 +100,7 @@ class InputOutput extends Component {
 function mapStateToProps(state: State) {
   return {
     showErrors: state.form.showErrors,
+    exerciseType: state.form.exerciseType,
   };
 }
 
