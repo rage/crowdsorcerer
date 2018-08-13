@@ -194,7 +194,7 @@ export default createReducer(initialState, {
       const solutionLengthDifference = change.removed.length - change.text.length;
         // deleted the removed marked lines
       const deletedRowLength = solutionLengthDifference - 1;
-      newSolutionRows = newSolutionRows.filter(row => row < startLine || row > startLine + deletedRowLength);
+      newSolutionRows = newSolutionRows.filter(row => row <= startLine || row > startLine + deletedRowLength);
       newSolutionRows = newSolutionRows.map((row) => {
         if (row >= startLine + solutionLengthDifference) {
           if (row - solutionLengthDifference >= 0) {
@@ -221,7 +221,7 @@ export default createReducer(initialState, {
         solutionLengthDifference--;
       }
       newSolutionRows = state.modelSolution.solutionRows.get().map((row) => {
-        if (row >= startLine) {
+        if (row > startLine || (row === startLine && change.from.sticky === null)) {
           return row + solutionLengthDifference;
         }
         return row;

@@ -175,6 +175,9 @@ class ModelSolution extends Component {
     const gutters = this.props.readOnly
       ? ['CodeMirror-linenumbers']
       : ['CodeMirror-linenumbers', 'modelsolution-lines'];
+
+    const cursor = this.props.readOnly ? 'nocursor' : false;
+
     return (
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
@@ -208,7 +211,7 @@ class ModelSolution extends Component {
               gutters,
               tabSize: 4,
               indentUnit: 4,
-              readOnly: this.props.readOnly,
+              readOnly: cursor,
               dragDrop: false,
             }}
             value={value}

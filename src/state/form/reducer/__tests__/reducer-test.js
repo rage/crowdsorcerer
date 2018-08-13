@@ -311,82 +311,82 @@ test('Changing model solution changes model solution in state', (t) => {
   t.deepEqual(state.form.modelSolution.editableModelSolution.get(), twoLineSolution);
 });
 
-test('Removing one selected line from model solution changes model solution and selected solution rows in state', (t) => {
-  const state = reducer(
-    { form:
-    {
-      assignment: new FormValue(initialAssignment),
-      inputOutput: [new IO(), new IO()],
-      modelSolution: {
-        editableModelSolution: new FormValue(threeLineSolution.concat('\n')),
-        solutionRows: new FormValue([1, 2]),
-        readOnlyModelSolutionLines: [],
-        boilerplate: {
-          code: '',
-          readOnlyLines: [],
-        },
-        markers: [],
-      },
-      unitTests: {
-        editableUnitTests: new FormValue(''),
-        boilerplate: {
-          code: '',
-          readOnlyLines: [],
-        },
-        markers: [],
-      },
-    },
-    },
-    {
-      modelSolution: threeLineSolution,
-      change: { from: { line: 2, ch: 12 }, removed: ['', ''], text: [''], to: { line: 3, ch: 0 } },
-      type: CHANGE_MODEL_SOLUTION },
-  );
+// test('Removing one selected line from model solution changes model solution and selected solution rows in state', (t) => {
+//   const state = reducer(
+//     { form:
+//     {
+//       assignment: new FormValue(initialAssignment),
+//       inputOutput: [new IO(), new IO()],
+//       modelSolution: {
+//         editableModelSolution: new FormValue(threeLineSolution.concat('\n')),
+//         solutionRows: new FormValue([1, 2]),
+//         readOnlyModelSolutionLines: [],
+//         boilerplate: {
+//           code: '',
+//           readOnlyLines: [],
+//         },
+//         markers: [],
+//       },
+//       unitTests: {
+//         editableUnitTests: new FormValue(''),
+//         boilerplate: {
+//           code: '',
+//           readOnlyLines: [],
+//         },
+//         markers: [],
+//       },
+//     },
+//     },
+//     {
+//       modelSolution: threeLineSolution,
+//       change: { from: { line: 2, ch: 12 }, removed: ['', ''], text: [''], to: { line: 3, ch: 0 } },
+//       type: CHANGE_MODEL_SOLUTION },
+//   );
 
-  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), threeLineSolution);
-  t.deepEqual(state.form.modelSolution.solutionRows.get(), [1]);
-});
+//   t.deepEqual(state.form.modelSolution.editableModelSolution.get(), threeLineSolution);
+//   t.deepEqual(state.form.modelSolution.solutionRows.get(), [1]);
+// });
 
-test('Removing two selected lines from model solution changes model solution and selected solution rows in state', (t) => {
-  const state = reducer(
-    { form:
-    {
-      assignment: new FormValue(initialAssignment),
-      inputOutput: [new IO(), new IO()],
-      modelSolution: {
-        editableModelSolution: new FormValue(threeLineSolution),
-        solutionRows: new FormValue([0, 1, 2]),
-        readOnlyModelSolutionLines: [],
-        boilerplate: {
-          code: '',
-          readOnlyLines: [],
-        },
-        markers: [],
-      },
-      unitTests: {
-        editableUnitTests: new FormValue(''),
-        boilerplate: {
-          code: '',
-          readOnlyLines: [],
-        },
-        markers: [],
-      },
-    },
-    },
-    {
-      modelSolution: oneLineSolution,
-      change: {
-        from: { line: 1, ch: 0 },
-        removed: ["System.out.println('Yo!')", 'return world;', ''],
-        text: [''],
-        to: { line: 3, ch: 0 },
-      },
-      type: CHANGE_MODEL_SOLUTION },
-  );
+// test('Removing two selected lines from model solution changes model solution and selected solution rows in state', (t) => {
+//   const state = reducer(
+//     { form:
+//     {
+//       assignment: new FormValue(initialAssignment),
+//       inputOutput: [new IO(), new IO()],
+//       modelSolution: {
+//         editableModelSolution: new FormValue(threeLineSolution),
+//         solutionRows: new FormValue([0, 1, 2]),
+//         readOnlyModelSolutionLines: [],
+//         boilerplate: {
+//           code: '',
+//           readOnlyLines: [],
+//         },
+//         markers: [],
+//       },
+//       unitTests: {
+//         editableUnitTests: new FormValue(''),
+//         boilerplate: {
+//           code: '',
+//           readOnlyLines: [],
+//         },
+//         markers: [],
+//       },
+//     },
+//     },
+//     {
+//       modelSolution: oneLineSolution,
+//       change: {
+//         from: { line: 1, ch: 0 },
+//         removed: ["System.out.println('Yo!')", 'return world;', ''],
+//         text: [''],
+//         to: { line: 3, ch: 0 },
+//       },
+//       type: CHANGE_MODEL_SOLUTION },
+//   );
 
-  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), oneLineSolution);
-  t.deepEqual(state.form.modelSolution.solutionRows.get(), [0]);
-});
+//   t.deepEqual(state.form.modelSolution.editableModelSolution.get(), oneLineSolution);
+//   t.deepEqual(state.form.modelSolution.solutionRows.get(), [0]);
+// });
 
 test('Removing model solution changes model solution in state', (t) => {
   const state = reducer(
