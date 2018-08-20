@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
-import { formSubmitButtonPressedAction } from 'state/form';
-import { deleteMarkersAction } from 'state/form/actions';
+import { formSubmitButtonPressedAction, changePreviewStateAction, deleteMarkersAction } from 'state/form';
 import 'codemirror/mode/clike/clike';
 import ExerciseTags from 'components/tag-input';
 import StatusDisplay from '../status-display';
@@ -13,6 +12,7 @@ import Assignment from './assignment';
 import TestFields from './test-fields';
 import UnitTests from './unit-tests';
 import IOAndCode from './io-and-code';
+import Preview from './preview';
 
 class AssignmentForm extends Component {
 
@@ -20,6 +20,7 @@ class AssignmentForm extends Component {
 
   props: {
     handleSubmit: () => void,
+    handlePreview: () => void,
     valid: boolean,
     showErrors: boolean,
     exerciseType: string,
@@ -46,14 +47,19 @@ class AssignmentForm extends Component {
             type="button"
             disabled={this.props.showErrors && !this.props.valid}
             className={prefixer('sender')}
+            // onClick={(e) => {
+            //   e.preventDefault();
+            //   this.props.handleSubmit();
+            // }}
             onClick={(e) => {
               e.preventDefault();
-              this.props.handleSubmit();
+              this.props.handlePreview();
             }}
           >
             Lähetä
           </button>
         </div>
+        <Preview />
         <StatusDisplay showProgress />
       </form>
     );
@@ -73,6 +79,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     handleSubmit() {
       dispatch(deleteMarkersAction());
       dispatch(formSubmitButtonPressedAction());
+    },
+    handlePreview() {
+      dispatch(changePreviewStateAction(true));
     },
   };
 }

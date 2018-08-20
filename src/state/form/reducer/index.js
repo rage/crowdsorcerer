@@ -55,7 +55,8 @@ export type State = {
     testArray: Array<Object>,
   },
   done: boolean,
-  exerciseType: string
+  exerciseType: string,
+  previewState: boolean
 };
 
 export default reduceReducers(changes, validity);

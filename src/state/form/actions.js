@@ -41,6 +41,7 @@ export const ADD_MARKERS = 'ADD_MARKERS';
 export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
 export const CHANGE_TEST_NAME = 'CHANGE_TEST_NAME';
+export const CHANGE_PREVIEW_STATE = 'CHANGE_PREVIEW_STATE';
 
 export function addTestFieldAction() {
   return {
@@ -297,6 +298,13 @@ export function changeTestNameAction(name: string, index: number) {
   };
 }
 
+export function changePreviewStateAction(state: boolean) {
+  return {
+    state,
+    type: CHANGE_PREVIEW_STATE,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -409,5 +417,10 @@ export type ChangeTestInTestArrayAction = {
 
 export type ChangeTestNameAction = {
   name: string,
+  type: string,
+}
+
+export type ChangePreviewStateAction = {
+  state: boolean,
   type: string,
 }

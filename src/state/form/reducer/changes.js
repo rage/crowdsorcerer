@@ -25,6 +25,7 @@ import {
   DELETE_MARKERS,
   CHANGE_TEST_IN_TEST_ARRAY,
   CHANGE_TEST_NAME,
+  CHANGE_PREVIEW_STATE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -45,6 +46,7 @@ import type {
     AddMarkersAction,
     ChangeTestInTestArrayAction,
     ChangeTestNameAction,
+    ChangePreviewStateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -93,6 +95,7 @@ const initialState: State = {
   },
   done: false,
   exerciseType: '',
+  previewState: false,
 };
 
 // left here for future purposes
@@ -572,6 +575,13 @@ export default createReducer(initialState, {
         ...state.unitTests,
         testArray: tests,
       },
+    };
+  },
+
+  [CHANGE_PREVIEW_STATE](state: State, action: ChangePreviewStateAction): State {
+    return {
+      ...state,
+      previewState: action.state,
     };
   },
 });
