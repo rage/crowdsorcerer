@@ -39,7 +39,7 @@ class IOAndCode extends Component {
             }}
             enter={{
               overflow: 'hidden',
-              height: 250,
+              height: 252,
               opacity: 1,
               translateX: 0,
               translateY: spring(0, { stiffness: 120, damping: 15 }),
