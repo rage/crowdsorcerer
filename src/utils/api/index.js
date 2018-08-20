@@ -147,7 +147,9 @@ export default class Api {
       unitTests = formState.unitTests.testArray.map((t, index) =>
         t.code
         .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
-        .replace(/<input>/g, t.input).replace(/<output>/g, t.output),
+        .replace(/<placeholderInput>/g, t.input)
+        .replace(/<placeholderOutput>/g, t.output)
+        .replace('<placeholderTestName>', `${t.name.get()}()`),
       ).join('\n');
     } else if (formState.unitTests.editableUnitTests) {
       unitTests = formState.unitTests.editableUnitTests.get();
