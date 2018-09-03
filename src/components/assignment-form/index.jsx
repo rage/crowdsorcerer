@@ -24,6 +24,7 @@ class AssignmentForm extends Component {
     valid: boolean,
     showErrors: boolean,
     exerciseType: string,
+    previewState: boolean,
   }
 
   render() {
@@ -34,6 +35,11 @@ class AssignmentForm extends Component {
       tests = <TestFields />;
     } else { // else if this.props.exerciseType === 'io_and_code'
       tests = <IOAndCode />;
+    }
+
+    let preview = '';
+    if (this.props.previewState) {
+      preview = <Preview />;
     }
 
     return (
@@ -59,7 +65,7 @@ class AssignmentForm extends Component {
             Lähetä
           </button>
         </div>
-        <Preview />
+        {preview}
         <StatusDisplay showProgress />
       </form>
     );
@@ -71,6 +77,7 @@ function mapStateToProps(state: State) {
     valid: state.form.valid,
     showErrors: state.form.showErrors,
     exerciseType: state.form.exerciseType,
+    previewState: state.form.previewState,
   };
 }
 
