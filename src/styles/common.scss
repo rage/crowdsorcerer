@@ -37,6 +37,7 @@
 
 .form-component {
   padding: 0.9rem 0 0 0;
+  background-color: $white;
 }
 
 .same-line {
@@ -99,16 +100,22 @@
   position: relative;
   top: -10;
   outline-width: 0;
-  .positive {
+  .contains {
     color: #2ecc71;
     &:after {
       content: "\21d2";
     }
   }
-  .negative {
+  .notContains {
     color: #c0392b;
     &:after {
       content: "\21cf";
+    }
+  }
+  .equals {
+    color: blue;
+    &:after {
+      content: "\21d3";
     }
   }
 }

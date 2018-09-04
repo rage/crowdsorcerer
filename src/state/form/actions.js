@@ -36,6 +36,12 @@ export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
 export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
+export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
+export const ADD_MARKERS = 'ADD_MARKERS';
+export const DELETE_MARKERS = 'DELETE_MARKERS';
+export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
+export const CHANGE_TEST_NAME = 'CHANGE_TEST_NAME';
+export const CHANGE_PREVIEW_STATE = 'CHANGE_PREVIEW_STATE';
 
 export function addTestFieldAction() {
   return {
@@ -140,13 +146,29 @@ export function submitFormAction() {
   };
 }
 
-export function assignmentInfoReceivedAction(newTags: Array<Tag>, boilerplate: string) {
+export function assignmentInfoReceivedAction(
+  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, exerciseType: string,
+) {
   const tagSuggestions = newTags.map(tag => tag.name);
-  const readOnlyLines = getReadOnlyLines(boilerplate);
+  const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
+  let readOnlyUnitTestsLines;
+  if (testTemplate) {
+    readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
+  }
+  const testArray = [{
+    name: new FormValue('<placeholderTestName>'),
+    code: testTemplate,
+    input: '<placeholderInput>',
+    output: '<placeholderOutput>',
+  }];
   return {
     tagSuggestions,
     boilerplate,
-    readOnlyLines,
+    readOnlyModelSolutionLines,
+    testTemplate,
+    readOnlyUnitTestsLines,
+    exerciseType,
+    testArray,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -162,7 +184,10 @@ export function getAssignmentInfoAction() {
     api.getAssignmentInformation(getState().assignment.assignmentId)
     .then(
       (response) => {
-        dispatch(assignmentInfoReceivedAction(response.tags, response.template));
+        dispatch(assignmentInfoReceivedAction(
+          response.tags, response.template, response.test_template,
+          response.exercise_type,
+        ));
       },
       (error) => {
         if (error.status === 403) {
@@ -229,11 +254,54 @@ export function formDoneAction() {
   };
 }
 
-export function testTypeChangedAction(oldType: string, index: number) {
+export function testTypeChangedAction(newType: string, index: number) {
   return {
-    oldType,
+    newType,
     index,
     type: TEST_TYPE_CHANGED,
+  };
+}
+
+export function unitTestsChangeAction(unitTests: string, change: Change) {
+  return {
+    unitTests,
+    change,
+    type: CHANGE_UNIT_TESTS,
+  };
+}
+
+export function addMarkersAction(markers: Array<Object>) {
+  return {
+    markers,
+    type: ADD_MARKERS,
+  };
+}
+
+export function deleteMarkersAction() {
+  return {
+    type: DELETE_MARKERS,
+  };
+}
+
+export function changeTestInTestArrayAction(index: number) {
+  return {
+    index,
+    type: CHANGE_TEST_IN_TEST_ARRAY,
+  };
+}
+
+export function changeTestNameAction(name: string, index: number) {
+  return {
+    name,
+    index,
+    type: CHANGE_TEST_NAME,
+  };
+}
+
+export function changePreviewStateAction(state: boolean) {
+  return {
+    state,
+    type: CHANGE_PREVIEW_STATE,
   };
 }
 
@@ -307,9 +375,13 @@ export type NewExerciseReceivedAction = {
 
 export type AssignmentInfoReceivedAction = {
   boilerplate: string,
-  readOnlyLines: number[],
+  readOnlyModelSolutionLines: number[],
   tagSuggestions: Array<string>,
+  testTemplate: ?string,
+  readOnlyUnitTestsLines: number[],
   type: string,
+  exerciseType: string,
+  testArray: Array<Object>
 };
 
 export type SetShowCodeTemplateAction = {
@@ -319,6 +391,36 @@ export type SetShowCodeTemplateAction = {
 
 export type TestTypeChangedAction = {
   index: number,
-  oldType: string,
+  newType: string,
   type: string,
 };
+
+export type ChangeUnitTestsAction = {
+  unitTests: string,
+  change: Change,
+  type: string,
+}
+
+export type AddMarkersAction = {
+  markers: Array<Object>,
+  type: string
+};
+
+export type DeleteMarkersAction = {
+  type: string
+}
+
+export type ChangeTestInTestArrayAction = {
+  index: number,
+  type: string
+}
+
+export type ChangeTestNameAction = {
+  name: string,
+  type: string,
+}
+
+export type ChangePreviewStateAction = {
+  state: boolean,
+  type: string,
+}

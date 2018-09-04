@@ -14,26 +14,33 @@ import {
   CHANGE_FORM_ERRORS_VISIBILITY,
   ADD_TAG,
   REMOVE_TAG,
+  CHANGE_UNIT_TESTS,
+  CHANGE_TEST_NAME,
 } from 'state/form/actions';
 import { CHANGE_REVIEW_ERRORS_VISIBILITY } from 'state/review/actions';
 import type {
   AddTestFieldAction,
-    RemoveTestFieldAction,
-    TestInputChangeAction,
-    TestOutputChangeAction,
-    AssignmentChangeAction,
-    ModelSolutionChangeAction,
-    AddHiddenRowAction,
-    DeleteHiddenRowAction,
-    ChangeErrorsVisibilityAction,
-    AddTagAction,
-    RemoveTagAction,
+  RemoveTestFieldAction,
+  TestInputChangeAction,
+  TestOutputChangeAction,
+  AssignmentChangeAction,
+  ModelSolutionChangeAction,
+  AddHiddenRowAction,
+  DeleteHiddenRowAction,
+  ChangeErrorsVisibilityAction,
+  AddTagAction,
+  RemoveTagAction,
+  ChangeUnitTestsAction,
+  ChangeTestNameAction,
 } from 'state/form/actions';
 import type { State } from './index';
+
 
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
+const MIN_UNIT_TEST_AMOUNT = 1;
+const MIN_UNIT_TESTS_WORD_AMOUNT = 5;
 const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
@@ -42,11 +49,14 @@ const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintä
 const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
 const EMPTY_TEMPLATE_ERROR = 'Muista merkitä, mitkä rivit tehtävästä kuuluvat vain mallivastaukseen, sillä ' +
   'muuten tehtävän koko ratkaisu näkyy tehtäväpohjassa. Lisää tietoa ohjeistuksessa.';
+const UNIT_TEST_AMOUNT_ERROR = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`;
+const UNIT_TESTS_WORD_ERROR = `Testikoodin tulee olla vähintään ${MIN_UNIT_TESTS_WORD_AMOUNT} sanaa pitkä.`;
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction
   | AssignmentChangeAction | ModelSolutionChangeAction
-  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction;
+  | AddHiddenRowAction | DeleteHiddenRowAction | ChangeErrorsVisibilityAction | AddTagAction | RemoveTagAction
+  | ChangeUnitTestsAction | ChangeTestNameAction;
 
 function isFormAction(actionContainer: AnyAction) {
   const action = actionContainer.type;
@@ -60,7 +70,26 @@ function isFormAction(actionContainer: AnyAction) {
     action === DELETE_HIDDEN_ROW ||
     action === CHANGE_FORM_ERRORS_VISIBILITY ||
     action === ADD_TAG ||
-    action === REMOVE_TAG;
+    action === REMOVE_TAG ||
+    action === CHANGE_UNIT_TESTS ||
+    action === CHANGE_TEST_NAME;
+}
+
+// TBD: is this function a good idea?
+function getDifferenceBetweenStrings(original: string, submitted: string): string {
+  const orig = original.replace(/\r?\n|\r/g, '\n');
+  const sub = submitted.replace(/\r?\n|\r/g, '\n');
+  let result = '';
+  let i = 0;
+  let j;
+  for (j = 0; j < sub.length; j++) {
+    if (orig[i] !== sub[j] || i === orig.length) {
+      result += sub[j];
+    } else {
+      i++;
+    }
+  }
+  return result;
 }
 
 function assignmentErrors(assignment: FormValue<sState>): Array<string> {
@@ -84,11 +113,14 @@ function checkModelSolutionLength(words: Array<string>, lines: Array<string>): ?
   return undefined;
 }
 
-function modelSolutionErrors(modelSolution: FormValue<*>): Array<string> {
+function modelSolutionErrors(modelSolution: FormValue<*>, state: State): Array<string> {
   const errors = [];
-  const words = modelSolution.get().split(/[ \n]+/).filter(Boolean);
-  const lines = modelSolution.get().split('\n').filter(Boolean);
+  const insertedCode = getDifferenceBetweenStrings(state.modelSolution.boilerplate.code, modelSolution.get());
+  const words = insertedCode.split(/[ \n]+/).filter(Boolean);
+  const lines = insertedCode.split('\n').filter(Boolean);
+
   const errorMessage = checkModelSolutionLength(words, lines);
+
   if (errorMessage) {
     errors.push(errorMessage);
   }
@@ -102,9 +134,30 @@ function solutionRowErrors(solutionRows: FormValue<Array<Number>>): Array<string
   return [];
 }
 
+function unitTestsErrors(unitTests: FormValue<*>, state: State): Array<string> {
+  const errors = [];
+  let errorMessage;
+
+  const insertedCode = getDifferenceBetweenStrings(state.unitTests.boilerplate.code, unitTests.get());
+
+  const words = insertedCode.split(/[ \n]+/).filter(Boolean);
+  const testAmount = unitTests.get().split(/[ \n]+/).filter(word => word.includes('@Test')).length;
+
+  if (testAmount < MIN_UNIT_TEST_AMOUNT) {
+    errorMessage = UNIT_TEST_AMOUNT_ERROR;
+  } else if (words.length < MIN_UNIT_TESTS_WORD_AMOUNT) {
+    errorMessage = UNIT_TESTS_WORD_ERROR;
+  }
+
+  if (errorMessage) {
+    errors.push(errorMessage);
+  }
+  return errors;
+}
+
 export function checkNotBlank(formValue: FormValue<*>): Array<string> {
   const errors = [];
-  if (formValue.get().length === 0) {
+  if (formValue.get().length === 0 || formValue.get() === '<placeholderTestName>') {
     errors.push(CANNOT_BE_BLANK_ERROR);
   }
   return errors;
@@ -116,13 +169,25 @@ export default function (state: State, action: AnyAction) {
     return state;
   }
   // separate nested fields with ":"
+
+  let tests;
+  if (state.exerciseType === 'unit_tests') {
+    tests = [{ field: 'unitTests', validator: unitTestsErrors }];
+  } else if (state.exerciseType === 'input_output') {
+    tests = [{ field: 'inputOutput', validator: checkNotBlank }];
+  } else { // else if state.exerciseType === 'io_and_code'
+    tests = [
+      { field: 'inputOutput', validator: checkNotBlank },
+      { field: 'unitTests:testArray', validator: checkNotBlank },
+    ];
+  }
+
   const validators = [
     { field: 'assignment', validator: assignmentErrors },
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
     { field: 'tags', validator: checkNotBlank },
-    { field: 'inputOutput', validator: checkNotBlank },
-  ];
+  ].concat(tests);
 
   const valid = validator(validators, state);
   return { ...state, ...{ valid } };

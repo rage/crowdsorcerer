@@ -1,0 +1,8 @@
+@import "../../node_modules/codemirror/lib/codemirror";
+@import "color-constants";
+
+.wrong {
+  text-decoration-line: underline;
+  text-decoration-color: red;
+  text-decoration-style: double;
+}

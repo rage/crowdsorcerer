@@ -1,0 +1,7 @@
+@import "../../node_modules/codemirror/lib/codemirror";
+@import "color-constants";
+
+.unit-tests {
+  border: 0.05rem solid $border-grey;
+  border-radius: 0.25rem;
+}

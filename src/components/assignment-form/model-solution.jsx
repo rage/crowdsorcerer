@@ -68,12 +68,39 @@ class ModelSolution extends Component {
       codeDocument.removeLineClass(i, 'background', prefixer('hiddenRow'));
       codeDocument.removeLineClass(i, 'background', prefixer('readOnly'));
     }
+    if (this.markers) {
+      this.markers.forEach((marker) => {
+        marker.clear();
+      });
+    }
+    this.markers = [];
+
     this.props.solutionRows.get().forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('hiddenRow'));
     });
     this.props.readOnlyLines.forEach((row) => {
       codeDocument.addLineClass(row, 'background', prefixer('readOnly'));
     });
+
+    if (this.props.markers && this.props.markers.length > 0) {
+      this.props.markers.forEach((marker) => {
+        const line = marker.line;
+        let charRange;
+
+        const lastLine = codeDocument.children[0].lines[codeDocument.children[0].lines.length - 1].text;
+        if (lastLine.length === marker.char) {
+          charRange = [marker.char - 1, marker.char];
+        } else {
+          charRange = [marker.char - 1, marker.char + 1];
+        }
+
+        this.markers.push(codeDocument.markText(
+              { line, ch: charRange[0] },
+              { line, ch: charRange[1] },
+              { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+            ));
+      });
+    }
   }
 
   handleAddNewHiddenRow(cm: CodeMirror, line: number) {
@@ -134,6 +161,7 @@ class ModelSolution extends Component {
     readOnlyCodeTemplate: string,
     onResetModelSolution: () => void,
     onSetShowCodeTemplate: () => void,
+    markers: Array<Object>,
   };
 
   render() {
@@ -147,6 +175,9 @@ class ModelSolution extends Component {
     const gutters = this.props.readOnly
       ? ['CodeMirror-linenumbers']
       : ['CodeMirror-linenumbers', 'modelsolution-lines'];
+
+    const cursor = this.props.readOnly ? 'nocursor' : false;
+
     return (
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
@@ -180,7 +211,7 @@ class ModelSolution extends Component {
               gutters,
               tabSize: 4,
               indentUnit: 4,
-              readOnly: this.props.readOnly,
+              readOnly: cursor,
               dragDrop: false,
             }}
             value={value}
@@ -210,6 +241,7 @@ function mapStateToProps(state: State) {
     readOnlyLines: state.form.modelSolution.readOnlyModelSolutionLines,
     reviewable: state.review.reviewable,
     showCodeTemplate: state.form.modelSolution.showTemplate,
+    markers: state.form.modelSolution.markers,
   };
 }
 

@@ -20,6 +20,12 @@ import {
   SET_SHOW_CODE_TEMPLATE,
   FORM_DONE,
   TEST_TYPE_CHANGED,
+  CHANGE_UNIT_TESTS,
+  ADD_MARKERS,
+  DELETE_MARKERS,
+  CHANGE_TEST_IN_TEST_ARRAY,
+  CHANGE_TEST_NAME,
+  CHANGE_PREVIEW_STATE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -36,6 +42,11 @@ import type {
     AssignmentInfoReceivedAction,
     SetShowCodeTemplateAction,
     TestTypeChangedAction,
+    ChangeUnitTestsAction,
+    AddMarkersAction,
+    ChangeTestInTestArrayAction,
+    ChangeTestNameAction,
+    ChangePreviewStateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import { isReadOnlyTag } from 'utils/get-read-only-lines';
@@ -70,36 +81,96 @@ const initialState: State = {
     readOnlyModelSolution: undefined,
     readOnlyCodeTemplate: undefined,
     showTemplate: false,
+    markers: [],
+  },
+  unitTests: {
+    editableUnitTests: undefined,
+    boilerplate: {
+      code: '',
+      readOnlyLines: [],
+    },
+    readOnlyLines: [],
+    markers: [],
+    testArray: [],
   },
   done: false,
+  exerciseType: '',
+  previewState: false,
 };
 
-const supportedTestTypes = ['positive', 'negative'];
+// left here for future purposes
+// const supportedTestTypes = ['contains', 'notContains', 'equals'];
+
+const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
+    // - if a line with marked char is edited remove markers from that line
+    // - if a line is added/removed move all markers after it
+  let markers = stateMarkers;
+  for (let i = 0; i < stateMarkers.length; i++) {
+    const m = stateMarkers[i];
+    if (m.line === change.from.line
+      || (m.line > change.from.line && m.line <= change.to.line)
+      || (change.removed[1] && m.line === change.to.line && m.char < change.to.ch
+        && change.removed[1].length >= change.from.ch - m.char)
+          ) {
+      markers = markers.filter(marker => marker !== m);
+    } else if (change.from.line < m.line) {
+      const line = m.line;
+      const char = m.char;
+
+      if (!(change.from.line === line && change.from.ch >= char)) {
+        m.line += change.text.length - change.removed.length;
+      }
+    }
+  }
+  return markers;
+};
 
 export default createReducer(initialState, {
   [ADD_TEST_FIELD](state: State, action: AddTestFieldAction): State {
     return {
       ...state,
-      ...{
-        inputOutput: [...state.inputOutput, action.field],
+      inputOutput: [...state.inputOutput, action.field],
+      unitTests: {
+        ...state.unitTests,
+        testArray: [...state.unitTests.testArray,
+          { name: new FormValue('<placeholderTestName>'),
+            code: state.unitTests.boilerplate.code,
+            input: '<placeholderInput>',
+            output: '<placeholderOutput>' },
+        ],
       },
     };
   },
 
   [REMOVE_TEST_FIELD](state: State, action: RemoveTestFieldAction): State {
     let inputOutput;
+    let testArray;
+
     if (state.inputOutput.length === 1) {
       inputOutput = [new IO()];
+      testArray = [{
+        name: new FormValue('<placeholderTestName>'),
+        code: state.unitTests.boilerplate.code,
+        input: '<placeholderInput>',
+        output: '<placeholderOutput>',
+      }];
     } else {
       inputOutput = [
         ...state.inputOutput.slice(0, action.index),
         ...state.inputOutput.slice(action.index + 1),
       ];
+      testArray = [
+        ...state.unitTests.testArray.slice(0, action.index),
+        ...state.unitTests.testArray.slice(action.index + 1),
+      ];
     }
+
     return {
       ...state,
-      ...{
-        inputOutput,
+      inputOutput,
+      unitTests: {
+        ...state.unitTests,
+        testArray,
       },
     };
   },
@@ -117,13 +188,16 @@ export default createReducer(initialState, {
     const rowsInOldModelSolution = modelSolution.get().split('\n');
     const rowsInNewModelSolution = action.modelSolution.split('\n');
     const solutionLengthDifferenceToNew = rowsInNewModelSolution.length - rowsInOldModelSolution.length;
+
+    const markers = handleMarkers(state.modelSolution.markers, change);
+
     if (solutionLengthDifferenceToNew < 0) {
         // text was removed
         // removed contains the deleted text
       const solutionLengthDifference = change.removed.length - change.text.length;
         // deleted the removed marked lines
       const deletedRowLength = solutionLengthDifference - 1;
-      newSolutionRows = newSolutionRows.filter(row => row < startLine || row > startLine + deletedRowLength);
+      newSolutionRows = newSolutionRows.filter(row => row <= startLine || row > startLine + deletedRowLength);
       newSolutionRows = newSolutionRows.map((row) => {
         if (row >= startLine + solutionLengthDifference) {
           if (row - solutionLengthDifference >= 0) {
@@ -150,7 +224,7 @@ export default createReducer(initialState, {
         solutionLengthDifference--;
       }
       newSolutionRows = state.modelSolution.solutionRows.get().map((row) => {
-        if (row >= startLine) {
+        if (row > startLine || (row === startLine && change.from.sticky === null)) {
           return row + solutionLengthDifference;
         }
         return row;
@@ -169,6 +243,7 @@ export default createReducer(initialState, {
         editableModelSolution: new FormValue(action.modelSolution),
         solutionRows: new FormValue(newSolutionRows),
         readOnlyModelSolutionLines: newReadOnlyRows,
+        markers,
       },
     };
   },
@@ -202,6 +277,57 @@ export default createReducer(initialState, {
     return {
       ...state,
       inputOutput: newInputOutput,
+    };
+  },
+  [CHANGE_UNIT_TESTS](state: State, action: ChangeUnitTestsAction): State {
+    // controls the movement of marked unit test code rows when unit test code is changed
+    const unitTests = state.unitTests.editableUnitTests;
+    if (unitTests === undefined || unitTests === null) {
+      return state;
+    }
+    // prevent the removal of the last editable line
+    const change = action.change;
+    const startLine = change.from.line;
+    let newReadOnlyRows = state.unitTests.readOnlyLines;
+    const rowsInOldUnitTests = unitTests.get().split('\n');
+    const rowsInNewUnitTests = action.unitTests.split('\n');
+    const lengthDifferenceToNew = rowsInNewUnitTests.length - rowsInOldUnitTests.length;
+
+    const markers = handleMarkers(state.unitTests.markers, change);
+
+    if (lengthDifferenceToNew < 0) {
+      // text was removed
+      const lengthDifference = change.removed.length - change.text.length;
+      newReadOnlyRows = state.unitTests.readOnlyLines.map((row) => {
+        if (row >= startLine + lengthDifference) {
+          if (row - lengthDifference >= 0) {
+            return row - lengthDifference;
+          }
+          return 0;
+        }
+        return row;
+      });
+    } else if (lengthDifferenceToNew >= 0) {
+      // text was added
+      let lengthDifference = change.text.length ? change.text.length - 1 : 0;
+      if (change.removed && change.removed.length === 2) {
+        lengthDifference--;
+      }
+      newReadOnlyRows = state.unitTests.readOnlyLines.map((row) => {
+        if (row >= startLine) {
+          return row + lengthDifference;
+        }
+        return row;
+      });
+    }
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        editableUnitTests: new FormValue(action.unitTests),
+        readOnlyLines: newReadOnlyRows,
+        markers,
+      },
     };
   },
   [ADD_HIDDEN_ROW](state: State, action: AddHiddenRowAction): State {
@@ -277,16 +403,40 @@ export default createReducer(initialState, {
       });
     }
     const plate = cleanPlate.join('\n');
+
+    let unitTests = { ...state.unitTests };
+    const cleanTestTemplate = [];
+    if (action.testTemplate) {
+      action.testTemplate.split('\n').forEach((row) => {
+        if (!isReadOnlyTag(row)) {
+          cleanTestTemplate.push(row);
+        }
+      });
+      const testTemplate = cleanTestTemplate.join('\n');
+      unitTests = {
+        ...state.unitTests,
+        editableUnitTests: new FormValue(testTemplate),
+        readOnlyLines: action.readOnlyUnitTestsLines,
+        boilerplate: {
+          code: testTemplate,
+          readOnlyLines: action.readOnlyUnitTestsLines,
+        },
+        testArray: action.testArray,
+      };
+    }
+
     return {
       ...state,
       tagSuggestions: action.tagSuggestions,
       modelSolution: {
         ...state.modelSolution,
         editableModelSolution: new FormValue(plate),
-        readOnlyModelSolutionLines: action.readOnlyLines,
+        readOnlyModelSolutionLines: action.readOnlyModelSolutionLines,
         solutionRows: new FormValue([]),
-        boilerplate: { code: plate, readOnlyLines: action.readOnlyLines },
+        boilerplate: { code: plate, readOnlyLines: action.readOnlyModelSolutionLines },
       },
+      unitTests,
+      exerciseType: action.exerciseType,
     };
   },
   [RESET_TO_BOILERPLATE](state: State): State {
@@ -318,23 +468,120 @@ export default createReducer(initialState, {
   [TEST_TYPE_CHANGED](state: State, action: TestTypeChangedAction): State {
     const inputOutput = state.inputOutput.map((io, i) => {
       if (i === action.index) {
-        let newType = action.oldType;
-        supportedTestTypes.forEach((type, j) => {
-          if (type === action.oldType) {
-            if (j < supportedTestTypes.length - 1) {
-              newType = supportedTestTypes[j + 1];
-            } else {
-              newType = supportedTestTypes[0];
-            }
-          }
-        });
-        return new IO(io.input, io.output, newType, io.hash());
+        return new IO(io.input, io.output, action.newType, io.hash());
       }
       return io;
     });
     return {
       ...state,
       inputOutput,
+    };
+  },
+  [ADD_MARKERS](state: State, action: AddMarkersAction): State {
+    if (action.markers.some(m => m.inSourceCode)) {
+      return {
+        ...state,
+        modelSolution: {
+          ...state.modelSolution,
+          markers: action.markers.map(m => (
+            {
+              line: m.line,
+              char: m.char,
+            }
+          )),
+        },
+      };
+    }
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        markers: action.markers.map(m => (
+          {
+            line: m.line,
+            char: m.char,
+          }
+        )),
+      },
+    };
+  },
+  [DELETE_MARKERS](state: State): State {
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        markers: [],
+      },
+      modelSolution: {
+        ...state.modelSolution,
+        markers: [],
+      },
+    };
+  },
+
+  [CHANGE_TEST_IN_TEST_ARRAY](state: State, action: ChangeTestInTestArrayAction): State {
+    let tests = [];
+
+    for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      const test = state.unitTests.testArray[i];
+
+      if (i === action.index) {
+        const newInput = state.inputOutput[i].input.get();
+        const newOutput = state.inputOutput[i].output.get();
+
+        const modifiedTest = {
+          ...test,
+          input: newInput,
+          output: newOutput,
+        };
+
+        tests = [...tests, modifiedTest];
+      } else {
+        tests = [...tests, test];
+      }
+    }
+
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        testArray: tests,
+      },
+    };
+  },
+
+  [CHANGE_TEST_NAME](state: State, action: ChangeTestNameAction): State {
+    let tests = [];
+
+    for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      const test = state.unitTests.testArray[i];
+
+      if (i === action.index) {
+        const modifiedTest = {
+          ...test,
+          name: new FormValue(action.name),
+        };
+
+        tests = [...tests, modifiedTest];
+      } else {
+        tests = [...tests, test];
+      }
+    }
+
+
+    return {
+      ...state,
+      unitTests: {
+        ...state.unitTests,
+        testArray: tests,
+      },
+    };
+  },
+
+  [CHANGE_PREVIEW_STATE](state: State, action: ChangePreviewStateAction): State {
+    return {
+      ...state,
+      previewState: action.state,
     };
   },
 });

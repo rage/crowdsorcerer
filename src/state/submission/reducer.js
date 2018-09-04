@@ -88,16 +88,16 @@ export default createReducer(initialState, {
     if (action.data.result.errors) {
       errors = action.data.result.errors.map((obj) => {
         const header = obj.header;
-        const errorMessages = obj.messages ? obj.messages : '';
+        const messages = obj.messages;
+
+        let i;
+        for (i = 0; i < messages.length; i++) {
+          messages[i].message = messages[i].message.replace(/<linechange>/g, '\n');
+        }
+
         return {
           header,
-          messages: errorMessages
-          .replace(/\n/g, '\\n')
-          .replace(/<linechange>/g, '\n')
-          .split('\n')
-          .filter(line => !line.replace(/\s+/g, '').startsWith('[mkdir]'))
-          .map(line => line.replace(/\[javac\]/g, ''))
-          .join('\n'),
+          messages,
         };
       });
     }

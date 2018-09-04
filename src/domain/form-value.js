@@ -20,3 +20,4 @@ export default class FormValue<T> {
     this.errors = errors;
   }
 }
+

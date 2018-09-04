@@ -7,6 +7,7 @@ import type { State as AssignmentState } from 'state/assignment';
 import formSolutionTemplate from 'utils/solution-template-former';
 import * as storejs from 'store';
 import formValueToObject from 'utils/form-value-to-object';
+import assertionGenerator from 'utils/assertion-generator';
 import WebSocketConnection from './websocket';
 
 let SERVER;
@@ -140,6 +141,20 @@ export default class Api {
     }
     const parsedForm =
       formSolutionTemplate(formState.modelSolution.editableModelSolution.get(), formState.modelSolution.solutionRows.get());
+
+    let unitTests;
+    if (formState.unitTests.testArray.length > 0) {
+      unitTests = formState.unitTests.testArray.map((t, index) =>
+        t.code
+        .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
+        .replace(/<placeholderInput>/g, t.input)
+        .replace(/<placeholderOutput>/g, t.output)
+        .replace('<placeholderTestName>', `${t.name.get()}()`),
+      ).join('\n');
+    } else if (formState.unitTests.editableUnitTests) {
+      unitTests = formState.unitTests.editableUnitTests.get();
+    }
+
     return (
     {
       oauth_token: this.oauthToken(),
@@ -149,6 +164,7 @@ export default class Api {
         code: parsedForm,
         testIO: IOArray,
         tags: formState.tags.get(),
+        unit_tests: unitTests,
       },
     }
     );

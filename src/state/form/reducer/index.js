@@ -42,8 +42,21 @@ export type State = {
       code: string,
       readOnlyLines: number[]
     },
+    markers: Array<Object>,
+  },
+  unitTests: {
+    editableUnitTests: ?FormValue<string>,
+    boilerplate: {
+      code: string,
+      readOnlyLines: number[],
+    },
+    readOnlyLines: number[],
+    markers: Array<Object>,
+    testArray: Array<Object>,
   },
   done: boolean,
+  exerciseType: string,
+  previewState: boolean
 };
 
 export default reduceReducers(changes, validity);

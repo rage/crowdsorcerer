@@ -13,7 +13,7 @@ export default class IO {
   constructor(
     input: FormValue<string> = new FormValue(''),
     output: FormValue<string> = new FormValue(''),
-    type: string = 'positive',
+    type: string = 'contains',
     hashCode: ?string) {
     this.input = input;
     this.output = output;
