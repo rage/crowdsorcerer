@@ -131,7 +131,7 @@ export default function makeStore(
   tags: Array<Tag>,
   storeCount: number,
   ) {
-  let storageName = 'crowdsorcerer-';
+  let storageName = 'crowdsorcerer-v2-';
   const assignmentId = parseInt(assignment, 10);
   migrateOldLocalStorageFormat(assignmentId, getTMCUsername());
   const api = new Api();
