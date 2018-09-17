@@ -192,7 +192,7 @@ class ModelSolution extends Component {
               this.props.onResetModelSolution();
             }}
           >
-          Nollaa mallivastaus
+          Nollaa lähdekoodi
           </button>
           }
         </div>
