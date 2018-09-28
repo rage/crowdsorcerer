@@ -95,7 +95,7 @@ const initialState: State = {
     testArray: [],
   },
   done: false,
-  exerciseType: '',
+  testingType: '',
   previewState: false,
 };
 
@@ -379,18 +379,42 @@ export default createReducer(initialState, {
     };
   },
   [NEW_EXERCISE_RECEIVED](state: State, action: NewExerciseReceivedAction): State {
+    let testArray;
+    if (action.newState.tests) {
+      testArray = action.newState.tests.map((test) => {
+        const name = new FormValue(test.test_name);
+        return {
+          name,
+          type: test.assertion_type,
+          code: test.test_code,
+        };
+      });
+    }
+
+    const inputOutput = action.newState.inputOutput.map((io, index) => {
+      const newIo = new IO(
+        new FormValue(io.input.get()),
+        new FormValue(io.output.get()),
+        action.newState.tests[index].assertion_type);
+      return newIo;
+    });
+
     return {
       ...state,
       valid: false,
       assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
       showErrors: false,
-      inputOutput: action.newState.inputOutput,
+      inputOutput,
       tags: new FormValue([]),
       tagSuggestions: action.newState.tagSuggestions,
       modelSolution: {
         ...state.modelSolution,
         readOnlyModelSolution: action.newState.readOnlyModelSolution,
         readOnlyCodeTemplate: action.newState.readOnlyCodeTemplate,
+      },
+      unitTests: {
+        ...state.unitTests,
+        testArray,
       },
     };
   },
@@ -423,7 +447,7 @@ export default createReducer(initialState, {
         boilerplate: { code: plate, readOnlyLines: action.readOnlyModelSolutionLines },
       },
       unitTests,
-      exerciseType: action.exerciseType,
+      testingType: action.testingType,
     };
   },
   [RESET_TO_BOILERPLATE](state: State, action: ResetCodeToBoilerplateAction): State {

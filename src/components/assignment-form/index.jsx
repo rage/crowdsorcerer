@@ -23,17 +23,17 @@ class AssignmentForm extends Component {
     handlePreview: () => void,
     valid: boolean,
     showErrors: boolean,
-    exerciseType: string,
+    testingType: string,
     previewState: boolean,
   }
 
   render() {
     let tests;
-    if (this.props.exerciseType === 'unit_tests') {
+    if (this.props.testingType === 'unit_tests') {
       tests = <UnitTests />;
-    } else if (this.props.exerciseType === 'input_output') {
+    } else if (this.props.testingType === 'input_output') {
       tests = <TestFields />;
-    } else { // else if this.props.exerciseType === 'io_and_code'
+    } else { // else if this.props.testingType === 'io_and_code'
       tests = <IOAndCode />;
     }
 
@@ -76,7 +76,7 @@ function mapStateToProps(state: State) {
   return {
     valid: state.form.valid,
     showErrors: state.form.showErrors,
-    exerciseType: state.form.exerciseType,
+    testingType: state.form.testingType,
     previewState: state.form.previewState,
   };
 }

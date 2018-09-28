@@ -170,11 +170,11 @@ export default function (state: State, action: AnyAction) {
   // separate nested fields with ":"
 
   let tests;
-  if (state.exerciseType === 'unit_tests') {
+  if (state.testingType === 'unit_tests') {
     tests = [{ field: 'unitTests', validator: unitTestsErrors }];
-  } else if (state.exerciseType === 'input_output') {
+  } else if (state.testingType === 'input_output') {
     tests = [{ field: 'inputOutput', validator: checkNotBlank }];
-  } else { // else if state.exerciseType === 'io_and_code'
+  } else { // else if state.testingType === 'io_and_code'
     tests = [
       { field: 'inputOutput', validator: checkNotBlank },
       { field: 'unitTests:testArray', validator: checkNotBlank },

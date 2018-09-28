@@ -18,9 +18,20 @@ class IOAndCode extends Component {
     inputOutput: Array<IO>,
     onAddFieldClick: () => void,
     tests: Array<Object>,
+    readOnly: boolean,
   }
 
   render() {
+    let height;
+    let testCodeClass;
+    if (this.props.readOnly) {
+      height = 216;
+      testCodeClass = prefixer('reviewable-test-code');
+    } else {
+      height = 252;
+      testCodeClass = prefixer('test-code');
+    }
+
     return (
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
@@ -39,7 +50,7 @@ class IOAndCode extends Component {
             }}
             enter={{
               overflow: 'hidden',
-              height: 252,
+              height,
               opacity: 1,
               translateX: 0,
               translateY: spring(0, { stiffness: 120, damping: 15 }),
@@ -69,11 +80,11 @@ class IOAndCode extends Component {
 
               return (
                 <div key={io.hash()} className={prefixer('io-and-code')}>
-                  {<TestNameAndType index={index} io={io} />}
-                  {<InputOutput readOnly={false} index={index} io={io} />}
+                  {<TestNameAndType readOnly={this.props.readOnly} index={index} io={io} />}
+                  {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
                   {<CodeMirror
                     aria-labelledby="testCode"
-                    className={prefixer('test-code')}
+                    className={testCodeClass}
                     options={{
                       mode: 'text/x-java',
                       lineNumbers: true,
@@ -91,13 +102,13 @@ class IOAndCode extends Component {
             )}
           </Transition>
         </div>
-        <button
+        {!this.props.readOnly && <button
           type="button"
           className={prefixer('add-field')}
           onClick={(e) => { e.preventDefault(); this.props.onAddFieldClick(); }}
         >
         + Lisää kenttä
-        </button>
+        </button>}
       </div>
     );
   }

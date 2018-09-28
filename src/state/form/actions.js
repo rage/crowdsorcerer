@@ -109,6 +109,7 @@ export type ExerciseJSON = {
   testIO: Array<TestIO>,
   model_solution: string,
   template: string,
+  unit_tests: Array<Object>,
 };
 
 export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>) {
@@ -118,6 +119,7 @@ export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>)
   newState.readOnlyModelSolution = state.model_solution;
   newState.readOnlyCodeTemplate = state.template;
   newState.tagSuggestions = tags.map(tag => tag.name);
+  newState.tests = state.unit_tests;
   return {
     newState,
     type: NEW_EXERCISE_RECEIVED,
@@ -146,7 +148,7 @@ export function submitFormAction() {
 }
 
 export function assignmentInfoReceivedAction(
-  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, exerciseType: string,
+  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string,
 ) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
@@ -166,7 +168,7 @@ export function assignmentInfoReceivedAction(
     readOnlyModelSolutionLines,
     testTemplate,
     readOnlyUnitTestsLines,
-    exerciseType,
+    testingType,
     testArray,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
@@ -378,6 +380,7 @@ type ReviewForm = {
    readOnlyCodeTemplate: string,
    inputOutput: Array<IO>,
    tagSuggestions: Array<string>,
+   tests: Array<Object>,
 }
 
 export type NewExerciseReceivedAction = {
@@ -392,7 +395,7 @@ export type AssignmentInfoReceivedAction = {
   testTemplate: ?string,
   readOnlyUnitTestsLines: number[],
   type: string,
-  exerciseType: string,
+  testingType: string,
   testArray: Array<Object>
 };
 
