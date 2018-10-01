@@ -30,6 +30,7 @@ import type {
     ChangeErrorsVisibilityAction,
     AddTagAction,
     RemoveTagAction,
+    ChangeUnitTestsAction,
   ChangeTestNameAction,
 } from 'state/form/actions';
 import type { State } from './index';

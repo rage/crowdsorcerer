@@ -35,6 +35,7 @@ export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
+export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
 export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 export const ADD_MARKERS = 'ADD_MARKERS';
 export const DELETE_MARKERS = 'DELETE_MARKERS';
@@ -281,6 +282,14 @@ export function testTypeChangedAction(newType: string, index: number) {
     newType,
     index,
     type: TEST_TYPE_CHANGED,
+  };
+}
+
+export function unitTestsChangeAction(unitTests: string, change: Change) {
+  return {
+    unitTests,
+    change,
+    type: CHANGE_UNIT_TESTS,
   };
 }
 
