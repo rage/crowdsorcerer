@@ -12,6 +12,8 @@ import {
 import Assignment from 'components/assignment-form/assignment';
 import ModelSolution from 'components/assignment-form/model-solution';
 import TestFields from 'components/assignment-form/test-fields';
+import UnitTests from 'components/assignment-form/unit-tests';
+import IOAndCode from 'components/assignment-form/io-and-code';
 import StatusDisplay from 'components/status-display';
 import ExerciseTags from 'components/tag-input';
 import FormValue from 'domain/form-value';
@@ -27,15 +29,25 @@ class Review extends Component {
     handleSubmit: () => void,
     giveReview: (string, number) => void,
     reviews: FormValue<Array<QuestionReview>>,
+    testingType: string,
   }
 
   render() {
+    let tests;
+    if (this.props.testingType === 'unit_tests') {
+      tests = <UnitTests readOnly />;
+    } else if (this.props.testingType === 'input_output') {
+      tests = <TestFields />;
+    } else { // else if this.props.testingType === 'io_and_code'
+      tests = <IOAndCode readOnly />;
+    }
+
     return (
       <div>
         <ReviewInfo />
         <Assignment readOnly />
         <ModelSolution readOnly />
-        <TestFields readOnly />
+        {tests}
         <div className={prefixer('peer-review-component')}>
           <div className={prefixer('peer-review-content')}>
             <div className={prefixer('peer-review-title')}>Anna palautetta</div>
@@ -73,6 +85,7 @@ function mapStateToProps(state: State) {
     showErrors: state.review.showErrors,
     valid: state.review.valid,
     reviews: state.review.reviews,
+    testingType: state.form.testingType,
   };
 }
 

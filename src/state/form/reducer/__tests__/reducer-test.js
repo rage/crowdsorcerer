@@ -736,9 +736,9 @@ test('resetting to boilerplate overrides old modelSolution', (t) => {
       tags: new FormValue([]),
     },
     },
-    { type: RESET_TO_BOILERPLATE },
+    { boilerplate: 'code', type: RESET_TO_BOILERPLATE },
   );
-  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), boilerplate);
+  t.deepEqual(state.form.modelSolution.editableModelSolution.get(), 'code');
 });
 
 test('readOnlyLines move up when lines removed above them', (t) => {

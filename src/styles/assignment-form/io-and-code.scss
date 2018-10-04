@@ -15,6 +15,15 @@
     }
 }
 
+.reviewable-test-code {
+  margin: 0 0.5rem;
+  margin-top: 0.35rem;
+
+  .CodeMirror {
+    height: 113px;
+  }
+}
+
 .io-and-code {
   margin-bottom: 15px;
   padding-bottom: 5px;

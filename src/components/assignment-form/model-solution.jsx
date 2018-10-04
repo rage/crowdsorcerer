@@ -10,7 +10,7 @@ import {
   modelSolutionChangeAction,
   addHiddenRow,
   deleteHiddenRow,
-  resetToBoilerplateAction,
+  fetchBoilerPlateAction,
   setShowCodeTemplateAction,
 } from 'state/form';
 import Errors from 'components/errors';
@@ -257,7 +257,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(deleteHiddenRow(row));
     },
     onResetModelSolution() {
-      dispatch(resetToBoilerplateAction());
+      if (window.confirm('Haluatko varmasti nollata lähdekoodin? \nMenetät kaikkin lähdekoodi-kenttään tekemäsi muutokset.')) {
+        dispatch(fetchBoilerPlateAction());
+      }
     },
     onSetShowCodeTemplate(show: boolean) {
       dispatch(setShowCodeTemplateAction(show));

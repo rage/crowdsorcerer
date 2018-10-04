@@ -18,6 +18,7 @@ class TestNameAndType extends Component {
     onTestTypeChange: (type: string, index: number) => void,
     io: IO,
     showErrors: boolean,
+    readOnly: boolean,
   }
 
   render() {
@@ -31,9 +32,35 @@ class TestNameAndType extends Component {
       { value: 'equals', label: 'Equals' },
     ];
 
-    const getOption = (type) => {
-      options.find(o => o.value === type);
-    };
+    const getOption = type => (
+      options.find(o => o.value === type)
+    );
+
+    const type = getOption(this.props.io.type);
+
+    let typeField;
+    if (this.props.readOnly) {
+      typeField = (<input
+        aria-label="testin tyyppi"
+        aria-required
+        className={prefixer('test-name')}
+        type="text"
+        value={type ? type.label : ''}
+        readOnly
+      />);
+    } else {
+      typeField = (<Select
+        className={prefixer('test-type')}
+        classNamePrefix={''}
+        options={options}
+        defaultValue={options[0]}
+        value={type}
+        onChange={(newType: any) => {
+          this.props.onTestTypeChange(newType.value, this.props.index);
+        }}
+        isSearchable={false}
+      />);
+    }
 
     return (
       <div className={prefixer('field-container')}>
@@ -50,6 +77,7 @@ class TestNameAndType extends Component {
               placeholder="Testin nimi"
               name={`test name ${this.props.index}`}
               value={testName}
+              readOnly={this.props.readOnly}
               onChange={(event) => {
                 this.props.onTestNameChange(event.currentTarget.value, this.props.index);
               }}
@@ -65,18 +93,7 @@ class TestNameAndType extends Component {
             <div className={prefixer('label')}>
               Tyyppi
             </div>
-
-            <Select
-              className={prefixer('test-type')}
-              classNamePrefix={''}
-              options={options}
-              defaultValue={options[0]}
-              value={getOption(this.props.io.type)}
-              onChange={(newType: any) => {
-                this.props.onTestTypeChange(newType.value, this.props.index);
-              }}
-              isSearchable={false}
-            />
+            {typeField}
           </div>
         </div>
       </div>

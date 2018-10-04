@@ -20,17 +20,17 @@ import {
 import { CHANGE_REVIEW_ERRORS_VISIBILITY } from 'state/review/actions';
 import type {
   AddTestFieldAction,
-  RemoveTestFieldAction,
-  TestInputChangeAction,
-  TestOutputChangeAction,
-  AssignmentChangeAction,
-  ModelSolutionChangeAction,
-  AddHiddenRowAction,
-  DeleteHiddenRowAction,
-  ChangeErrorsVisibilityAction,
-  AddTagAction,
-  RemoveTagAction,
-  ChangeUnitTestsAction,
+    RemoveTestFieldAction,
+    TestInputChangeAction,
+    TestOutputChangeAction,
+    AssignmentChangeAction,
+    ModelSolutionChangeAction,
+    AddHiddenRowAction,
+    DeleteHiddenRowAction,
+    ChangeErrorsVisibilityAction,
+    AddTagAction,
+    RemoveTagAction,
+    ChangeUnitTestsAction,
   ChangeTestNameAction,
 } from 'state/form/actions';
 import type { State } from './index';
@@ -171,11 +171,11 @@ export default function (state: State, action: AnyAction) {
   // separate nested fields with ":"
 
   let tests;
-  if (state.exerciseType === 'unit_tests') {
+  if (state.testingType === 'unit_tests') {
     tests = [{ field: 'unitTests', validator: unitTestsErrors }];
-  } else if (state.exerciseType === 'input_output') {
+  } else if (state.testingType === 'input_output') {
     tests = [{ field: 'inputOutput', validator: checkNotBlank }];
-  } else { // else if state.exerciseType === 'io_and_code'
+  } else { // else if state.testingType === 'io_and_code'
     tests = [
       { field: 'inputOutput', validator: checkNotBlank },
       { field: 'unitTests:testArray', validator: checkNotBlank },

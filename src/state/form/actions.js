@@ -35,8 +35,8 @@ export const ASSIGNMENT_INFO_RECEIVED = 'ASSIGNMENT_INFO_RECEIVED';
 export const SET_BOILERPLATE = 'SET_BOILERPLATE';
 export const SET_SHOW_CODE_TEMPLATE = 'TOGGLE_ SHOW_CODE_TEMPLATE';
 export const FORM_DONE = 'FORM_DONE';
-export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 export const CHANGE_UNIT_TESTS = 'CHANGE_UNIT_TESTS';
+export const TEST_TYPE_CHANGED = 'TEST_TYPE_CHANGED';
 export const ADD_MARKERS = 'ADD_MARKERS';
 export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
@@ -110,15 +110,18 @@ export type ExerciseJSON = {
   testIO: Array<TestIO>,
   model_solution: string,
   template: string,
+  unit_tests: Array<Object>,
 };
 
-export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>) {
+export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>, testingType: string) {
   const newState = {};
   newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output), io.type));
   newState.assignment = state.description;
   newState.readOnlyModelSolution = state.model_solution;
   newState.readOnlyCodeTemplate = state.template;
   newState.tagSuggestions = tags.map(tag => tag.name);
+  newState.tests = state.unit_tests;
+  newState.testingType = testingType;
   return {
     newState,
     type: NEW_EXERCISE_RECEIVED,
@@ -147,7 +150,7 @@ export function submitFormAction() {
 }
 
 export function assignmentInfoReceivedAction(
-  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, exerciseType: string,
+  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string,
 ) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
@@ -155,21 +158,45 @@ export function assignmentInfoReceivedAction(
   if (testTemplate) {
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
-  const testArray = [{
-    name: new FormValue('<placeholderTestName>'),
-    code: testTemplate,
-    input: '<placeholderInput>',
-    output: '<placeholderOutput>',
-  }];
+  let testArray = [];
+  if (testingType === 'io_and_code') {
+    testArray = [{
+      name: new FormValue('<placeholderTestName>'),
+      code: testTemplate,
+      input: '<placeholderInput>',
+      output: '<placeholderOutput>',
+    }];
+  }
   return {
     tagSuggestions,
     boilerplate,
     readOnlyModelSolutionLines,
     testTemplate,
     readOnlyUnitTestsLines,
-    exerciseType,
+    testingType,
     testArray,
     type: ASSIGNMENT_INFO_RECEIVED,
+  };
+}
+
+export function resetCodeToBoilerplateAction(boilerplate: String) {
+  return {
+    boilerplate,
+    type: RESET_TO_BOILERPLATE,
+  };
+}
+
+export function fetchBoilerPlateAction() {
+  return async function fetcher(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
+    api.getAssignmentInformation(getState().assignment.assignmentId)
+    .then(
+      (response) => {
+        dispatch(resetCodeToBoilerplateAction(response.template));
+      },
+      () => {
+        dispatch(connectionTerminatedPrematurelyAction());
+      },
+    );
   };
 }
 
@@ -366,6 +393,8 @@ type ReviewForm = {
    readOnlyCodeTemplate: string,
    inputOutput: Array<IO>,
    tagSuggestions: Array<string>,
+   tests: Array<Object>,
+   testingType: string
 }
 
 export type NewExerciseReceivedAction = {
@@ -380,7 +409,7 @@ export type AssignmentInfoReceivedAction = {
   testTemplate: ?string,
   readOnlyUnitTestsLines: number[],
   type: string,
-  exerciseType: string,
+  testingType: string,
   testArray: Array<Object>
 };
 
@@ -422,5 +451,10 @@ export type ChangeTestNameAction = {
 
 export type ChangePreviewStateAction = {
   state: boolean,
+  type: string,
+}
+
+export type ResetCodeToBoilerplateAction = {
+  boilerplate: string,
   type: string,
 }

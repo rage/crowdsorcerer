@@ -23,13 +23,13 @@ class InputOutput extends Component {
     onRemoveFieldClick: (index: number) => void,
     readOnly: boolean,
     showErrors: boolean,
-    exerciseType: string,
+    testingType: string,
   };
 
   render() {
     let buttonClassName;
 
-    if (this.props.exerciseType === 'input_output') {
+    if (this.props.testingType === 'input_output') {
       buttonClassName = 'close-button';
     } else {
       buttonClassName = 'card-close-button';
@@ -100,7 +100,7 @@ class InputOutput extends Component {
 function mapStateToProps(state: State) {
   return {
     showErrors: state.form.showErrors,
-    exerciseType: state.form.exerciseType,
+    testingType: state.form.testingType,
   };
 }
 

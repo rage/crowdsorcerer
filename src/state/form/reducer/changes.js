@@ -47,11 +47,12 @@ import type {
     ChangeTestInTestArrayAction,
     ChangeTestNameAction,
     ChangePreviewStateAction,
+    ResetCodeToBoilerplateAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
-import { isReadOnlyTag } from 'utils/get-read-only-lines';
+import getReadOnlyLines from 'utils/get-read-only-lines';
+import getCleanPlate from '../../../utils/get-clean-plate';
 import type { State } from './index';
-
 
 const initialState: State = {
   assignment: new FormValue(Raw.deserialize({
@@ -94,7 +95,7 @@ const initialState: State = {
     testArray: [],
   },
   done: false,
-  exerciseType: '',
+  testingType: '',
   previewState: false,
 };
 
@@ -378,12 +379,37 @@ export default createReducer(initialState, {
     };
   },
   [NEW_EXERCISE_RECEIVED](state: State, action: NewExerciseReceivedAction): State {
+    let testArray;
+    if (action.newState.tests) {
+      testArray = action.newState.tests.map((test) => {
+        const name = new FormValue(test.test_name);
+        return {
+          name,
+          type: test.assertion_type,
+          code: test.test_code,
+        };
+      });
+    }
+
+    const inputOutput = action.newState.inputOutput.map((io, index) => {
+      const newIo = new IO(
+        new FormValue(io.input.get()),
+        new FormValue(io.output.get()),
+        action.newState.tests[index].assertion_type);
+      return newIo;
+    });
+
+    let editableUnitTests;
+    if (action.newState.testingType === 'unit_tests') {
+      editableUnitTests = new FormValue(action.newState.tests[0].test_code);
+    }
+
     return {
       ...state,
       valid: false,
       assignment: new FormValue(Raw.deserialize(action.newState.assignment, { terse: true })),
       showErrors: false,
-      inputOutput: action.newState.inputOutput,
+      inputOutput,
       tags: new FormValue([]),
       tagSuggestions: action.newState.tagSuggestions,
       modelSolution: {
@@ -391,28 +417,18 @@ export default createReducer(initialState, {
         readOnlyModelSolution: action.newState.readOnlyModelSolution,
         readOnlyCodeTemplate: action.newState.readOnlyCodeTemplate,
       },
+      unitTests: {
+        ...state.unitTests,
+        editableUnitTests,
+        testArray,
+      },
+      testingType: action.newState.testingType,
     };
   },
   [ASSIGNMENT_INFO_RECEIVED](state: State, action: AssignmentInfoReceivedAction): State {
-    const cleanPlate = [];
-    if (action.boilerplate) {
-      action.boilerplate.split('\n').forEach((row) => {
-        if (!isReadOnlyTag(row)) {
-          cleanPlate.push(row);
-        }
-      });
-    }
-    const plate = cleanPlate.join('\n');
-
     let unitTests = { ...state.unitTests };
-    const cleanTestTemplate = [];
     if (action.testTemplate) {
-      action.testTemplate.split('\n').forEach((row) => {
-        if (!isReadOnlyTag(row)) {
-          cleanTestTemplate.push(row);
-        }
-      });
-      const testTemplate = cleanTestTemplate.join('\n');
+      const testTemplate = getCleanPlate(action.testTemplate);
       unitTests = {
         ...state.unitTests,
         editableUnitTests: new FormValue(testTemplate),
@@ -425,6 +441,8 @@ export default createReducer(initialState, {
       };
     }
 
+    const plate = getCleanPlate(action.boilerplate);
+
     return {
       ...state,
       tagSuggestions: action.tagSuggestions,
@@ -436,17 +454,20 @@ export default createReducer(initialState, {
         boilerplate: { code: plate, readOnlyLines: action.readOnlyModelSolutionLines },
       },
       unitTests,
-      exerciseType: action.exerciseType,
+      testingType: action.testingType,
     };
   },
-  [RESET_TO_BOILERPLATE](state: State): State {
+  [RESET_TO_BOILERPLATE](state: State, action: ResetCodeToBoilerplateAction): State {
+    const plate = getCleanPlate(action.boilerplate);
+    const readOnlyLines = getReadOnlyLines(action.boilerplate);
     return {
       ...state,
       modelSolution: {
         ...state.modelSolution,
-        editableModelSolution: new FormValue(state.modelSolution.boilerplate.code),
-        readOnlyModelSolutionLines: state.modelSolution.boilerplate.readOnlyLines,
-        solutionRows: new FormValue([]),
+        editableModelSolution: new FormValue(plate),
+        readOnlyModelSolutionLines: readOnlyLines,
+        solutionRows: new FormValue([], state.modelSolution.solutionRows.errors),
+        boilerplate: { code: plate, readOnlyLines },
       },
     };
   },

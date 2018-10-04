@@ -135,7 +135,7 @@ export default class Api {
   }
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
-    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get(), type: IO.type }));
+    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
     if (!formState.modelSolution.editableModelSolution) {
       return {};
     }
@@ -144,15 +144,21 @@ export default class Api {
 
     let unitTests;
     if (formState.unitTests.testArray.length > 0) {
-      unitTests = formState.unitTests.testArray.map((t, index) =>
-        t.code
-        .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
-        .replace(/<placeholderInput>/g, t.input)
-        .replace(/<placeholderOutput>/g, t.output)
-        .replace('<placeholderTestName>', `${t.name.get()}()`),
-      ).join('\n');
+      unitTests = formState.unitTests.testArray.map((t, index) => ({
+        test_name: t.name.get(),
+        assertion_type: formState.inputOutput[index].type,
+        test_code: t.code
+          .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
+          .replace(/<placeholderInput>/g, t.input)
+          .replace(/<placeholderOutput>/g, t.output)
+          .replace('<placeholderTestName>', `${t.name.get()}()`),
+      }));
     } else if (formState.unitTests.editableUnitTests) {
-      unitTests = formState.unitTests.editableUnitTests.get();
+      unitTests = [{
+        test_name: '',
+        assertion_type: '',
+        test_code: formState.unitTests.editableUnitTests.get(),
+      }];
     }
 
     return (

@@ -55,7 +55,7 @@ export type State = {
     testArray: Array<Object>,
   },
   done: boolean,
-  exerciseType: string,
+  testingType: string,
   previewState: boolean
 };
 
