@@ -399,6 +399,11 @@ export default createReducer(initialState, {
       return newIo;
     });
 
+    let editableUnitTests;
+    if (action.newState.testingType === 'unit_tests') {
+      editableUnitTests = new FormValue(action.newState.tests[0].test_code);
+    }
+
     return {
       ...state,
       valid: false,
@@ -414,8 +419,10 @@ export default createReducer(initialState, {
       },
       unitTests: {
         ...state.unitTests,
+        editableUnitTests,
         testArray,
       },
+      testingType: action.newState.testingType,
     };
   },
   [ASSIGNMENT_INFO_RECEIVED](state: State, action: AssignmentInfoReceivedAction): State {

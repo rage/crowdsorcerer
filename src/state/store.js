@@ -129,6 +129,7 @@ export default function makeStore(
   exerciseJSON: ExerciseJSON,
   peerReviewQuestions: Array<PeerReviewQuestion>,
   tags: Array<Tag>,
+  testingType: string,
   storeCount: number,
   ) {
   let storageName = 'crowdsorcerer-v2-';
@@ -173,7 +174,7 @@ export default function makeStore(
   );
   store.dispatch(trackLoginStateAction());
   if (review && store.getState().review.reviews === undefined) {
-    store.dispatch(setReviewableExerciseAction(exerciseJSON, peerReviewQuestions, tags));
+    store.dispatch(setReviewableExerciseAction(exerciseJSON, peerReviewQuestions, tags, testingType));
   } else if (store.getState().submission.status !== STATUS_NONE) {
     store.dispatch(openWebSocketConnectionAction());
   } else if (applicationStateNotComplete(store.getState())) {

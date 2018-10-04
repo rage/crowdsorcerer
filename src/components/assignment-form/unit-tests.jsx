@@ -99,11 +99,13 @@ class UnitTests extends Component {
     showErrors: boolean,
     readOnlyLines: number[],
     markers: Array<Object>,
+    readOnly: boolean,
   }
 
   render() {
     const value = this.props.editableUnitTests ? this.props.editableUnitTests.get() : '';
     const errors = this.props.editableUnitTests ? this.props.editableUnitTests.errors : [];
+    const cursor = this.props.readOnly ? 'nocursor' : false;
 
     return (
       <div className={prefixer('form-component')}>
@@ -122,6 +124,7 @@ class UnitTests extends Component {
               tabSize: 4,
               indentUnit: 4,
               dragDrop: false,
+              readOnly: cursor,
             }}
             value={value}
             onChange={(unitTests, change) => {

@@ -53,10 +53,11 @@ export function reviewableAndQuestionsReceivedAction(reviewable: number, reviewQ
 export function setReviewableExerciseAction(
   exerciseJSON: ExerciseJSON,
   peerReviewQuestions: Array<PeerReviewQuestion>,
-  tags: Array<Tag>) {
+  tags: Array<Tag>,
+  testingType: string) {
   return async function setter(dispatch: Dispatch) {
     dispatch(reviewableAndQuestionsReceivedAction(exerciseJSON.id, peerReviewQuestions));
-    dispatch(newExerciseReceivedAction(exerciseJSON, tags),
+    dispatch(newExerciseReceivedAction(exerciseJSON, tags, testingType),
     );
   };
 }

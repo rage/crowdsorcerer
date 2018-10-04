@@ -135,8 +135,7 @@ export default class Api {
   }
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
-    // TODO: typet pois inputoutputista
-    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get(), type: IO.type }));
+    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
     if (!formState.modelSolution.editableModelSolution) {
       return {};
     }
@@ -155,7 +154,11 @@ export default class Api {
           .replace('<placeholderTestName>', `${t.name.get()}()`),
       }));
     } else if (formState.unitTests.editableUnitTests) {
-      unitTests = formState.unitTests.editableUnitTests.get();
+      unitTests = [{
+        test_name: '',
+        assertion_type: '',
+        test_code: formState.unitTests.editableUnitTests.get(),
+      }];
     }
 
     return (

@@ -35,7 +35,7 @@ const initReview = (e, assignmentId, exerciseCount, review) => {
   api.getReviewableExerciseAndQuestions(assignmentId, exerciseCount).then((resp: ReviewJSON) => {
     const exercises = resp.exercises;
     exercises.forEach((exercise, i) => {
-      const store = makeStore(assignmentId, review, exercise, resp.peer_review_questions, resp.tags, i);
+      const store = makeStore(assignmentId, review, exercise, resp.peer_review_questions, resp.tags, resp.testing_type, i);
       render(
         <Provider store={store}>
           <App review />

@@ -113,7 +113,7 @@ export type ExerciseJSON = {
   unit_tests: Array<Object>,
 };
 
-export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>) {
+export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>, testingType: string) {
   const newState = {};
   newState.inputOutput = state.testIO.map(io => new IO(new FormValue(io.input), new FormValue(io.output), io.type));
   newState.assignment = state.description;
@@ -121,6 +121,7 @@ export function newExerciseReceivedAction(state: ExerciseJSON, tags: Array<Tag>)
   newState.readOnlyCodeTemplate = state.template;
   newState.tagSuggestions = tags.map(tag => tag.name);
   newState.tests = state.unit_tests;
+  newState.testingType = testingType;
   return {
     newState,
     type: NEW_EXERCISE_RECEIVED,
@@ -157,12 +158,15 @@ export function assignmentInfoReceivedAction(
   if (testTemplate) {
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
-  const testArray = [{
-    name: new FormValue('<placeholderTestName>'),
-    code: testTemplate,
-    input: '<placeholderInput>',
-    output: '<placeholderOutput>',
-  }];
+  let testArray = [];
+  if (testingType === 'io_and_code') {
+    testArray = [{
+      name: new FormValue('<placeholderTestName>'),
+      code: testTemplate,
+      input: '<placeholderInput>',
+      output: '<placeholderOutput>',
+    }];
+  }
   return {
     tagSuggestions,
     boilerplate,
@@ -390,6 +394,7 @@ type ReviewForm = {
    inputOutput: Array<IO>,
    tagSuggestions: Array<string>,
    tests: Array<Object>,
+   testingType: string
 }
 
 export type NewExerciseReceivedAction = {

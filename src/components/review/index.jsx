@@ -35,7 +35,7 @@ class Review extends Component {
   render() {
     let tests;
     if (this.props.testingType === 'unit_tests') {
-      tests = <UnitTests />; // TODO: handle readonly
+      tests = <UnitTests readOnly />;
     } else if (this.props.testingType === 'input_output') {
       tests = <TestFields />;
     } else { // else if this.props.testingType === 'io_and_code'
