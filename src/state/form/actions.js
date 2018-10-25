@@ -159,7 +159,7 @@ export function assignmentInfoReceivedAction(
     readOnlyUnitTestsLines = getReadOnlyLines(testTemplate);
   }
   let testArray = [];
-  if (testingType === 'io_and_code') {
+  if (testingType === 'io_and_code' || testingType === 'tests_for_set_up_code') {
     testArray = [{
       name: new FormValue('<placeholderTestName>'),
       code: testTemplate,
