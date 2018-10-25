@@ -33,7 +33,7 @@ class AssignmentForm extends Component {
       tests = <UnitTests />;
     } else if (this.props.testingType === 'input_output') {
       tests = <TestFields />;
-    } else { // else if this.props.testingType === 'io_and_code'
+    } else { // else if (this.props.testingType === 'io_and_code' || this.props.testingType === 'tests_for_set_up_code')
       tests = <IOAndCode />;
     }
 

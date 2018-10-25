@@ -170,6 +170,14 @@ export default function (state: State, action: AnyAction) {
   }
   // separate nested fields with ":"
 
+  let modelSolutionValidator = [
+    { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
+    { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
+  ];
+  if (state.testingType === 'tests_for_set_up_code') {
+    modelSolutionValidator = [];
+  }
+
   let tests;
   if (state.testingType === 'unit_tests') {
     tests = [{ field: 'unitTests', validator: unitTestsErrors }];
@@ -184,10 +192,8 @@ export default function (state: State, action: AnyAction) {
 
   const validators = [
     { field: 'assignment', validator: assignmentErrors },
-    { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
-    { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
     { field: 'tags', validator: checkNotBlank },
-  ].concat(tests);
+  ].concat(tests).concat(modelSolutionValidator);
 
   const valid = validator(validators, state);
   return { ...state, ...{ valid } };
