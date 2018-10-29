@@ -4,6 +4,8 @@
 .io-and-code-components {
   position: relative;
   z-index: 0;
+  font-size: 13px !important;
+  line-height: initial !important;
 }
 
 .test-code {
@@ -11,7 +13,7 @@
     margin-top: 0.1rem;
 
     .CodeMirror {
-      height: 113px;
+      height: 113px !important;
     }
 }
 
