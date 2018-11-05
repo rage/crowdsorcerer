@@ -25,7 +25,7 @@ class IOAndCode extends Component {
     let height;
     let testCodeClass;
     if (this.props.readOnly) {
-      height = 216;
+      height = 235;
       testCodeClass = prefixer('reviewable-test-code');
     } else {
       height = 252;
