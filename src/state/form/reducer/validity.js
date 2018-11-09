@@ -39,7 +39,7 @@ import type { State } from './index';
 const MIN_ASSIGNMENT_WORD_AMOUNT = 5;
 const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
-const MIN_UNIT_TEST_AMOUNT = 1;
+const MIN_UNIT_TEST_AMOUNT = 3;
 const MIN_UNIT_TESTS_WORD_AMOUNT = 5;
 const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT} sanaa pitkä.`;
 const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
@@ -174,12 +174,12 @@ export default function (state: State, action: AnyAction) {
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
   ];
-  if (state.testingType === 'tests_for_set_up_code') {
+  if (state.testingType === 'tests_for_set_up_code' || state.testingType === 'whole_test_code_for_set_up_code') {
     modelSolutionValidator = [];
   }
 
   let tests;
-  if (state.testingType === 'unit_tests') {
+  if (state.testingType === 'unit_tests' || state.testingType === 'whole_test_code_for_set_up_code') {
     tests = [{ field: 'unitTests', validator: unitTestsErrors }];
   } else if (state.testingType === 'input_output') {
     tests = [{ field: 'inputOutput', validator: checkNotBlank }];
