@@ -400,7 +400,7 @@ export default createReducer(initialState, {
     });
 
     let editableUnitTests;
-    if (action.newState.testingType === 'unit_tests') {
+    if (action.newState.testingType === 'unit_tests' || action.newState.testingType === 'whole_test_code_for_set_up_code') {
       editableUnitTests = new FormValue(action.newState.tests[0].test_code);
     }
 
