@@ -395,7 +395,7 @@ export default createReducer(initialState, {
       const newIo = new IO(
         new FormValue(io.input.get()),
         new FormValue(io.output.get()),
-        action.newState.tests[index].assertion_type);
+        action.newState.tests.length > 0 ? action.newState.tests[index].assertion_type : 'contains');
       return newIo;
     });
 
