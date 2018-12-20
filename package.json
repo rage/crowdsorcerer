@@ -1,7 +1,10 @@
 {
   "name": "crowdsorcerer",
-  "version": "0.0.0",
-  "main": "index.js",
+  "version": "0.1.1",
+  "main": "dist/app.js",
+  "files": [
+    "dist"
+  ],
   "author": "Henrik Nygren <nygrenh@gmail.com>",
   "license": "MIT OR Apache-2.0",
   "scripts": {
@@ -11,7 +14,8 @@
     "lint": "yarn run eslint -- --ext .js --ext .jsx",
     "test": "yarn run nyc ava",
     "testrprt": "./node_modules/.bin/nyc report --reporter=html; google-chrome coverage/index.html",
-    "coverage": "BABEL_ENV=production babel --out-dir=dist index.jsx"
+    "coverage": "BABEL_ENV=production babel --out-dir=dist index.jsx",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@skidding/react-codemirror": "^1.0.0",
