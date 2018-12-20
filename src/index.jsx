@@ -14,6 +14,13 @@ import './styles';
 import App from './components/app';
 import type PeerReviewQuestion from './review';
 
+/* eslint-disable */
+try {
+  require('babel-polyfill');
+} catch (e) {
+}		
+/* eslint-enable */
+
 type ReviewJSON = {
   exercises: [
     {
@@ -56,31 +63,41 @@ const initReview = (e, assignmentId, exerciseCount, review) => {
     );
   });
 };
-window.initCrowdsorcerer = function initCrowdsorcerer() {
-  document.querySelectorAll('.crowdsorcerer-widget').forEach((e) => {
-    const assignmentId = e.dataset.assignment;
-    const exerciseCount = e.dataset.exercises;
-    const review = e.getAttribute('peer-review') !== null;
-    if (review) {
-      let lastUser = storejs.get('tmc.user');
-      setInterval(() => {
-        const tmcUser = storejs.get('tmc.user');
-        const username = tmcUser ? tmcUser.username : '';
-        const lastUsername = lastUser ? lastUser.username : '';
-        if (username !== lastUsername && username === '') {
-          initReview(e, assignmentId, exerciseCount, review);
-        }
-        lastUser = tmcUser;
-      }, 500);
-      initReview(e, assignmentId, exerciseCount, review);
-    } else {
-      const store = makeStore(assignmentId, review);
-      render(
-        <Provider store={store}>
-          <App />
-        </Provider>,
-        e,
-      );
-    }
-  });
+
+const CrowdSorcerer = ({ assignmentId, review }) => {
+  const store = makeStore(assignmentId, review);
+
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
 };
+
+if (typeof window !== 'undefined') {
+  window.initCrowdsorcerer = function initCrowdsorcerer() {
+    document.querySelectorAll('.crowdsorcerer-widget').forEach((e) => {
+      const assignmentId = e.dataset.assignmentid;
+      const exerciseCount = e.dataset.exercises;
+      const review = e.getAttribute('peerreview') !== null;
+
+      if (review) {
+        let lastUser = storejs.get('tmc.user');
+        setInterval(() => {
+          const tmcUser = storejs.get('tmc.user');
+          const username = tmcUser ? tmcUser.username : '';
+          const lastUsername = lastUser ? lastUser.username : '';
+          if (username !== lastUsername && username === '') {
+            initReview(e, assignmentId, exerciseCount, review);
+          }
+          lastUser = tmcUser;
+        }, 500);
+        initReview(e, assignmentId, exerciseCount, review);
+      } else {
+        render(<CrowdSorcerer assignmentId={assignmentId} review={review} />, e);
+      }
+    });
+  };
+}
+
+export default CrowdSorcerer;
