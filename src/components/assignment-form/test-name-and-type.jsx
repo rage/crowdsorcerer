@@ -1,13 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 // FlowIgnore
-import Select from 'react-select';
+import Select from '@material-ui/core/Select';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
 import { changeTestNameAction, testTypeChangedAction } from 'state/form';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import Errors from 'components/errors';
+import MenuItem from '@material-ui/core/MenuItem/MenuItem';
+import OutlinedInput from '@material-ui/core/OutlinedInput/OutlinedInput';
 
 class TestNameAndType extends Component {
 
@@ -49,17 +51,27 @@ class TestNameAndType extends Component {
         readOnly
       />);
     } else {
+      // typeField = (<Select
+      //   className={prefixer('test-type')}
+      //   classNamePrefix={''}
+      //   options={options}
+      //   defaultValue={options[0]}
+      //   value={type}
+      //   onChange={(newType: any) => {
+      //     this.props.onTestTypeChange(newType.value, this.props.index);
+      //   }}
+      //   isSearchable={false}
+      // />);
       typeField = (<Select
-        className={prefixer('test-type')}
-        classNamePrefix={''}
-        options={options}
-        defaultValue={options[0]}
-        value={type}
-        onChange={(newType: any) => {
-          this.props.onTestTypeChange(newType.value, this.props.index);
+        value={this.props.io.type}
+        onChange={(event: any) => {
+          this.props.onTestTypeChange(event.target.value, this.props.index);
         }}
-        isSearchable={false}
-      />);
+      >
+        <MenuItem value={'contains'}>Contains</MenuItem>
+        <MenuItem value={'notContains'}>Does not contain</MenuItem>
+        <MenuItem value={'equals'}>Equals</MenuItem>
+      </Select>);
     }
 
     return (
