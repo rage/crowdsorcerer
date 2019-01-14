@@ -59,7 +59,11 @@ class AssignmentForm extends Component {
             // }}
             onClick={(e) => {
               e.preventDefault();
-              this.props.handlePreview();
+              if (this.props.testingType.includes('set_up_code')) {
+                this.props.handleSubmit();
+              } else {
+                this.props.handlePreview();
+              }
             }}
           >
             Lähetä
