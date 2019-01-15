@@ -24,7 +24,8 @@ class TestNameAndType extends Component {
   }
 
   render() {
-    const testName = this.props.tests[this.props.index].name.get() === '<placeholderTestName>'
+    const testName = !this.props.tests[this.props.index]
+    || this.props.tests[this.props.index].name.get() === '<placeholderTestName>'
     ? ''
     : this.props.tests[this.props.index].name.get();
 
@@ -95,7 +96,7 @@ class TestNameAndType extends Component {
               }}
             />
             <Errors
-              errors={this.props.tests[this.props.index].name.errors}
+              errors={this.props.tests[this.props.index] !== undefined ? this.props.tests[this.props.index].name.errors : []}
               keyBase={`${this.props.io.hash()} name`}
               show={this.props.showErrors}
             />
