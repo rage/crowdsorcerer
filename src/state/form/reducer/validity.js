@@ -47,6 +47,7 @@ const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN
 const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
   MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
 const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
+const TAGS_CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä. Muistithan painaa enteriä?';
 const EMPTY_TEMPLATE_ERROR = 'Muista merkitä, mitkä rivit tehtävästä kuuluvat vain mallivastaukseen, sillä ' +
   'muuten tehtävän koko ratkaisu näkyy tehtäväpohjassa. Lisää tietoa ohjeistuksessa.';
 const UNIT_TEST_AMOUNT_ERROR = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`;
@@ -163,6 +164,14 @@ export function checkNotBlank(formValue: FormValue<*>): Array<string> {
   return errors;
 }
 
+export function checkTagsNotBlank(formValue: FormValue<*>): Array<string> {
+  const errors = [];
+  if (formValue.get().length === 0) {
+    errors.push(TAGS_CANNOT_BE_BLANK_ERROR);
+  }
+  return errors;
+}
+
 export default function (state: State, action: AnyAction) {
   // form is validated when review send button pressed
   if (!isFormAction(action) && action.type !== CHANGE_REVIEW_ERRORS_VISIBILITY) {
@@ -192,7 +201,7 @@ export default function (state: State, action: AnyAction) {
 
   const validators = [
     { field: 'assignment', validator: assignmentErrors },
-    { field: 'tags', validator: checkNotBlank },
+    { field: 'tags', validator: checkTagsNotBlank },
   ].concat(tests).concat(modelSolutionValidator);
 
   const valid = validator(validators, state);
