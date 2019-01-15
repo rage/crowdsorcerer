@@ -30,6 +30,7 @@ class Review extends Component {
     giveReview: (string, number) => void,
     reviews: FormValue<Array<QuestionReview>>,
     testingType: string,
+    tagErrors: Array<string>,
   }
 
   render() {
@@ -66,7 +67,7 @@ class Review extends Component {
           <button
             type="submit"
             className={prefixer('sender')}
-            disabled={this.props.showErrors && !this.props.valid}
+            disabled={this.props.showErrors && (!this.props.valid || this.props.tagErrors.length > 0)}
             onClick={(e) => {
               e.preventDefault();
               this.props.handleSubmit();
@@ -86,6 +87,7 @@ function mapStateToProps(state: State) {
     valid: state.review.valid,
     reviews: state.review.reviews,
     testingType: state.form.testingType,
+    tagErrors: state.form.tags.errors,
   };
 }
 
