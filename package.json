@@ -1,6 +1,6 @@
 {
   "name": "crowdsorcerer",
-  "version": "0.1.20",
+  "version": "0.1.76",
   "main": "dist/app.js",
   "files": [
     "dist"
