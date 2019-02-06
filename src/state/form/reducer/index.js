@@ -56,7 +56,8 @@ export type State = {
   },
   done: boolean,
   testingType: string,
-  previewState: boolean
+  previewState: boolean,
+  mandatoryTags: boolean,
 };
 
 export default reduceReducers(changes, validity);

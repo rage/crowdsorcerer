@@ -164,9 +164,9 @@ export function checkNotBlank(formValue: FormValue<*>): Array<string> {
   return errors;
 }
 
-export function checkTagsNotBlank(formValue: FormValue<*>): Array<string> {
+export function checkTagsNotBlank(formValue: FormValue<*>, state: State): Array<string> {
   const errors = [];
-  if (formValue.get().length === 0) {
+  if (formValue.get().length === 0 && state.mandatoryTags) {
     errors.push(TAGS_CANNOT_BE_BLANK_ERROR);
   }
   return errors;

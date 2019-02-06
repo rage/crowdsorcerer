@@ -4,6 +4,8 @@
 .*/node_modules/babel-plugin-emotion
 .*/node_modules/emotion
 .*/node_modules/@emotion
+.*/node_modules/jss
+.*/node_modules/recompose
 [include]
 
 [libs]

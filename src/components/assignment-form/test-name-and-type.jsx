@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-// FlowIgnore
 import Select from '@material-ui/core/Select';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
@@ -9,7 +8,6 @@ import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import Errors from 'components/errors';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
-import OutlinedInput from '@material-ui/core/OutlinedInput/OutlinedInput';
 
 class TestNameAndType extends Component {
 

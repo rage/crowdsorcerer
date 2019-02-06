@@ -150,7 +150,7 @@ export function submitFormAction() {
 }
 
 export function assignmentInfoReceivedAction(
-  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string,
+  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string, mandatoryTags: boolean,
 ) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
@@ -175,6 +175,7 @@ export function assignmentInfoReceivedAction(
     readOnlyUnitTestsLines,
     testingType,
     testArray,
+    mandatoryTags,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -213,7 +214,7 @@ export function getAssignmentInfoAction() {
       (response) => {
         dispatch(assignmentInfoReceivedAction(
           response.tags, response.template, response.test_template,
-          response.exercise_type,
+          response.exercise_type, response.mandatory_tags,
         ));
       },
       (error) => {
@@ -410,7 +411,8 @@ export type AssignmentInfoReceivedAction = {
   readOnlyUnitTestsLines: number[],
   type: string,
   testingType: string,
-  testArray: Array<Object>
+  testArray: Array<Object>,
+  mandatoryTags: boolean,
 };
 
 export type SetShowCodeTemplateAction = {

@@ -97,6 +97,7 @@ const initialState: State = {
   done: false,
   testingType: '',
   previewState: false,
+  mandatoryTags: true,
 };
 
 // left here for future purposes
@@ -455,6 +456,7 @@ export default createReducer(initialState, {
       },
       unitTests,
       testingType: action.testingType,
+      mandatoryTags: action.mandatoryTags,
     };
   },
   [RESET_TO_BOILERPLATE](state: State, action: ResetCodeToBoilerplateAction): State {
