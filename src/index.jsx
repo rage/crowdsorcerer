@@ -64,15 +64,72 @@ const initReview = (e, assignmentId, exerciseCount, review) => {
   });
 };
 
-const CrowdSorcerer = ({ assignmentId, review }) => {
-  const store = makeStore(assignmentId, review);
+class CrowdSorcerer extends React.Component {
+  state = {
+    prData: undefined,
+    error: undefined,
+  }
 
-  return (
-    <Provider store={store}>
-      <App />
-    </Provider>
-  );
-};
+  async componentDidMount() {
+    if (!this.props.review) {
+      return;
+    }
+    await this.fetchPrData();
+  }
+
+  async fetchPrData() {
+    const api = new Api();
+    try {
+      const resp = await api.getReviewableExerciseAndQuestions(this.props.assignmentId, this.props.exercises);
+      this.setState({
+        prData: resp,
+      });
+    } catch (err) {
+      let errors = err.message ? err.message : 'Tapahtui sisäinen virhe';
+      if (err.errors) {
+        errors = err.errors.map(error => error.message).join('\n');
+      }
+      this.setState({
+        error: errors,
+      });
+    }
+  }
+
+  render() {
+    const { assignmentId, review } = this.props;
+    if (!review) {
+      const store = makeStore(assignmentId, review);
+      return (
+        <Provider store={store}>
+          <App />
+        </Provider>
+      );
+    }
+    if (this.state.error) {
+      return (
+        <div className={`${prefixer('container')} ${prefixer('center')}`}>
+          <FatalErrorDisplay message={this.state.error} />
+        </div>
+      );
+    }
+    if (!this.state.prData) {
+      return <div>Loading...</div>;
+    }
+    const exercises = this.state.prData.exercises;
+    return (<div>
+      {exercises.map((exercise, i) => {
+        const prStore = makeStore(assignmentId, review, exercise, this.state.prData.peer_review_questions,
+          this.state.prData.tags, this.state.prData.testing_type, i);
+        return (
+          <Provider store={prStore}>
+            <App review />
+          </Provider>
+        );
+      })}
+    </div>);
+  }
+}
+
 
 if (typeof window !== 'undefined') {
   window.initCrowdsorcerer = function initCrowdsorcerer() {
