@@ -174,7 +174,7 @@ export default function (state: State, action: AnyAction) {
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
   ];
-  if (state.testingType === 'tests_for_set_up_code' || state.testingType === 'whole_test_code_for_set_up_code') {
+  if (state.testingType === 'tests_for_set_up_code' || state.testingType === 'whole_test_code_for_set_up_code' || state.testingType === 'input_output_tests_for_set_up_code') {
     modelSolutionValidator = [];
   }
 

@@ -162,6 +162,7 @@ class ModelSolution extends Component {
     onResetModelSolution: () => void,
     onSetShowCodeTemplate: () => void,
     markers: Array<Object>,
+    setUpCode: Boolean,
   };
 
   render() {
@@ -172,11 +173,11 @@ class ModelSolution extends Component {
     const modelSolutionErrors = this.props.editableModelSolution ? this.props.editableModelSolution.errors : [];
     const errors =
       [...modelSolutionErrors, ...this.props.solutionRows.errors];
-    const gutters = this.props.readOnly
+    const gutters = this.props.readOnly || this.props.setUpCode
       ? ['CodeMirror-linenumbers']
       : ['CodeMirror-linenumbers', 'modelsolution-lines'];
 
-    const cursor = this.props.readOnly ? 'nocursor' : false;
+    const cursor = this.props.readOnly || this.props.setUpCode ? 'nocursor' : false;
 
     return (
       <div className={prefixer('form-component')}>

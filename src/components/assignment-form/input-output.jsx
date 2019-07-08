@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
+import Button from '@material-ui/core/Button';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import {
@@ -29,7 +30,7 @@ class InputOutput extends Component {
   render() {
     let buttonClassName;
 
-    if (this.props.testingType === 'input_output') {
+    if (this.props.testingType === 'input_output' || this.props.testingType === 'input_output_tests_for_set_up_code') {
       buttonClassName = 'close-button';
     } else {
       buttonClassName = 'card-close-button';
@@ -55,6 +56,9 @@ class InputOutput extends Component {
                 this.props.onTestInputChange(event.currentTarget.value, this.props.index);
               }}
             />
+
+            <Button className={'add-line-button'}>+ Lisää rivi</Button>
+
             <Errors
               errors={this.props.io.input.errors}
               keyBase={`${this.props.io.hash()} input`}

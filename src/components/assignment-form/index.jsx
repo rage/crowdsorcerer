@@ -31,10 +31,16 @@ class AssignmentForm extends Component {
     let tests;
     if (this.props.testingType === 'unit_tests' || this.props.testingType === 'whole_test_code_for_set_up_code') {
       tests = <UnitTests />;
-    } else if (this.props.testingType === 'input_output') {
+    } else if (this.props.testingType === 'input_output' || this.props.testingType === 'input_output_tests_for_set_up_code') {
       tests = <TestFields />;
     } else { // else if (this.props.testingType === 'io_and_code' || this.props.testingType === 'tests_for_set_up_code')
       tests = <IOAndCode />;
+    }
+
+    let setUpCode;
+    if (['input_output_tests_for_set_up_code', 'tests_for_set_up_code', 'whole_test_code_for_set_up_code']
+    .includes(this.props.testingType)) {
+      setUpCode = true;
     }
 
     let preview = '';
@@ -45,7 +51,7 @@ class AssignmentForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit} >
         <Assignment />
-        <ModelSolution />
+        <ModelSolution setUpCode />
         {tests}
         <ExerciseTags showErrors={this.props.showErrors} />
         <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>
