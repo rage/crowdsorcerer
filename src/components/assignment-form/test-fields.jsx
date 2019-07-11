@@ -24,30 +24,14 @@ class TestFields extends Component {
           Testit
         </div>
         <div className={prefixer('io-component')}>
-          <Transition
-            appear={{
-              opacity: 0,
-              height: 0,
-              translateY: 80,
-              translateX: 0,
-            }}
-            enter={{
-              overflow: 'hidden',
-              height: 64,
-              opacity: 1,
-              translateX: 0,
-              translateY: spring(0, { stiffness: 120, damping: 15 }),
-            }}
-            leave={{ opacity: 0, height: 0 }}
-          >
-            {this.props.inputOutput.map((io: IO, index: number) =>
+          {this.props.inputOutput.map((io: IO, index: number) =>
               (
                 <div key={io.hash()}>
                   {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
                 </div>
               ),
             )}
-          </Transition>
+          {/* </Transition> */}
         </div>
         {!this.props.readOnly && <button
           type="button"

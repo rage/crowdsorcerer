@@ -5,20 +5,26 @@ let counter = 0;
 
 export default class IO {
 
-  input: FormValue<string>;
+  // input: FormValue<string>;
+  input: FormValue<Array>;
   output: FormValue<string>;
   hashCode: ?string;
   type: string;
+  inputLineCount: number;
 
   constructor(
-    input: FormValue<string> = new FormValue(''),
+    // TODO: DO THIS CHANGE
+    // input: FormValue<string> = new FormValue(''),
+    input: FormValue<Array> = new FormValue(['']),
     output: FormValue<string> = new FormValue(''),
     type: string = 'contains',
-    hashCode: ?string) {
+    hashCode: ?string,
+    inputLineCount: number = 1) {
     this.input = input;
     this.output = output;
     this.hashCode = hashCode;
     this.type = type;
+    this.inputLineCount = inputLineCount;
   }
 
   hash(): string {
@@ -30,7 +36,7 @@ export default class IO {
     return this.hashCode;
   }
 
-  _changeInput(input: string) {
+  _changeInput(input: Array) {
     const newIO = new IO(new FormValue(input), this.output, this.type, this.hashCode);
     return newIO;
   }

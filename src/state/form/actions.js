@@ -42,6 +42,7 @@ export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
 export const CHANGE_TEST_NAME = 'CHANGE_TEST_NAME';
 export const CHANGE_PREVIEW_STATE = 'CHANGE_PREVIEW_STATE';
+export const CHANGE_TEST_INPUT_LINE_COUNT = 'CHANGE_TEST_INPUT_LINE_COUNT';
 
 export function addTestFieldAction() {
   return {
@@ -332,6 +333,14 @@ export function changePreviewStateAction(state: boolean) {
   };
 }
 
+export function changeTestInputLineCountAction(addOrRemove: string, index: number) {
+  return {
+    addOrRemove,
+    index,
+    type: CHANGE_TEST_INPUT_LINE_COUNT,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -456,5 +465,11 @@ export type ChangePreviewStateAction = {
 
 export type ResetCodeToBoilerplateAction = {
   boilerplate: string,
+  type: string,
+}
+
+export type ChangeTestInputLineCountAction = {
+  addOrRemove: string, // 'add' or 'remove'
+  index: Number,
   type: string,
 }

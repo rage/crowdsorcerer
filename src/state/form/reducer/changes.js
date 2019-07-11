@@ -26,6 +26,7 @@ import {
   CHANGE_TEST_IN_TEST_ARRAY,
   CHANGE_TEST_NAME,
   CHANGE_PREVIEW_STATE,
+  CHANGE_TEST_INPUT_LINE_COUNT,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -48,6 +49,7 @@ import type {
     ChangeTestNameAction,
     ChangePreviewStateAction,
     ResetCodeToBoilerplateAction,
+    ChangeTestInputLineCountAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import getReadOnlyLines from 'utils/get-read-only-lines';
@@ -603,6 +605,21 @@ export default createReducer(initialState, {
     return {
       ...state,
       previewState: action.state,
+    };
+  },
+
+
+  [CHANGE_TEST_INPUT_LINE_COUNT](state: State, action: ChangeTestInputLineCountAction): State {
+    const newInputOutput = state.inputOutput
+    .map((io, i) => {
+      if (i === action.index) {
+        return new IO(new FormValue(io.input.get), new FormValue(io.output.get()), io.type, io.hash(), action.addOrRemove === 'add' ? io.inputLineCount + 1 : io.inputLineCount - 1);
+      }
+      return io;
+    });
+    return {
+      ...state,
+      inputOutput: newInputOutput,
     };
   },
 });
