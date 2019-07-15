@@ -59,13 +59,13 @@ class AssignmentForm extends Component {
             type="button"
             disabled={this.props.showErrors && !this.props.valid}
             className={prefixer('sender')}
-            // onClick={(e) => {
-            //   e.preventDefault();
-            //   this.props.handleSubmit();
-            // }}
             onClick={(e) => {
               e.preventDefault();
-              this.props.handlePreview();
+              if (setUpCode) {
+                this.props.handleSubmit();
+              } else {
+                this.props.handlePreview();
+              }
             }}
           >
             Lähetä

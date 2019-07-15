@@ -13,7 +13,7 @@ import {
   removeTestFieldAction,
   testTypeChangedAction,
   changeTestInTestArrayAction,
-  changeTestInputLineCountAction,
+  addTestInputLineAction,
 } from 'state/form';
 import Errors from 'components/errors';
 
@@ -40,22 +40,22 @@ class InputOutput extends Component {
       buttonClassName = 'card-close-button';
     }
 
-
-    console.log(this.props.io.input);
-
     let extraLines = '';
-    if (this.props.io.inputLineCount > 1) {
-      // this.props.io.input.get.lines().map(line =>
-      extraLines = ['2', '3', '4'].map((line, index) =>
-        (<TextField
+    if (this.props.io.input.get().length > 1) {
+      extraLines = this.props.io.input.get().map((line, index) => {
+        if (index === 0) {
+          return '';
+        }
+        return (<TextField
+          key={`${index + line}`}
           className={prefixer('input-field')}
           defaultValue={line}
-      // onChange={(event) => {
-      //   this.props.onTestInputChange(event.currentTarget.value, this.props.index);
-      // }}
+          onChange={(event) => {
+            this.props.onTestInputChange(event.currentTarget.value, this.props.index, index);
+          }}
           variant="outlined"
-        />),
-      );
+        />);
+      });
     }
 
     return (
@@ -64,9 +64,9 @@ class InputOutput extends Component {
           <div className={prefixer('input-field-wrapper')}>
             <TextField
               className={prefixer('input-field')}
-              defaultValue={this.props.io.input.get()}
+              defaultValue={this.props.io.input.get()[0]}
               onChange={(event) => {
-                this.props.onTestInputChange(event.currentTarget.value, this.props.index);
+                this.props.onTestInputChange(event.currentTarget.value, this.props.index, 0);
               }}
               variant="outlined"
               label="Syöte"
@@ -134,8 +134,8 @@ function mapStateToProps(state: State) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    onTestInputChange(input: string, index: number) {
-      dispatch(testInputChangeAction(input, index));
+    onTestInputChange(input: string, index: number, lineNumber: number) {
+      dispatch(testInputChangeAction(input, index, lineNumber));
       dispatch(changeTestInTestArrayAction(index));
     },
     onTestOutputChange(output: string, index: number) {
@@ -149,7 +149,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(testTypeChangedAction(oldType, index));
     },
     onAddLineButtonClick(index) {
-      dispatch(changeTestInputLineCountAction('add', index));
+      dispatch(addTestInputLineAction(index));
     },
   };
 }

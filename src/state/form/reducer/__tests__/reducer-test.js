@@ -152,9 +152,9 @@ test('Add new test input to the first test input/output array', (t) => {
       },
     },
     },
-    { testInput: 'Test', index: 0, type: CHANGE_TEST_INPUT },
+    { testInput: 'Test', index: 0, line: 0, type: CHANGE_TEST_INPUT },
   );
-  t.deepEqual(state.form.inputOutput[0].input.get(), 'Test');
+  t.deepEqual(state.form.inputOutput[0].input.get(), ['Test']);
   t.deepEqual(state.form.inputOutput[0].output.get(), '');
 });
 
@@ -163,7 +163,7 @@ test('Add new test output to the first test input/output array', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      inputOutput: [new IO(new FormValue('Test'), new FormValue('')), new IO()],
+      inputOutput: [new IO(new FormValue(['Test']), new FormValue('')), new IO()],
       modelSolution: {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
@@ -182,11 +182,11 @@ test('Add new test output to the first test input/output array', (t) => {
       },
     },
     },
-    { testOutput: 'Hello', index: 0, type: CHANGE_TEST_OUTPUT },
+    { testOutput: 'Hello', index: 0, line: 0, type: CHANGE_TEST_OUTPUT },
   );
 
   t.deepEqual(state.form.modelSolution.editableModelSolution.get(), '');
-  t.deepEqual(state.form.inputOutput[0].input.get(), 'Test');
+  t.deepEqual(state.form.inputOutput[0].input.get(), ['Test']);
   t.deepEqual(state.form.inputOutput[0].output.get(), 'Hello');
 });
 
@@ -558,7 +558,7 @@ test('form not valid without assignment', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
+      inputOutput: [new IO(new FormValue(['asdf']), new FormValue('asdf'))],
       modelSolution: {
         editableModelSolution: new FormValue('asdf \n asf asdf'),
         solutionRows: new FormValue([]),
@@ -589,7 +589,7 @@ test('form not valid without assignment', (t) => {
     { form:
     {
       assignment: new FormValue(initialAssignment),
-      inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
+      inputOutput: [new IO(new FormValue(['asdf']), new FormValue('asdf'))],
       modelSolution: {
         editableModelSolution: new FormValue('asdf'),
         solutionRows: new FormValue([]),
@@ -620,7 +620,7 @@ test('form not valid without model solution', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue('asdf'), new FormValue('asdf'))],
+      inputOutput: [new IO(new FormValue(['asdf']), new FormValue('asdf'))],
       modelSolution: {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
@@ -651,7 +651,7 @@ test('form not valid without tests', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
@@ -682,7 +682,7 @@ test('form not valid without tags', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(''),
         solutionRows: new FormValue([]),
@@ -714,7 +714,7 @@ test('resetting to boilerplate overrides old modelSolution', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(oneLineSolution),
         solutionRows: new FormValue([]),
@@ -746,7 +746,7 @@ test('readOnlyLines move up when lines removed above them', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(threeLineSolution),
         solutionRows: new FormValue([]),
@@ -778,7 +778,7 @@ test('readOnlyLines move down when lines added above them', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(twoLineSolution),
         solutionRows: new FormValue([]),
@@ -810,7 +810,7 @@ test('solutionRows move up when lines removed above them', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(threeLineSolution),
         solutionRows: new FormValue([2]),
@@ -842,7 +842,7 @@ test('solutionRows move down when lines added above them', (t) => {
     { form:
     {
       assignment: new FormValue(assignmentWithContent),
-      inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+      inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
       modelSolution: {
         editableModelSolution: new FormValue(twoLineSolution),
         solutionRows: new FormValue([1]),

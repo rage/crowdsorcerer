@@ -4,6 +4,17 @@
 .*/node_modules/babel-plugin-emotion
 .*/node_modules/emotion
 .*/node_modules/@emotion
+.*/node_modules/jss-plugin-rule-value-function
+.*/node_modules/jss-plugin-nested
+.*/node_modules/jss
+.*/node_modules/autoprefixer
+.*/node_modules/boxen
+.*/node_modules/icss-utils
+.*/node_modules/postcss-loader
+.*/node_modules/postcss-modules-extract-imports
+.*/node_modules/postcss-modules-local-by-default
+.*/node_modules/postcss-modules-values
+.*/node_modules/postcss-modules-scope
 [include]
 
 [libs]

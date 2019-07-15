@@ -26,7 +26,7 @@ import {
   CHANGE_TEST_IN_TEST_ARRAY,
   CHANGE_TEST_NAME,
   CHANGE_PREVIEW_STATE,
-  CHANGE_TEST_INPUT_LINE_COUNT,
+  ADD_TEST_INPUT_LINE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -49,7 +49,7 @@ import type {
     ChangeTestNameAction,
     ChangePreviewStateAction,
     ResetCodeToBoilerplateAction,
-    ChangeTestInputLineCountAction,
+    AddTestInputLineAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import getReadOnlyLines from 'utils/get-read-only-lines';
@@ -75,7 +75,7 @@ const initialState: State = {
   showErrors: false,
   tagSuggestions: [],
   tags: new FormValue([]),
-  inputOutput: [new IO(new FormValue(''), new FormValue(''))],
+  inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
   modelSolution: {
     solutionRows: new FormValue([]),
     editableModelSolution: undefined,
@@ -260,10 +260,18 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
       .map((io, i) => {
         if (i === action.index) {
-          return new IO(new FormValue(action.testInput), new FormValue(io.output.get()), io.type, io.hash());
+          const newInput = io.input.get().map((line, index) => {
+            if (index === action.line) {
+              return action.testInput;
+            }
+            return line;
+          });
+
+          return new IO(new FormValue(newInput), new FormValue(io.output.get()), io.type, io.hash());
         }
         return io;
       });
+
     return {
       ...state,
       inputOutput: newInputOutput,
@@ -608,15 +616,17 @@ export default createReducer(initialState, {
     };
   },
 
-
-  [CHANGE_TEST_INPUT_LINE_COUNT](state: State, action: ChangeTestInputLineCountAction): State {
+  [ADD_TEST_INPUT_LINE](state: State, action: AddTestInputLineAction): State {
     const newInputOutput = state.inputOutput
     .map((io, i) => {
       if (i === action.index) {
-        return new IO(new FormValue(io.input.get), new FormValue(io.output.get()), io.type, io.hash(), action.addOrRemove === 'add' ? io.inputLineCount + 1 : io.inputLineCount - 1);
+        io.input.get().push('');
+
+        return new IO(new FormValue(io.input.get()), new FormValue(io.output.get()), io.type, io.hash());
       }
       return io;
     });
+
     return {
       ...state,
       inputOutput: newInputOutput,

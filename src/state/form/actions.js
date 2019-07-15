@@ -42,7 +42,8 @@ export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
 export const CHANGE_TEST_NAME = 'CHANGE_TEST_NAME';
 export const CHANGE_PREVIEW_STATE = 'CHANGE_PREVIEW_STATE';
-export const CHANGE_TEST_INPUT_LINE_COUNT = 'CHANGE_TEST_INPUT_LINE_COUNT';
+// export const CHANGE_TEST_INPUT_LINE_COUNT = 'CHANGE_TEST_INPUT_LINE_COUNT';
+export const ADD_TEST_INPUT_LINE = 'ADD_TEST_INPUT_LINE';
 
 export function addTestFieldAction() {
   return {
@@ -73,10 +74,11 @@ export function modelSolutionChangeAction(modelSolution: string, change: Change)
   };
 }
 
-export function testInputChangeAction(testInput: string, index: number) {
+export function testInputChangeAction(testInput: string, index: number, line: number) {
   return {
     testInput,
     index,
+    line,
     type: CHANGE_TEST_INPUT,
   };
 }
@@ -100,7 +102,7 @@ export type Tag = {
 };
 
 export type TestIO = {
-  input: string,
+  input: Array<string>,
   output: string,
   type: string,
 };
@@ -333,11 +335,10 @@ export function changePreviewStateAction(state: boolean) {
   };
 }
 
-export function changeTestInputLineCountAction(addOrRemove: string, index: number) {
+export function addTestInputLineAction(index: number) {
   return {
-    addOrRemove,
     index,
-    type: CHANGE_TEST_INPUT_LINE_COUNT,
+    type: ADD_TEST_INPUT_LINE,
   };
 }
 
@@ -364,6 +365,7 @@ export type ModelSolutionChangeAction = {
 
 export type TestInputChangeAction = {
   testInput: string,
+  line: number,
   type: string
 };
 
@@ -468,8 +470,7 @@ export type ResetCodeToBoilerplateAction = {
   type: string,
 }
 
-export type ChangeTestInputLineCountAction = {
-  addOrRemove: string, // 'add' or 'remove'
+export type AddTestInputLineAction = {
   index: Number,
-  type: string,
+  type: String
 }

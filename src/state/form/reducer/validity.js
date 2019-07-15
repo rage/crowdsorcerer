@@ -157,9 +157,18 @@ function unitTestsErrors(unitTests: FormValue<*>, state: State): Array<string> {
 
 export function checkNotBlank(formValue: FormValue<*>): Array<string> {
   const errors = [];
-  if (formValue.get().length === 0 || formValue.get() === '<placeholderTestName>') {
+
+  if (typeof formValue.get() === 'string' || formValue.get() instanceof String) {
+    if (formValue.get().length === 0 || formValue.get() === '<placeholderTestName>') {
+      errors.push(CANNOT_BE_BLANK_ERROR);
+    }
+  } else if (formValue.get().length === 0) {
+    errors.push(CANNOT_BE_BLANK_ERROR);
+  } else if (formValue.get()[0].length === 0) {
     errors.push(CANNOT_BE_BLANK_ERROR);
   }
+
+
   return errors;
 }
 
@@ -174,7 +183,9 @@ export default function (state: State, action: AnyAction) {
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
   ];
-  if (state.testingType === 'tests_for_set_up_code' || state.testingType === 'whole_test_code_for_set_up_code' || state.testingType === 'input_output_tests_for_set_up_code') {
+  if (state.testingType === 'tests_for_set_up_code'
+  || state.testingType === 'whole_test_code_for_set_up_code'
+  || state.testingType === 'input_output_tests_for_set_up_code') {
     modelSolutionValidator = [];
   }
 

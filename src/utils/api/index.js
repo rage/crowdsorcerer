@@ -135,7 +135,7 @@ export default class Api {
   }
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
-    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get(), output: IO.output.get() }));
+    const IOArray = formState.inputOutput.map(IO => ({ input: IO.input.get().join('\n'), output: IO.output.get() }));
     if (!formState.modelSolution.editableModelSolution) {
       return {};
     }

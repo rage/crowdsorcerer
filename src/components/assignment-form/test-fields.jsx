@@ -1,6 +1,4 @@
 // @flow
-import Transition from 'react-motion-ui-pack';
-import { spring } from 'react-motion';
 import React, { Component } from 'react';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
