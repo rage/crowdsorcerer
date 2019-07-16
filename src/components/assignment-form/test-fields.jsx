@@ -29,7 +29,6 @@ class TestFields extends Component {
                 </div>
               ),
             )}
-          {/* </Transition> */}
         </div>
         {!this.props.readOnly && <button
           type="button"

@@ -164,10 +164,9 @@ export function checkNotBlank(formValue: FormValue<*>): Array<string> {
     }
   } else if (formValue.get().length === 0) {
     errors.push(CANNOT_BE_BLANK_ERROR);
-  } else if (formValue.get()[0].length === 0) {
+  } else if (formValue.get()[0].content !== undefined && formValue.get()[0].content.length === 0) {
     errors.push(CANNOT_BE_BLANK_ERROR);
   }
-
 
   return errors;
 }
@@ -192,7 +191,7 @@ export default function (state: State, action: AnyAction) {
   let tests;
   if (state.testingType === 'unit_tests' || state.testingType === 'whole_test_code_for_set_up_code') {
     tests = [{ field: 'unitTests', validator: unitTestsErrors }];
-  } else if (state.testingType === 'input_output') {
+  } else if (state.testingType === 'input_output' || state.testingType === 'input_output_tests_for_set_up_code') {
     tests = [{ field: 'inputOutput', validator: checkNotBlank }];
   } else { // else if state.testingType === 'io_and_code'
     tests = [

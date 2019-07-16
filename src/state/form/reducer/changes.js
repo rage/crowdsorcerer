@@ -27,6 +27,7 @@ import {
   CHANGE_TEST_NAME,
   CHANGE_PREVIEW_STATE,
   ADD_TEST_INPUT_LINE,
+  REMOVE_TEST_INPUT_LINE,
 } from 'state/form/actions';
 import type {
     AddTestFieldAction,
@@ -50,11 +51,14 @@ import type {
     ChangePreviewStateAction,
     ResetCodeToBoilerplateAction,
     AddTestInputLineAction,
+    RemoveTestInputLineAction,
 } from 'state/form/actions';
 import { Raw } from 'slate';
 import getReadOnlyLines from 'utils/get-read-only-lines';
 import getCleanPlate from '../../../utils/get-clean-plate';
 import type { State } from './index';
+
+let testInputCounter = 0;
 
 const initialState: State = {
   assignment: new FormValue(Raw.deserialize({
@@ -75,7 +79,7 @@ const initialState: State = {
   showErrors: false,
   tagSuggestions: [],
   tags: new FormValue([]),
-  inputOutput: [new IO(new FormValue(['']), new FormValue(''))],
+  inputOutput: [new IO(new FormValue([{ content: '', id: testInputCounter }]), new FormValue(''))],
   modelSolution: {
     solutionRows: new FormValue([]),
     editableModelSolution: undefined,
@@ -100,6 +104,8 @@ const initialState: State = {
   testingType: '',
   previewState: false,
 };
+
+testInputCounter++;
 
 // left here for future purposes
 // const supportedTestTypes = ['contains', 'notContains', 'equals'];
@@ -260,12 +266,13 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
       .map((io, i) => {
         if (i === action.index) {
-          const newInput = io.input.get().map((line, index) => {
-            if (index === action.line) {
-              return action.testInput;
+          const newInput = io.input.get().map((line) => {
+            if (line.id === action.lineNumber) {
+              return { content: action.testInput, id: action.lineNumber };
             }
             return line;
           });
+
 
           return new IO(new FormValue(newInput), new FormValue(io.output.get()), io.type, io.hash());
         }
@@ -620,12 +627,44 @@ export default createReducer(initialState, {
     const newInputOutput = state.inputOutput
     .map((io, i) => {
       if (i === action.index) {
-        io.input.get().push('');
+        io.input.get().push({ content: '', id: testInputCounter });
+        testInputCounter++;
 
         return new IO(new FormValue(io.input.get()), new FormValue(io.output.get()), io.type, io.hash());
       }
       return io;
     });
+
+    return {
+      ...state,
+      inputOutput: newInputOutput,
+    };
+  },
+
+  [REMOVE_TEST_INPUT_LINE](state: State, action: RemoveTestInputLineAction): State {
+    const newInputOutput = state.inputOutput.map((io, index) => {
+      if (index === action.index) {
+        const lines = io.input.get();
+        if (lines.length === 1) {
+          const newIO = new IO(
+            new FormValue([{ content: '', id: testInputCounter }]),
+            new FormValue(io.output.get()),
+            io.type,
+            io.hash());
+          testInputCounter++;
+          return newIO;
+        }
+
+        const newLines = [
+          ...lines.slice(0, action.lineNumber),
+          ...lines.slice(action.lineNumber + 1),
+        ];
+
+        return new IO(new FormValue(newLines), new FormValue(io.output.get()), io.type, io.hash());
+      }
+      return io;
+    });
+
 
     return {
       ...state,

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import {
@@ -14,11 +15,11 @@ import {
   testTypeChangedAction,
   changeTestInTestArrayAction,
   addTestInputLineAction,
+  removeTestInputLineAction,
 } from 'state/form';
 import Errors from 'components/errors';
 
 class InputOutput extends Component {
-
   props: {
     index: number,
     io: IO,
@@ -29,6 +30,7 @@ class InputOutput extends Component {
     showErrors: boolean,
     testingType: string,
     onAddLineButtonClick: (index: number) => void,
+    onRemoveLineButtonClick: (index: number, lineNumber: number) => void,
   };
 
   render() {
@@ -40,49 +42,67 @@ class InputOutput extends Component {
       buttonClassName = 'card-close-button';
     }
 
-    let extraLines = '';
-    if (this.props.io.input.get().length > 1) {
-      extraLines = this.props.io.input.get().map((line, index) => {
-        if (index === 0) {
-          return '';
-        }
-        return (<TextField
-          key={`${index + line}`}
+    let inputLines = '';
+    inputLines = this.props.io.input.get().map((line, index) => {
+      let textfield = '';
+
+      if (index === 0) {
+        textfield = (<TextField
           className={prefixer('input-field')}
-          defaultValue={line}
+          defaultValue={line.content}
           onChange={(event) => {
-            this.props.onTestInputChange(event.currentTarget.value, this.props.index, index);
+            this.props.onTestInputChange(event.currentTarget.value, this.props.index, line.id);
+          }}
+          variant="outlined"
+          label="Syöte"
+          placeholder="Syöte"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />);
+      } else {
+        textfield = (<TextField
+          className={prefixer('input-field')}
+          defaultValue={line.content}
+          onChange={(event) => {
+            this.props.onTestInputChange(event.currentTarget.value, this.props.index, line.id);
           }}
           variant="outlined"
         />);
-      });
-    }
+      }
+
+
+      return (
+        <div key={line.id ? line.id : 'line id not yet defined'} className={prefixer('extra-input-line')}>
+          {textfield}
+          <IconButton
+            className={'classes.iconButton'}
+            onClick={(e: Event) => {
+              e.preventDefault();
+              this.props.onRemoveLineButtonClick(this.props.index, index);
+            }}
+          >
+              &#10006;
+            </IconButton>
+        </div>)
+;
+    });
 
     return (
       <div >
         <Card className={prefixer('field-container')}>
           <div className={prefixer('input-field-wrapper')}>
-            <TextField
-              className={prefixer('input-field')}
-              defaultValue={this.props.io.input.get()[0]}
-              onChange={(event) => {
-                this.props.onTestInputChange(event.currentTarget.value, this.props.index, 0);
-              }}
-              variant="outlined"
-              label="Syöte"
-              placeholder="Syöte"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            {extraLines}
+
+            {inputLines}
 
             <Button
               type="button"
-              className={'add-line-button'} onClick={(e: Event) => {
+              className={'add-line-button'}
+              onClick={(e: Event) => {
                 e.preventDefault();
                 this.props.onAddLineButtonClick(this.props.index);
-              }} style={{ textTransform: 'none' }}
+              }}
+              style={{ textTransform: 'none' }}
             >+ Lisää rivi</Button>
 
             <Errors
@@ -150,6 +170,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onAddLineButtonClick(index) {
       dispatch(addTestInputLineAction(index));
+    },
+    onRemoveLineButtonClick(index, lineNumber) {
+      dispatch(removeTestInputLineAction(index, lineNumber));
     },
   };
 }

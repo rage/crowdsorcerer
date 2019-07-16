@@ -42,8 +42,8 @@ export const DELETE_MARKERS = 'DELETE_MARKERS';
 export const CHANGE_TEST_IN_TEST_ARRAY = 'CHANGE_TEST_IN_TEST_ARRAY';
 export const CHANGE_TEST_NAME = 'CHANGE_TEST_NAME';
 export const CHANGE_PREVIEW_STATE = 'CHANGE_PREVIEW_STATE';
-// export const CHANGE_TEST_INPUT_LINE_COUNT = 'CHANGE_TEST_INPUT_LINE_COUNT';
 export const ADD_TEST_INPUT_LINE = 'ADD_TEST_INPUT_LINE';
+export const REMOVE_TEST_INPUT_LINE = 'REMOVE_TEST_INPUT_LINE';
 
 export function addTestFieldAction() {
   return {
@@ -74,11 +74,11 @@ export function modelSolutionChangeAction(modelSolution: string, change: Change)
   };
 }
 
-export function testInputChangeAction(testInput: string, index: number, line: number) {
+export function testInputChangeAction(testInput: string, index: number, lineNumber: number) {
   return {
     testInput,
     index,
-    line,
+    lineNumber,
     type: CHANGE_TEST_INPUT,
   };
 }
@@ -102,7 +102,7 @@ export type Tag = {
 };
 
 export type TestIO = {
-  input: Array<string>,
+  input: Array<Object>,
   output: string,
   type: string,
 };
@@ -236,6 +236,7 @@ export function formSubmitButtonPressedAction() {
   return function submitter(dispatch: Dispatch, getState: GetState) {
     dispatch(changeFormErrorVisibilityAction());
     const state = getState();
+
     if (!state.form.valid) {
       return;
     }
@@ -342,6 +343,14 @@ export function addTestInputLineAction(index: number) {
   };
 }
 
+export function removeTestInputLineAction(index: number, lineNumber: number) {
+  return {
+    index,
+    lineNumber,
+    type: REMOVE_TEST_INPUT_LINE,
+  };
+}
+
 export type AddTestFieldAction = {
   field: IO,
   type: string
@@ -365,7 +374,7 @@ export type ModelSolutionChangeAction = {
 
 export type TestInputChangeAction = {
   testInput: string,
-  line: number,
+  lineNumber: number,
   type: string
 };
 
@@ -472,5 +481,11 @@ export type ResetCodeToBoilerplateAction = {
 
 export type AddTestInputLineAction = {
   index: Number,
+  type: String
+}
+
+export type RemoveTestInputLineAction = {
+  index: Number,
+  lineNumber: number,
   type: String
 }

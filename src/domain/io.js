@@ -5,14 +5,13 @@ let counter = 0;
 
 export default class IO {
 
-  // input: FormValue<string>;
-  input: FormValue<Array<string>>;
+  input: FormValue<Array<Object>>;
   output: FormValue<string>;
   hashCode: ?string;
   type: string;
 
   constructor(
-    input: FormValue<Array<string>> = new FormValue(['']),
+    input: FormValue<Array<Object>> = new FormValue([{ content: '' }]),
     output: FormValue<string> = new FormValue(''),
     type: string = 'contains',
     hashCode: ?string) {
@@ -31,7 +30,7 @@ export default class IO {
     return this.hashCode;
   }
 
-  _changeInput(input: Array<string>) {
+  _changeInput(input: Array<Object>) {
     const newIO = new IO(new FormValue(input), this.output, this.type, this.hashCode);
     return newIO;
   }
