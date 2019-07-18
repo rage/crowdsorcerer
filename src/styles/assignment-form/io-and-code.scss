@@ -1,6 +1,15 @@
 @import "../../node_modules/codemirror/lib/codemirror";
 @import "color-constants";
 
+.io-and-code-field-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  // margin-bottom: 15px;
+  padding-bottom: 5px;
+  padding-top: 10px;
+}
+
 .io-and-code-components {
   position: relative;
   z-index: 0;

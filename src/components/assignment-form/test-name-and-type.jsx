@@ -23,8 +23,8 @@ class TestNameAndType extends Component {
 
   render() {
     const testName = this.props.tests[this.props.index].name.get() === '<placeholderTestName>'
-    ? ''
-    : this.props.tests[this.props.index].name.get();
+      ? ''
+      : this.props.tests[this.props.index].name.get();
 
     const options = [
       { value: 'contains', label: 'Contains' },
@@ -63,40 +63,40 @@ class TestNameAndType extends Component {
     }
 
     return (
-      <div className={prefixer('field-container')}>
-        <div className={prefixer('test-name-and-type')}>
-          <div className={prefixer('label-and-field-wrapper')}>
-            <div className={prefixer('label')}>
-              Nimi
+      // <div className={prefixer('field-container')}>
+      <div className={prefixer('test-name-and-type')}>
+        <div className={prefixer('label-and-field-wrapper')}>
+          <div className={prefixer('label')}>
+            Nimi
             </div>
-            <input
-              aria-label="testin nimi"
-              aria-required
-              className={prefixer('test-name')}
-              type="text"
-              placeholder="Testin nimi"
-              name={`test name ${this.props.index}`}
-              value={testName}
-              readOnly={this.props.readOnly}
-              onChange={(event) => {
-                this.props.onTestNameChange(event.currentTarget.value, this.props.index);
-              }}
-            />
-            <Errors
-              errors={this.props.tests[this.props.index].name.errors}
-              keyBase={`${this.props.io.hash()} name`}
-              show={this.props.showErrors}
-            />
-          </div>
+          <input
+            aria-label="testin nimi"
+            aria-required
+            className={prefixer('test-name')}
+            type="text"
+            placeholder="Testin nimi"
+            name={`test name ${this.props.index}`}
+            value={testName}
+            readOnly={this.props.readOnly}
+            onChange={(event) => {
+              this.props.onTestNameChange(event.currentTarget.value, this.props.index);
+            }}
+          />
+          <Errors
+            errors={this.props.tests[this.props.index].name.errors}
+            keyBase={`${this.props.io.hash()} name`}
+            show={this.props.showErrors}
+          />
+        </div>
 
-          <div>
-            <div className={prefixer('label')}>
-              Tyyppi
+        <div>
+          <div className={prefixer('label')}>
+            Tyyppi
             </div>
-            {typeField}
-          </div>
+          {typeField}
         </div>
       </div>
+      // </div>
     );
   }
 }

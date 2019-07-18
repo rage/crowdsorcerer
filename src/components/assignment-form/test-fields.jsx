@@ -23,19 +23,19 @@ class TestFields extends Component {
         </div>
         <div className={prefixer('io-component')}>
           {this.props.inputOutput.map((io: IO, index: number) =>
-              (
-                <div key={io.hash()}>
-                  {<InputOutput readOnly={this.props.readOnly} index={index} io={io} />}
-                </div>
-              ),
-            )}
+            (
+              <div key={io.hash()}>
+                {<InputOutput readOnly={this.props.readOnly} index={index} io={io} card />}
+              </div>
+            ),
+          )}
         </div>
         {!this.props.readOnly && <button
           type="button"
           className={prefixer('add-field')}
           onClick={(e) => { e.preventDefault(); this.props.onAddFieldClick(); }}
         >
-        + Lisää kenttä
+          + Lisää kenttä
         </button>
         }
       </div>

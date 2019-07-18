@@ -31,7 +31,12 @@ class ModelSolution extends Component {
     this.showMarkers();
     const codeDocument = this.textInput.getCodeMirror();
     codeDocument.on('gutterClick',
-      (instance, line) => this.handleAddNewHiddenRow(instance, line));
+      (instance, line) => {
+        if (this.props.setUpCode) {
+          return;
+        }
+        this.handleAddNewHiddenRow(instance, line);
+      });
     codeDocument.on('beforeChange', this.handleModelSolutionChange);
   }
 
@@ -95,10 +100,10 @@ class ModelSolution extends Component {
         }
 
         this.markers.push(codeDocument.markText(
-              { line, ch: charRange[0] },
-              { line, ch: charRange[1] },
-              { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
-            ));
+          { line, ch: charRange[0] },
+          { line, ch: charRange[1] },
+          { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+        ));
       });
     }
   }
@@ -193,7 +198,7 @@ class ModelSolution extends Component {
               this.props.onResetModelSolution();
             }}
           >
-          Nollaa lähdekoodi
+            Nollaa lähdekoodi
           </button>
           }
         </div>
@@ -205,7 +210,7 @@ class ModelSolution extends Component {
         <div tabIndex="0">
           <CodeMirror
             aria-labelledby="modelSolution"
-            className={prefixer('model-solution')}
+            className={this.props.setUpCode ? prefixer('set-up-model-solution') : prefixer('model-solution')}
             options={{
               mode: 'text/x-java',
               lineNumbers: true,
