@@ -40,8 +40,10 @@ class InputOutput extends Component {
     if (this.props.testingType === 'input_output' || this.props.testingType === 'input_output_tests_for_set_up_code') {
       buttonClassName = 'close-button';
     } else {
+      // TODO: FIX BUTTON'S POSITION
       buttonClassName = 'card-close-button';
     }
+
 
     let inputLines = '';
     inputLines = this.props.io.input.get().map((line, index) => {

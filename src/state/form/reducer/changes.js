@@ -30,7 +30,7 @@ import {
   REMOVE_TEST_INPUT_LINE,
 } from 'state/form/actions';
 import type {
-    AddTestFieldAction,
+  AddTestFieldAction,
     RemoveTestFieldAction,
     TestInputChangeAction,
     TestOutputChangeAction,
@@ -111,8 +111,8 @@ testInputCounter++;
 // const supportedTestTypes = ['contains', 'notContains', 'equals'];
 
 const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
-    // - if a line with marked char is edited remove markers from that line
-    // - if a line is added/removed move all markers after it
+  // - if a line with marked char is edited remove markers from that line
+  // - if a line is added/removed move all markers after it
   let markers = stateMarkers;
   for (let i = 0; i < stateMarkers.length; i++) {
     const m = stateMarkers[i];
@@ -120,7 +120,7 @@ const handleMarkers = (stateMarkers: Array<Object>, change: Object) => {
       || (m.line > change.from.line && m.line <= change.to.line)
       || (change.removed[1] && m.line === change.to.line && m.char < change.to.ch
         && change.removed[1].length >= change.from.ch - m.char)
-          ) {
+    ) {
       markers = markers.filter(marker => marker !== m);
     } else if (change.from.line < m.line) {
       const line = m.line;
@@ -141,11 +141,12 @@ export default createReducer(initialState, {
       inputOutput: [...state.inputOutput, action.field],
       unitTests: {
         ...state.unitTests,
-        testArray: [...state.unitTests.testArray,
-          { name: new FormValue('<placeholderTestName>'),
-            code: state.unitTests.boilerplate.code,
-            input: '<placeholderInput>',
-            output: '<placeholderOutput>' },
+        testArray: [...state.unitTests.testArray, {
+          name: new FormValue('<placeholderTestName>'),
+          code: state.unitTests.boilerplate.code,
+          input: '<placeholderInput>',
+          output: '<placeholderOutput>',
+        },
         ],
       },
     };
@@ -201,10 +202,10 @@ export default createReducer(initialState, {
     const markers = handleMarkers(state.modelSolution.markers, change);
 
     if (solutionLengthDifferenceToNew < 0) {
-        // text was removed
-        // removed contains the deleted text
+      // text was removed
+      // removed contains the deleted text
       const solutionLengthDifference = change.removed.length - change.text.length;
-        // deleted the removed marked lines
+      // deleted the removed marked lines
       const deletedRowLength = solutionLengthDifference - 1;
       newSolutionRows = newSolutionRows.filter(row => row <= startLine || row > startLine + deletedRowLength);
       newSolutionRows = newSolutionRows.map((row) => {
@@ -226,8 +227,8 @@ export default createReducer(initialState, {
         return row;
       });
     } else if (solutionLengthDifferenceToNew >= 0) {
-        // text was added
-        // text contains the added text
+      // text was added
+      // text contains the added text
       let solutionLengthDifference = change.text.length ? change.text.length - 1 : 0;
       if (change.removed && change.removed.length === 2) {
         solutionLengthDifference--;
@@ -367,8 +368,7 @@ export default createReducer(initialState, {
       modelSolution: {
         ...state.modelSolution,
         solutionRows: new FormValue(
-          [...state.modelSolution.solutionRows.get().slice(0, i),
-            ...state.modelSolution.solutionRows.get().slice(i + 1)],
+          [...state.modelSolution.solutionRows.get().slice(0, i), ...state.modelSolution.solutionRows.get().slice(i + 1)],
         ),
       },
     };
@@ -625,15 +625,15 @@ export default createReducer(initialState, {
 
   [ADD_TEST_INPUT_LINE](state: State, action: AddTestInputLineAction): State {
     const newInputOutput = state.inputOutput
-    .map((io, i) => {
-      if (i === action.index) {
-        io.input.get().push({ content: '', id: testInputCounter });
-        testInputCounter++;
+      .map((io, i) => {
+        if (i === action.index) {
+          io.input.get().push({ content: '', id: testInputCounter });
+          testInputCounter++;
 
-        return new IO(new FormValue(io.input.get()), new FormValue(io.output.get()), io.type, io.hash());
-      }
-      return io;
-    });
+          return new IO(new FormValue(io.input.get()), new FormValue(io.output.get()), io.type, io.hash());
+        }
+        return io;
+      });
 
     return {
       ...state,
@@ -665,10 +665,34 @@ export default createReducer(initialState, {
       return io;
     });
 
+    let tests = [];
+
+    for (let i = 0; i < state.unitTests.testArray.length; i++) {
+      const test = state.unitTests.testArray[i];
+
+      if (i === action.index) {
+        const newInput = newInputOutput[i].input.get();
+        const newOutput = newInputOutput[i].output.get();
+
+        const modifiedTest = {
+          ...test,
+          input: newInput,
+          output: newOutput,
+        };
+
+        tests = [...tests, modifiedTest];
+      } else {
+        tests = [...tests, test];
+      }
+    }
 
     return {
       ...state,
       inputOutput: newInputOutput,
+      unitTests: {
+        ...state.unitTests,
+        testArray: tests,
+      },
     };
   },
 });

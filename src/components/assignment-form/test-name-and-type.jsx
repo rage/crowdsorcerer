@@ -1,13 +1,16 @@
 // @flow
 import React, { Component } from 'react';
-// FlowIgnore
-import Select from 'react-select';
 import prefixer from 'utils/class-name-prefixer';
 import { connect } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
 import { changeTestNameAction, testTypeChangedAction } from 'state/form';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import Errors from 'components/errors';
+import { FormControl } from '@material-ui/core';
 
 class TestNameAndType extends Component {
 
@@ -50,38 +53,36 @@ class TestNameAndType extends Component {
       />);
     } else {
       typeField = (<Select
-        className={prefixer('test-type')}
-        classNamePrefix={''}
-        options={options}
-        defaultValue={options[0]}
-        value={type}
-        onChange={(newType: any) => {
-          this.props.onTestTypeChange(newType.value, this.props.index);
+        value={this.props.io.type}
+        onChange={(event: any) => {
+          this.props.onTestTypeChange(event.target.value, this.props.index);
         }}
-        isSearchable={false}
-      />);
+      // input={<OutlinedInput />}
+      >
+        <MenuItem value={'contains'}>Contains</MenuItem>
+        <MenuItem value={'notContains'}>Does not contain</MenuItem>
+        <MenuItem value={'equals'}>Equals</MenuItem>
+      </Select>);
     }
 
     return (
-      // <div className={prefixer('field-container')}>
       <div className={prefixer('test-name-and-type')}>
         <div className={prefixer('label-and-field-wrapper')}>
-          <div className={prefixer('label')}>
-            Nimi
-            </div>
-          <input
-            aria-label="testin nimi"
-            aria-required
+          <TextField
             className={prefixer('test-name')}
-            type="text"
-            placeholder="Testin nimi"
-            name={`test name ${this.props.index}`}
-            value={testName}
-            readOnly={this.props.readOnly}
+            defaultValue={testName}
             onChange={(event) => {
               this.props.onTestNameChange(event.currentTarget.value, this.props.index);
             }}
+            variant="outlined"
+            label="Testin nimi"
+            placeholder="Testin nimi"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            disabled={this.props.readOnly}
           />
+
           <Errors
             errors={this.props.tests[this.props.index].name.errors}
             keyBase={`${this.props.io.hash()} name`}
@@ -90,13 +91,14 @@ class TestNameAndType extends Component {
         </div>
 
         <div>
-          <div className={prefixer('label')}>
-            Tyyppi
-            </div>
-          {typeField}
+          <FormControl className={"prefixer('test-type')"}>
+            <InputLabel shrink>
+              Tyyppi
+            </InputLabel>
+            {typeField}
+          </FormControl>
         </div>
       </div>
-      // </div>
     );
   }
 }
