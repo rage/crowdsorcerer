@@ -91,72 +91,76 @@ class InputOutput extends Component {
         ;
     });
 
-    const content = (
-      <div className={prefixer('io-and-code-field-container')} >
-        <div className={prefixer('input-field-wrapper')}>
+    const input = (<div className={prefixer('input-field-wrapper')}>
+      {inputLines}
 
-          {inputLines}
+      <Button
+        type="button"
+        className={'add-line-button'}
+        onClick={(e: Event) => {
+          e.preventDefault();
+          this.props.onAddLineButtonClick(this.props.index);
+        }}
+        style={{ textTransform: 'none' }}
+      >+ Lisää rivi</Button>
 
-          <Button
-            type="button"
-            className={'add-line-button'}
-            onClick={(e: Event) => {
-              e.preventDefault();
-              this.props.onAddLineButtonClick(this.props.index);
-            }}
-            style={{ textTransform: 'none' }}
-          >+ Lisää rivi</Button>
+      <Errors
+        errors={this.props.io.input.errors}
+        keyBase={`${this.props.io.hash()} input`}
+        show={this.props.showErrors}
+      />
+    </div>);
 
-          <Errors
-            errors={this.props.io.input.errors}
-            keyBase={`${this.props.io.hash()} input`}
-            show={this.props.showErrors}
-          />
-        </div>
-        <div className={prefixer('input-field-wrapper')}>
-          <TextField
-            className={prefixer('input-field')}
-            defaultValue={this.props.io.output.get()}
-            onChange={(event) => {
-              this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
-            }}
-            variant="outlined"
-            label="Tulos"
-            placeholder="Tulos"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+    const output = (<div className={prefixer('input-field-wrapper')}>
+      <TextField
+        className={prefixer('input-field')}
+        defaultValue={this.props.io.output.get()}
+        onChange={(event) => {
+          this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
+        }}
+        variant="outlined"
+        label="Tulos"
+        placeholder="Tulos"
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
 
-          <Errors
-            errors={this.props.io.output.errors}
-            keyBase={`${this.props.io.hash()} output`}
-            show={this.props.showErrors}
-          />
-        </div>
+      <Errors
+        errors={this.props.io.output.errors}
+        keyBase={`${this.props.io.hash()} output`}
+        show={this.props.showErrors}
+      />
+    </div>);
+
+    const removeFieldButton = (
+      <div>
         {!this.props.readOnly && <button
           type="button"
           className={prefixer(buttonClassName)}
           onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
         >
           &#10006;
-      </button>}
-      </div >
-    );
+        </button>
+        }
+      </div>);
 
     if (this.props.card) {
       return (
         <div>
           <Card className={prefixer('field-container')}>
-            {content}
+            {input}
+            {output}
+            {removeFieldButton}
           </Card>
         </div>
       );
     }
     return (
-      <div>
-
-        {content}
+      <div className={prefixer('io-and-code-field-container')} >
+        {input}
+        {output}
+        {removeFieldButton}
       </div>
     );
   }
