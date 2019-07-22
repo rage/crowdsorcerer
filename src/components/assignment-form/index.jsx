@@ -69,7 +69,7 @@ class AssignmentForm extends Component {
               }
             }}
           >
-            Lähetä
+            Submit
           </button>
         </div>
         {preview}

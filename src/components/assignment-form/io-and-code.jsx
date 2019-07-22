@@ -74,7 +74,7 @@ class IOAndCode extends Component {
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
           <div id="unitTests" className={prefixer('instructions')}>
-            Testit
+            Tests
           </div>
         </div>
 
@@ -131,7 +131,7 @@ class IOAndCode extends Component {
           className={prefixer('add-field')}
           onClick={(e) => { e.preventDefault(); this.props.onAddFieldClick(); }}
         >
-          + Lisää kenttä
+          + Add a test case
         </button>}
       </div>
     );

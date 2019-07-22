@@ -103,7 +103,7 @@ class Preview extends Component {
                 this.props.handleClosePreview();
               }}
             >
-            Palaa takaisin
+            Return
             </button>
             <button
               type="button"
@@ -114,7 +114,7 @@ class Preview extends Component {
                 this.props.handleClosePreview();
               }}
             >
-            Lähetä
+            Submit
             </button>
           </div>
         </div>

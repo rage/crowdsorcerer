@@ -71,7 +71,7 @@ class Review extends Component {
               e.preventDefault();
               this.props.handleSubmit();
             }}
-          >Lähetä
+          >Submit
           </button>
         </div>
         <StatusDisplay />

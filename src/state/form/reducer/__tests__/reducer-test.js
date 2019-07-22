@@ -73,12 +73,12 @@ const initialAssignment = Raw.deserialize({
 }, { terse: true });
 
 const emptyTest1 = new IO();
-emptyTest1.input.errors = ['Kenttä ei voi olla tyhjä.'];
-emptyTest1.output.errors = ['Kenttä ei voi olla tyhjä.'];
+emptyTest1.input.errors = ['This field cannot be left empty.'];
+emptyTest1.output.errors = ['This field cannot be left empty.'];
 
 const emptyTest2 = new IO();
-emptyTest2.input.errors = ['Kenttä ei voi olla tyhjä.'];
-emptyTest2.output.errors = ['Kenttä ei voi olla tyhjä.'];
+emptyTest2.input.errors = ['This field cannot be left empty.'];
+emptyTest2.output.errors = ['This field cannot be left empty.'];
 
 const reducer = reducers(1);
 

@@ -57,8 +57,8 @@ class InputOutput extends Component {
             this.props.onTestInputChange(event.currentTarget.value, this.props.index, line.id);
           }}
           variant="outlined"
-          label="Syöte"
-          placeholder="Syöte"
+          label="Input"
+          placeholder="Input"
           InputLabelProps={{
             shrink: true,
           }}
@@ -103,7 +103,7 @@ class InputOutput extends Component {
           this.props.onAddLineButtonClick(this.props.index);
         }}
         style={{ textTransform: 'none' }}
-      >+ Lisää rivi</Button>
+      >+ Add a line</Button>
 
       <Errors
         errors={this.props.io.input.errors}
@@ -120,8 +120,8 @@ class InputOutput extends Component {
           this.props.onTestOutputChange(event.currentTarget.value, this.props.index);
         }}
         variant="outlined"
-        label="Tulos"
-        placeholder="Tulos"
+        label="Output"
+        placeholder="Output"
         InputLabelProps={{
           shrink: true,
         }}

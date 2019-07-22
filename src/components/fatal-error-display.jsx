@@ -10,7 +10,7 @@ export default ({ message }: { message: string }) => (
       leave={{ opacity: 0 }}
     >
       <div key="fatal-error-title" className={prefixer('fatal-error-title')}>
-      Hups
+      Whoopsie
     </div>
       <div key="fatal-error-message" className={prefixer('fatal-error-message')}>
         {message}

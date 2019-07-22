@@ -41,16 +41,16 @@ const MIN_MODEL_SOLUTION_WORD_AMOUNT = 3;
 const MIN_MODEL_SOLUTION_LINE_AMOUNT = 2;
 const MIN_UNIT_TEST_AMOUNT = 3;
 const MIN_UNIT_TESTS_WORD_AMOUNT = 5;
-const ASSIGNMENT_ERROR = `Tehtävänannon tulee olla vähintään ${MIN_ASSIGNMENT_WORD_AMOUNT} sanaa pitkä.`;
-const MODEL_SOLUTION_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
-const MODEL_SOLUTION_LINE_ERROR = `Mallivastauksen tulee olla vähintään ${MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä pitkä.`;
-const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `Mallivastauksen tulee olla vähintään ${
-  MIN_MODEL_SOLUTION_LINE_AMOUNT} riviä ja ${MIN_MODEL_SOLUTION_WORD_AMOUNT} sanaa pitkä.`;
-const CANNOT_BE_BLANK_ERROR = 'Kenttä ei voi olla tyhjä.';
-const EMPTY_TEMPLATE_ERROR = 'Muista merkitä, mitkä rivit tehtävästä kuuluvat vain mallivastaukseen, sillä ' +
-  'muuten tehtävän koko ratkaisu näkyy tehtäväpohjassa. Lisää tietoa ohjeistuksessa.';
-const UNIT_TEST_AMOUNT_ERROR = `Testejä tulee olla vähintään ${MIN_UNIT_TEST_AMOUNT}`;
-const UNIT_TESTS_WORD_ERROR = `Testikoodin tulee olla vähintään ${MIN_UNIT_TESTS_WORD_AMOUNT} sanaa pitkä.`;
+const ASSIGNMENT_ERROR = `The assignment handout has to be at least ${MIN_ASSIGNMENT_WORD_AMOUNT} words long.`;
+const MODEL_SOLUTION_WORD_ERROR = `The model solution has to be at least ${MIN_MODEL_SOLUTION_WORD_AMOUNT} words long.`;
+const MODEL_SOLUTION_LINE_ERROR = `The model solution has to be at least ${MIN_MODEL_SOLUTION_LINE_AMOUNT} lines long.`;
+const MODEL_SOLUTION_LINE_AND_WORD_ERROR = `The model solution has to be at least ${
+  MIN_MODEL_SOLUTION_LINE_AMOUNT} lines and ${MIN_MODEL_SOLUTION_WORD_AMOUNT} words long.`;
+const CANNOT_BE_BLANK_ERROR = 'This field cannot be left empty.';
+const EMPTY_TEMPLATE_ERROR = 'Remember to select the lines that will only be shown in the model solution.' +
+  'Otherwise, the entire code will be shown in the code template. More information in the instructions.';
+const UNIT_TEST_AMOUNT_ERROR = `You need at least ${MIN_UNIT_TEST_AMOUNT} test cases.`;
+const UNIT_TESTS_WORD_ERROR = `The test code had to be at least ${MIN_UNIT_TESTS_WORD_AMOUNT} words long.`;
 
 type AnyAction = AddTestFieldAction | RemoveTestFieldAction
   | TestInputChangeAction | TestOutputChangeAction

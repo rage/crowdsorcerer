@@ -188,7 +188,7 @@ class ModelSolution extends Component {
       <div className={prefixer('form-component')}>
         <div className={prefixer('same-line')}>
           <div id="modelSolution" className={prefixer('instructions')}>
-            Lähdekoodi
+            Source code
           </div>
           {!this.props.readOnly && <button
             type="button"
@@ -198,7 +198,7 @@ class ModelSolution extends Component {
               this.props.onResetModelSolution();
             }}
           >
-            Nollaa lähdekoodi
+            Reset source code
           </button>
           }
         </div>
@@ -263,7 +263,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(deleteHiddenRow(row));
     },
     onResetModelSolution() {
-      if (window.confirm('Haluatko varmasti nollata lähdekoodin? \nMenetät kaikkin lähdekoodi-kenttään tekemäsi muutokset.')) {
+      if (window.confirm('Are you sure you want to reset the source code? \nYou will lose all the changes made in the source code field.')) {
         dispatch(fetchBoilerPlateAction());
       }
     },
