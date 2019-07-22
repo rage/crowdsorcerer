@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import type { State, Dispatch } from 'state/reducer';
 import { formSubmitButtonPressedAction, changePreviewStateAction, deleteMarkersAction } from 'state/form';
 import 'codemirror/mode/clike/clike';
+import 'codemirror/mode/python/python';
 import ExerciseTags from 'components/tag-input';
 import StatusDisplay from '../status-display';
 import ModelSolution from './model-solution';
@@ -37,9 +38,9 @@ class AssignmentForm extends Component {
       tests = <IOAndCode />;
     }
 
-    let setUpCode;
+    let setUpCode = false;
     if (['input_output_tests_for_set_up_code', 'tests_for_set_up_code', 'whole_test_code_for_set_up_code']
-    .includes(this.props.testingType)) {
+      .includes(this.props.testingType)) {
       setUpCode = true;
     }
 
@@ -51,7 +52,7 @@ class AssignmentForm extends Component {
     return (
       <form onSubmit={this.props.handleSubmit} >
         <Assignment />
-        <ModelSolution setUpCode />
+        <ModelSolution setUpCode={setUpCode} />
         {tests}
         <ExerciseTags showErrors={this.props.showErrors} />
         <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>

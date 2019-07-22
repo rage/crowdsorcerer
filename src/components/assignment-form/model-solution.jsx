@@ -182,7 +182,7 @@ class ModelSolution extends Component {
       ? ['CodeMirror-linenumbers']
       : ['CodeMirror-linenumbers', 'modelsolution-lines'];
 
-    const cursor = this.props.readOnly || this.props.setUpCode ? 'nocursor' : false;
+    const cursor = (this.props.readOnly || this.props.setUpCode) ? 'nocursor' : false;
 
     return (
       <div className={prefixer('form-component')}>

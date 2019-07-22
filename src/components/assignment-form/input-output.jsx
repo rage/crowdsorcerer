@@ -92,6 +92,7 @@ class InputOutput extends Component {
     });
 
     const input = (<div className={prefixer('input-field-wrapper')}>
+
       {inputLines}
 
       <Button

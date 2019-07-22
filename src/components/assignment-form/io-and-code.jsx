@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import CodeMirror from '@skidding/react-codemirror';
+import CodeMirror, { TextMarker } from '@skidding/react-codemirror';
 import type { State, Dispatch } from 'state/reducer';
 import { addTestFieldAction } from 'state/form';
 import prefixer from 'utils/class-name-prefixer';
@@ -11,6 +11,49 @@ import InputOutput from './input-output';
 import TestNameAndType from './test-name-and-type';
 
 class IOAndCode extends Component {
+
+  componentDidMount() {
+    const testCodeMirrors = Array.from(document.querySelectorAll('.crowdsorcerer-test-code'))
+      .map(t => t.querySelector('.CodeMirror').CodeMirror);
+
+    this.showLineBreaks(testCodeMirrors);
+  }
+
+  componentDidUpdate() {
+    const testCodeMirrors = Array.from(document.querySelectorAll('.crowdsorcerer-test-code'))
+      .map(t => t.querySelector('.CodeMirror').CodeMirror);
+
+    this.showLineBreaks(testCodeMirrors);
+  }
+
+  showLineBreaks(cms: Array<CodeMirror>) {
+    const docs = cms.map(cm => cm.getDoc());
+    this.markers = [];
+
+    docs.forEach((doc) => {
+      let counter = 0;
+      const lineChanges = [];
+      doc.eachLine((l) => {
+        let i;
+        for (i = 0; i < l.text.length - 1; i++) {
+          if (l.text.substring(i, i + 2) === '\\n') {
+            lineChanges.push({ line: counter, ch: i });
+          }
+        }
+        counter++;
+      });
+
+      lineChanges.forEach((lc) => {
+        this.markers.push(doc.markText(
+          { line: lc.line, ch: lc.ch },
+          { line: lc.line, ch: lc.ch + 2 },
+          { className: prefixer('line-change') }),
+        );
+      });
+    });
+  }
+
+  markers: TextMarker;
 
   props: {
     inputOutput: Array<IO>,
