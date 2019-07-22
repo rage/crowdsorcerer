@@ -44,9 +44,9 @@ class TestNameAndType extends Component {
     let typeField;
     if (this.props.readOnly) {
       typeField = (<input
-        aria-label="testin tyyppi"
+        aria-label="test type"
         aria-required
-        className={prefixer('test-name')}
+        className={prefixer('test-type')}
         type="text"
         value={type ? type.label : ''}
         readOnly
@@ -75,8 +75,8 @@ class TestNameAndType extends Component {
               this.props.onTestNameChange(event.currentTarget.value, this.props.index);
             }}
             variant="outlined"
-            label="Testin nimi"
-            placeholder="Testin nimi"
+            label="Test name"
+            placeholder="Test name"
             InputLabelProps={{
               shrink: true,
             }}
@@ -91,9 +91,9 @@ class TestNameAndType extends Component {
         </div>
 
         <div>
-          <FormControl className={"prefixer('test-type')"}>
+          <FormControl className={prefixer('test-type')}>
             <InputLabel shrink>
-              Tyyppi
+              Assertion type
             </InputLabel>
             {typeField}
           </FormControl>

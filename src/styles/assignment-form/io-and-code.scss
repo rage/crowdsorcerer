@@ -62,39 +62,39 @@
   }
 
   .test-type {
-    position: relative;
-    z-index: 5;
+  //   position: relative;
+  //   z-index: 5;
     width: 160px;
-    font-size: 13.3333px;
-    height: 28.6px !important;
-    min-height: 28.6px !important;
+  //   font-size: 13.3333px;
+  //   height: 28.6px !important;
+  //   min-height: 28.6px !important;
 
-    & > div:nth-of-type(1) {
-      height: 28.6px !important;
-      min-height: 28.6px !important;
-      border: 0.1rem solid $border-grey;
-      border-radius: 0.15rem;
-      background-color: $white;
-      overflow: hidden;
+  //   & > div:nth-of-type(1) {
+  //     height: 28.6px !important;
+  //     min-height: 28.6px !important;
+  //     border: 0.1rem solid $border-grey;
+  //     border-radius: 0.15rem;
+  //     background-color: $white;
+  //     overflow: hidden;
 
-      & > div {
-        position: initial;
+  //     & > div {
+  //       position: initial;
 
-        & > div {
-          padding: 4px;
-        }
-      }
+  //       & > div {
+  //         padding: 4px;
+  //       }
+  //     }
 
-      & * span {
-        margin-top: 0px;
-        margin-bottom: 0px;
-      }
-    }
+  //     & * span {
+  //       margin-top: 0px;
+  //       margin-bottom: 0px;
+  //     }
+  //   }
 
-    & > div:nth-of-type(2) {
-      position: relative;
-      top: -7px;  
-    }
+  //   & > div:nth-of-type(2) {
+  //     position: relative;
+  //     top: -7px;  
+  //   }
   }
 }
   

@@ -190,7 +190,7 @@ class ModelSolution extends Component {
           <div id="modelSolution" className={prefixer('instructions')}>
             Source code
           </div>
-          {!this.props.readOnly && <button
+          {!this.props.readOnly && !this.props.setUpCode && <button
             type="button"
             className={prefixer('reset-button')}
             onClick={(e) => {
