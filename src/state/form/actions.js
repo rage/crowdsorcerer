@@ -135,25 +135,25 @@ export function submitFormAction() {
   return async function submitter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     dispatch(startSendAction());
     api.postForm(getState().form, getState().assignment)
-    .then(
-      (response) => {
-        dispatch(setExerciseAction(response.exercise.id));
-        dispatch(postSuccessfulAction());
-        dispatch(openWebSocketConnectionAction());
-      },
-      (error) => {
-        if (error.status === 403) {
-          dispatch(authenticationError());
-        } else {
-          dispatch(postUnsuccessfulAction());
-        }
-      },
-    );
+      .then(
+        (response) => {
+          dispatch(setExerciseAction(response.exercise.id));
+          dispatch(postSuccessfulAction());
+          dispatch(openWebSocketConnectionAction());
+        },
+        (error) => {
+          if (error.status === 403) {
+            dispatch(authenticationError());
+          } else {
+            dispatch(postUnsuccessfulAction());
+          }
+        },
+      );
   };
 }
 
 export function assignmentInfoReceivedAction(
-  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string,
+  newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string, language: string,
 ) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
@@ -178,6 +178,7 @@ export function assignmentInfoReceivedAction(
     readOnlyUnitTestsLines,
     testingType,
     testArray,
+    language,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -192,14 +193,14 @@ export function resetCodeToBoilerplateAction(boilerplate: String) {
 export function fetchBoilerPlateAction() {
   return async function fetcher(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     api.getAssignmentInformation(getState().assignment.assignmentId)
-    .then(
-      (response) => {
-        dispatch(resetCodeToBoilerplateAction(response.template));
-      },
-      () => {
-        dispatch(connectionTerminatedPrematurelyAction());
-      },
-    );
+      .then(
+        (response) => {
+          dispatch(resetCodeToBoilerplateAction(response.template));
+        },
+        () => {
+          dispatch(connectionTerminatedPrematurelyAction());
+        },
+      );
   };
 }
 
@@ -212,23 +213,23 @@ export function resetToBoilerplateAction() {
 export function getAssignmentInfoAction() {
   return async function getter(dispatch: Dispatch, getState: GetState, { api }: ThunkArgument) {
     api.getAssignmentInformation(getState().assignment.assignmentId)
-    .then(
-      (response) => {
-        dispatch(assignmentInfoReceivedAction(
-          response.tags, response.template, response.test_template,
-          response.exercise_type,
-        ));
-      },
-      (error) => {
-        if (error.status === 403) {
-          dispatch(authenticationError());
-        } else if (error.status === 400) {
-          dispatch(assignmentNotFoundAction());
-        } else {
-          dispatch(connectionTerminatedPrematurelyAction());
-        }
-      },
-    );
+      .then(
+        (response) => {
+          dispatch(assignmentInfoReceivedAction(
+            response.tags, response.template, response.test_template,
+            response.exercise_type, response.language,
+          ));
+        },
+        (error) => {
+          if (error.status === 403) {
+            dispatch(authenticationError());
+          } else if (error.status === 400) {
+            dispatch(assignmentNotFoundAction());
+          } else {
+            dispatch(connectionTerminatedPrematurelyAction());
+          }
+        },
+      );
   };
 }
 
@@ -408,13 +409,13 @@ export type RemoveTagAction = {
 };
 
 type ReviewForm = {
-   assignment: sState,
-   readOnlyModelSolution: string,
-   readOnlyCodeTemplate: string,
-   inputOutput: Array<IO>,
-   tagSuggestions: Array<string>,
-   tests: Array<Object>,
-   testingType: string
+  assignment: sState,
+  readOnlyModelSolution: string,
+  readOnlyCodeTemplate: string,
+  inputOutput: Array<IO>,
+  tagSuggestions: Array<string>,
+  tests: Array<Object>,
+  testingType: string
 }
 
 export type NewExerciseReceivedAction = {
@@ -430,7 +431,8 @@ export type AssignmentInfoReceivedAction = {
   readOnlyUnitTestsLines: number[],
   type: string,
   testingType: string,
-  testArray: Array<Object>
+  testArray: Array<Object>,
+  language: string,
 };
 
 export type SetShowCodeTemplateAction = {

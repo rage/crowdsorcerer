@@ -168,6 +168,7 @@ class ModelSolution extends Component {
     onSetShowCodeTemplate: () => void,
     markers: Array<Object>,
     setUpCode: Boolean,
+    language: string,
   };
 
   render() {
@@ -183,6 +184,9 @@ class ModelSolution extends Component {
       : ['CodeMirror-linenumbers', 'modelsolution-lines'];
 
     const cursor = (this.props.readOnly || this.props.setUpCode) ? 'nocursor' : false;
+
+    const languageMode = this.props.language === 'Python' ? 'text/x-python' : 'text/x-java';
+
 
     return (
       <div className={prefixer('form-component')}>
@@ -212,7 +216,7 @@ class ModelSolution extends Component {
             aria-labelledby="modelSolution"
             className={this.props.setUpCode ? prefixer('set-up-model-solution') : prefixer('model-solution')}
             options={{
-              mode: 'text/x-java',
+              mode: languageMode,
               lineNumbers: true,
               gutters,
               tabSize: 4,
@@ -248,6 +252,7 @@ function mapStateToProps(state: State) {
     reviewable: state.review.reviewable,
     showCodeTemplate: state.form.modelSolution.showTemplate,
     markers: state.form.modelSolution.markers,
+    language: state.form.language,
   };
 }
 

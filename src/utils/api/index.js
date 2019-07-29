@@ -135,8 +135,10 @@ export default class Api {
   }
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
+    const arrayJoinString = formState.language === 'Python' ? '", "' : '\\n';
+
     const IOArray = formState.inputOutput.map(IO => ({
-      input: IO.input.get().map(input => input.content).join('\n'),
+      input: IO.input.get().map(input => input.content).join(arrayJoinString),
       output: IO.output.get(),
     }));
     if (!formState.modelSolution.editableModelSolution) {
@@ -152,7 +154,9 @@ export default class Api {
         assertion_type: formState.inputOutput[index].type,
         test_code: t.code
           .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
-          .replace(/<placeholderInput>/g, t.input.map(input => input.content).join('\\n'))
+          .replace(/<placeholderInput>/g, t.input === '<placeholderInput>'
+            ? t.input
+            : t.input.map(input => input.content).join(arrayJoinString))
           .replace(/<placeholderOutput>/g, t.output)
           .replace('<placeholderTestName>', `${t.name.get()}()`),
       }));

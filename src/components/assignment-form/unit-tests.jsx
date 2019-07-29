@@ -54,10 +54,10 @@ class UnitTests extends Component {
         }
 
         this.markers.push(codeDocument.markText(
-              { line, ch: charRange[0] },
-              { line, ch: charRange[1] },
-              { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
-            ));
+          { line, ch: charRange[0] },
+          { line, ch: charRange[1] },
+          { className: prefixer('wrong'), inclusiveLeft: true, inclusiveRight: false },
+        ));
       });
     }
   }
@@ -100,12 +100,14 @@ class UnitTests extends Component {
     readOnlyLines: number[],
     markers: Array<Object>,
     readOnly: boolean,
+    language: string,
   }
 
   render() {
     const value = this.props.editableUnitTests ? this.props.editableUnitTests.get() : '';
     const errors = this.props.editableUnitTests ? this.props.editableUnitTests.errors : [];
     const cursor = this.props.readOnly ? 'nocursor' : false;
+    const languageMode = this.props.language === 'Python' ? 'text/x-python' : 'text/x-java';
 
     return (
       <div className={prefixer('form-component')}>
@@ -119,7 +121,7 @@ class UnitTests extends Component {
             aria-labelledby="unitTests"
             className={prefixer('unit-tests')}
             options={{
-              mode: 'text/x-java',
+              mode: languageMode,
               lineNumbers: true,
               tabSize: 4,
               indentUnit: 4,
@@ -149,6 +151,7 @@ function mapStateToProps(state: State) {
     showErrors: state.form.showErrors,
     readOnlyLines: state.form.unitTests.readOnlyLines,
     markers: state.form.unitTests.markers,
+    language: state.form.language,
   };
 }
 

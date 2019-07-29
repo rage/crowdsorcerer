@@ -60,6 +60,7 @@ class IOAndCode extends Component {
     onAddFieldClick: () => void,
     tests: Array<Object>,
     readOnly: boolean,
+    language: string,
   }
 
   render() {
@@ -69,6 +70,8 @@ class IOAndCode extends Component {
     } else {
       testCodeClass = prefixer('test-code');
     }
+
+    const languageMode = this.props.language === 'Python' ? 'text/x-python' : 'text/x-java';
 
     return (
       <div className={prefixer('form-component')}>
@@ -111,7 +114,7 @@ class IOAndCode extends Component {
                   aria-labelledby="testCode"
                   className={testCodeClass}
                   options={{
-                    mode: 'text/x-java',
+                    mode: languageMode,
                     lineNumbers: true,
                     tabSize: 4,
                     indentUnit: 4,
@@ -142,6 +145,7 @@ function mapStateToProps(state: State) {
   return {
     inputOutput: state.form.inputOutput,
     tests: state.form.unitTests.testArray,
+    language: state.form.language,
   };
 }
 

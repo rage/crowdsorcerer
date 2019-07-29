@@ -79,7 +79,8 @@ class InputOutput extends Component {
         <div key={line.id ? line.id : 'line id not yet defined'} className={prefixer('extra-input-line')}>
           {textfield}
           <IconButton
-            className={'classes.iconButton'}
+            // TODO: handle remove-line-button
+            className={prefixer('classes.iconButton')}
             onClick={(e: Event) => {
               e.preventDefault();
               this.props.onRemoveLineButtonClick(this.props.index, index);

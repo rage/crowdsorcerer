@@ -103,6 +103,7 @@ const initialState: State = {
   done: false,
   testingType: '',
   previewState: false,
+  language: '',
 };
 
 testInputCounter++;
@@ -472,6 +473,7 @@ export default createReducer(initialState, {
       },
       unitTests,
       testingType: action.testingType,
+      language: action.language,
     };
   },
   [RESET_TO_BOILERPLATE](state: State, action: ResetCodeToBoilerplateAction): State {
