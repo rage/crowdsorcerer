@@ -263,7 +263,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(deleteHiddenRow(row));
     },
     onResetModelSolution() {
-      if (window.confirm('Are you sure you want to reset the source code? \nYou will lose all the changes made in the source code field.')) {
+      if (window.confirm(
+        'Are you sure you want to reset the source code? \nYou will lose all the changes made in the source code field.',
+      )) {
         dispatch(fetchBoilerPlateAction());
       }
     },

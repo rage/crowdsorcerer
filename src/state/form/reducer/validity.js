@@ -31,7 +31,7 @@ import type {
     AddTagAction,
     RemoveTagAction,
     ChangeUnitTestsAction,
-  ChangeTestNameAction,
+    ChangeTestNameAction,
 } from 'state/form/actions';
 import type { State } from './index';
 
@@ -178,13 +178,20 @@ export default function (state: State, action: AnyAction) {
   }
   // separate nested fields with ":"
 
+  let assignmentValidator = [{ field: 'assignment', validator: assignmentErrors }];
+  if (state.testingType === 'tests_for_set_up_code'
+    || state.testingType === 'whole_test_code_for_set_up_code'
+    || state.testingType === 'input_output_tests_for_set_up_code') {
+    assignmentValidator = [];
+  }
+
   let modelSolutionValidator = [
     { field: 'modelSolution:editableModelSolution', validator: modelSolutionErrors },
     { field: 'modelSolution:solutionRows', validator: solutionRowErrors },
   ];
   if (state.testingType === 'tests_for_set_up_code'
-  || state.testingType === 'whole_test_code_for_set_up_code'
-  || state.testingType === 'input_output_tests_for_set_up_code') {
+    || state.testingType === 'whole_test_code_for_set_up_code'
+    || state.testingType === 'input_output_tests_for_set_up_code') {
     modelSolutionValidator = [];
   }
 
@@ -200,10 +207,15 @@ export default function (state: State, action: AnyAction) {
     ];
   }
 
-  const validators = [
-    { field: 'assignment', validator: assignmentErrors },
-    { field: 'tags', validator: checkNotBlank },
-  ].concat(tests).concat(modelSolutionValidator);
+  let tagsValidator = [{ field: 'tags', validator: checkNotBlank }];
+  if (state.testingType === 'tests_for_set_up_code'
+    || state.testingType === 'whole_test_code_for_set_up_code'
+    || state.testingType === 'input_output_tests_for_set_up_code') {
+    tagsValidator = [];
+  }
+
+  const validators = tagsValidator.concat(tests).concat(modelSolutionValidator).concat(assignmentValidator);
+
 
   const valid = validator(validators, state);
   return { ...state, ...{ valid } };

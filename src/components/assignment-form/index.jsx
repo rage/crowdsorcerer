@@ -51,10 +51,10 @@ class AssignmentForm extends Component {
 
     return (
       <form onSubmit={this.props.handleSubmit} >
-        <Assignment />
+        {setUpCode ? '' : <Assignment />}
         <ModelSolution setUpCode={setUpCode} />
         {tests}
-        <ExerciseTags showErrors={this.props.showErrors} />
+        {setUpCode ? '' : <ExerciseTags showErrors={this.props.showErrors} />}
         <div className={`${prefixer('form-component')} ${prefixer('submit-button-container')}`}>
           <button
             type="button"

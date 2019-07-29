@@ -40,13 +40,13 @@ export default class Api {
         },
         credentials: 'omit',
       })
-      .then((resp) => {
-        if (!resp.ok) {
-          return reject(resp);
-        }
-        return resp.json();
-      })
-      .then(resolve, reject);
+        .then((resp) => {
+          if (!resp.ok) {
+            return reject(resp);
+          }
+          return resp.json();
+        })
+        .then(resolve, reject);
     });
   }
 
@@ -61,13 +61,13 @@ export default class Api {
         },
         credentials: 'omit',
       })
-      .then((resp) => {
-        if (!resp.ok) {
-          return reject(resp.status);
-        }
-        return resp.json();
-      })
-      .then(resolve, reject);
+        .then((resp) => {
+          if (!resp.ok) {
+            return reject(resp.status);
+          }
+          return resp.json();
+        })
+        .then(resolve, reject);
     });
   }
 
@@ -82,18 +82,18 @@ export default class Api {
           credentials: 'omit',
         },
       )
-      .then(async (resp) => {
-        if (!resp.ok) {
-          throw await resp.json();
-        }
-        return resp.json();
-      })
-      .then((json) => {
-        if (!json.exercises || json.exercises.some(e => !e)) {
-          throw new Error('Arvioitavia tehtäviä ei löytynyt.');
-        }
-        return json;
-      })
+        .then(async (resp) => {
+          if (!resp.ok) {
+            throw await resp.json();
+          }
+          return resp.json();
+        })
+        .then((json) => {
+          if (!json.exercises || json.exercises.some(e => !e)) {
+            throw new Error('Arvioitavia tehtäviä ei löytynyt.');
+          }
+          return json;
+        })
     );
   }
 
@@ -106,13 +106,13 @@ export default class Api {
         },
         credentials: 'omit',
       })
-      .then((resp) => {
-        if (!resp.ok) {
-          return reject(resp);
-        }
-        return resp.json();
-      })
-      .then(resolve, reject);
+        .then((resp) => {
+          if (!resp.ok) {
+            return reject(resp);
+          }
+          return resp.json();
+        })
+        .then(resolve, reject);
     });
   }
 
@@ -137,7 +137,8 @@ export default class Api {
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
     const IOArray = formState.inputOutput.map(IO => ({
       input: IO.input.get().map(input => input.content).join('\n'),
-      output: IO.output.get() }));
+      output: IO.output.get(),
+    }));
     if (!formState.modelSolution.editableModelSolution) {
       return {};
     }
@@ -151,7 +152,7 @@ export default class Api {
         assertion_type: formState.inputOutput[index].type,
         test_code: t.code
           .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
-          .replace(/<placeholderInput>/g, t.input)
+          .replace(/<placeholderInput>/g, t.input.map(input => input.content).join('\\n'))
           .replace(/<placeholderOutput>/g, t.output)
           .replace('<placeholderTestName>', `${t.name.get()}()`),
       }));
@@ -163,8 +164,7 @@ export default class Api {
       }];
     }
 
-    return (
-    {
+    return ({
       oauth_token: this.oauthToken(),
       exercise: {
         assignment_id: assignmentState.assignmentId,
@@ -174,8 +174,7 @@ export default class Api {
         tags: formState.tags.get(),
         unit_tests: unitTests,
       },
-    }
-    );
+    });
   }
 
   _createReviewJSON(reviewState: ReviewState, formState: FormState): Object {
@@ -183,8 +182,7 @@ export default class Api {
     if (reviewState.reviews) {
       answers = formValueToObject(reviewState.reviews);
     }
-    return (
-    {
+    return ({
       oauth_token: this.oauthToken(),
       exercise: {
         exercise_id: reviewState.reviewable,
@@ -194,8 +192,7 @@ export default class Api {
         comment: reviewState.comment.get(),
         answers,
       },
-    }
-    );
+    });
   }
 
   oauthToken(): string {
