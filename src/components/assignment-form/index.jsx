@@ -16,6 +16,7 @@ import IOAndCode from './io-and-code';
 import Preview from './preview';
 
 class AssignmentForm extends Component {
+  // this class is the root node for the source code (ModelSolution) and tests
 
   wrapper: HTMLDivElement;
 

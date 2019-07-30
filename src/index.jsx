@@ -19,7 +19,7 @@ type ReviewJSON = {
     {
       id: number,
       status: string,
-      testiIO : Array<TestIO>,
+      testiIO: Array<TestIO>,
       description: sState,
       template: string,
       model_solution: string,
@@ -52,10 +52,12 @@ const initReview = (e, assignmentId, exerciseCount, review) => {
       <div className={`${prefixer('container')} ${prefixer('center')}`}>
         <FatalErrorDisplay message={errors} />
       </div>,
-    e,
+      e,
     );
   });
 };
+
+// the function below handles the rendering of the app
 window.initCrowdsorcerer = function initCrowdsorcerer() {
   document.querySelectorAll('.crowdsorcerer-widget').forEach((e) => {
     const assignmentId = e.dataset.assignment;

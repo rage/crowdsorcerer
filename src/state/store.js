@@ -21,6 +21,7 @@ export type ThunkArgument = {
   api: Api
 };
 
+// username is saved in web browser's localStorage as 'tmc.user'
 function getTMCUsername() {
   if (!storejs.get('tmc.user')) {
     return '';
@@ -82,9 +83,9 @@ function loadStateFromLocalStorage(storageName: string) {
   let testArray;
   if (state.form.unitTests) {
     editableUnitTests = state.form.unitTests.editableUnitTests
-                        ? new FormValue(state.form.unitTests.editableUnitTests.value,
-                          state.form.unitTests.editableUnitTests.errors)
-                        : undefined;
+      ? new FormValue(state.form.unitTests.editableUnitTests.value,
+        state.form.unitTests.editableUnitTests.errors)
+      : undefined;
     testArray = state.form.unitTests.testArray.map((test) => {
       const name = new FormValue(test.name.value, test.name.errors);
       return { name, code: test.code, input: test.input, output: test.output };
@@ -104,9 +105,9 @@ function loadStateFromLocalStorage(storageName: string) {
       modelSolution: {
         ...state.form.modelSolution,
         editableModelSolution: state.form.modelSolution.editableModelSolution
-                ? new FormValue(state.form.modelSolution.editableModelSolution.value,
-                  state.form.modelSolution.editableModelSolution.errors)
-                : undefined,
+          ? new FormValue(state.form.modelSolution.editableModelSolution.value,
+            state.form.modelSolution.editableModelSolution.errors)
+          : undefined,
         solutionRows: new FormValue(state.form.modelSolution.solutionRows.value, state.form.modelSolution.solutionRows.errors),
       },
       unitTests: {
@@ -131,7 +132,7 @@ export default function makeStore(
   tags: Array<Tag>,
   testingType: string,
   storeCount: number,
-  ) {
+) {
   let storageName = 'crowdsorcerer-v2-';
   const assignmentId = parseInt(assignment, 10);
   migrateOldLocalStorageFormat(assignmentId, getTMCUsername());

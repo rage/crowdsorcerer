@@ -56,6 +56,8 @@ export type State = {
   },
   done: boolean,
   testingType: string,
+  // testingType can be one of these: input_output, student_written_tests, io_and_code,
+  // tests_for_set_up_code, whole_test_code_for_set_up_code, input_output_tests_for_set_up_code
   previewState: boolean,
   language: string
 };

@@ -4,6 +4,8 @@
 
 Crowdsorcerer is a tool for crowdsourcing programming exercises for a CS1  course. It enables creating exercises and peer reviewing them through an embeddable widget. The exercises are sent to [crowdsorceress](https://github.com/rage/crowdsorceress), which uses TMC sandbox to test them, and provides error messages. Built with love using React and Redux.
 
+See [the project map](./documentation/map-for-repository.md) for instructions on how to navigate the project.
+
 ## Getting started after cloning
 
 1. Edit the `crowdsorcerer-widget` element in [index.html](https://github.com/rage/crowdsorcerer/blob/master/index.html) to suit your needs. Add the following attributes according to your needs:
