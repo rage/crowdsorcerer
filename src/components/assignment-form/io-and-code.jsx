@@ -89,21 +89,27 @@ class IOAndCode extends Component {
               if (this.props.tests[index].input === '<placeholderInput>') {
                 input = '';
               } else {
-                input = this.props.tests[index].input.map(i => i.content).join('\\n');
+                const joinBy = this.props.language === 'Python' ? '", "' : '\\n';
+                input = this.props.tests[index].input.map(i => i.content).join(joinBy);
               }
 
               let output = this.props.tests[index].output;
               if (this.props.tests[index].output === '<placeholderOutput>') {
                 output = '';
               }
-              const name = this.props.tests[index].name.get() === '<placeholderTestName>'
+              let name = this.props.tests[index].name.get() === '<placeholderTestName>'
                 ? 'test'
                 : this.props.tests[index].name.get();
+              name = this.props.language === 'Python'
+                ? `test_${name}(self, mock_stdout)`
+                : `${name}()`;
+
+
               test = this.props.tests[index].code
-                .replace('<assertion>', assertionGenerator(io.type))
+                .replace('<assertion>', assertionGenerator(io.type, this.props.language))
                 .replace(/<placeholderInput>/g, input)
                 .replace(/<placeholderOutput>/g, output)
-                .replace('<placeholderTestName>', `${name}()`);
+                .replace('<placeholderTestName>', `${name}`);
             }
 
             return (

@@ -153,12 +153,13 @@ export default class Api {
         test_name: t.name.get(),
         assertion_type: formState.inputOutput[index].type,
         test_code: t.code
-          .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type))
+          .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type, formState.language))
           .replace(/<placeholderInput>/g, t.input === '<placeholderInput>'
             ? t.input
             : t.input.map(input => input.content).join(arrayJoinString))
           .replace(/<placeholderOutput>/g, t.output)
-          .replace('<placeholderTestName>', `${t.name.get()}()`),
+          .replace('<placeholderTestName>',
+            formState.language === 'Python' ? `test_${t.name.get()}(self, mock_stdout)` : `${t.name.get()}()`),
       }));
     } else if (formState.unitTests.editableUnitTests) {
       unitTests = [{
