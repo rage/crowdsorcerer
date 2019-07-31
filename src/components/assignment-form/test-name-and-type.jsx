@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import { changeTestNameAction, testTypeChangedAction } from 'state/form';
+import { changeTestNameAction, testTypeChangedAction, removeTestFieldAction } from 'state/form';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import Errors from 'components/errors';
@@ -22,6 +22,7 @@ class TestNameAndType extends Component {
     io: IO,
     showErrors: boolean,
     readOnly: boolean,
+    onRemoveFieldClick: (index: number) => void,
   }
 
   render() {
@@ -57,7 +58,6 @@ class TestNameAndType extends Component {
         onChange={(event: any) => {
           this.props.onTestTypeChange(event.target.value, this.props.index);
         }}
-      // input={<OutlinedInput />}
       >
         <MenuItem value={'contains'}>Contains</MenuItem>
         <MenuItem value={'notContains'}>Does not contain</MenuItem>
@@ -98,6 +98,16 @@ class TestNameAndType extends Component {
             {typeField}
           </FormControl>
         </div>
+
+        {!this.props.readOnly && <button
+          type="button"
+          className={prefixer('card-close-button')}
+          onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
+        >
+          {/* &#10006; */}
+          &#x1f6ae;
+        </button>
+        }
       </div>
     );
   }
@@ -117,6 +127,13 @@ function mapDispatchToProps(dispatch: Dispatch) {
     },
     onTestTypeChange(type: string, index: number) {
       dispatch(testTypeChangedAction(type, index));
+    },
+    onRemoveFieldClick(index) {
+      if (window.confirm(
+        'Are you sure you want to remove the test case?',
+      )) {
+        dispatch(removeTestFieldAction(index));
+      }
     },
   };
 }

@@ -22,7 +22,7 @@
     margin-top: 0.1rem;
 
     .CodeMirror {
-      height: 127px !important;
+      height: 141px !important;
     }
 }
 
@@ -104,19 +104,18 @@
 .card-close-button {
   border: 0;
   background: transparent;
-  color: $close-button-color;
+  color: rgba(0, 0, 0, 0.54);
   cursor: pointer;
   font-weight: bold;
-  font-size: 1.25rem;
+  font-size: 2.25rem;
   transition: color 0.2s;
   line-height: 2rem;
   &:hover {
     color: darken($close-button-color, 10%);
   }
-  // TODO: FIX POSITION
-  // position: absolute;
-  top: 0px;
-  right: 0px;
+  margin-left: auto;
+  margin-right: 23px;
+  margin-top: 5px;
 }
 
 .line-change {

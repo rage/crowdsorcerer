@@ -43,3 +43,17 @@
 .extra-input-line {
   display: flex;
 }
+
+.remove-line-button {
+  border: 0;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.54);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+  line-height: 2rem;
+  &:hover {
+    color: darken($close-button-color, 10%);
+  }
+}

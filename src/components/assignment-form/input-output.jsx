@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
 import type { State, Dispatch } from 'state/reducer';
 import IO from 'domain/io';
 import {
@@ -28,23 +27,12 @@ class InputOutput extends Component {
     onRemoveFieldClick: (index: number) => void,
     readOnly: boolean,
     showErrors: boolean,
-    testingType: string,
     onAddLineButtonClick: (index: number) => void,
     onRemoveLineButtonClick: (index: number, lineNumber: number) => void,
     card: boolean,
   };
 
   render() {
-    let buttonClassName;
-
-    if (this.props.testingType === 'input_output' || this.props.testingType === 'input_output_tests_for_set_up_code') {
-      buttonClassName = 'close-button';
-    } else {
-      // TODO: FIX BUTTON'S POSITION
-      buttonClassName = 'card-close-button';
-    }
-
-
     let inputLines = '';
     inputLines = this.props.io.input.get().map((line, index) => {
       let textfield = '';
@@ -78,16 +66,16 @@ class InputOutput extends Component {
       return (
         <div key={line.id ? line.id : 'line id not yet defined'} className={prefixer('extra-input-line')}>
           {textfield}
-          <IconButton
-            // TODO: handle remove-line-button
-            className={prefixer('classes.iconButton')}
+          <button
+            type="button"
+            className={prefixer('remove-line-button')}
             onClick={(e: Event) => {
               e.preventDefault();
               this.props.onRemoveLineButtonClick(this.props.index, index);
             }}
           >
             &#10006;
-            </IconButton>
+        </button>
         </div>)
         ;
     });
@@ -139,7 +127,7 @@ class InputOutput extends Component {
       <div>
         {!this.props.readOnly && <button
           type="button"
-          className={prefixer(buttonClassName)}
+          className={prefixer('close-button')}
           onClick={(e: Event) => { e.preventDefault(); this.props.onRemoveFieldClick(this.props.index); }}
         >
           &#10006;
@@ -162,7 +150,6 @@ class InputOutput extends Component {
       <div className={prefixer('io-and-code-field-container')} >
         {input}
         {output}
-        {removeFieldButton}
       </div>
     );
   }
@@ -171,7 +158,6 @@ class InputOutput extends Component {
 function mapStateToProps(state: State) {
   return {
     showErrors: state.form.showErrors,
-    testingType: state.form.testingType,
   };
 }
 
@@ -186,7 +172,11 @@ function mapDispatchToProps(dispatch: Dispatch) {
       dispatch(changeTestInTestArrayAction(index));
     },
     onRemoveFieldClick(index) {
-      dispatch(removeTestFieldAction(index));
+      if (window.confirm(
+        'Are you sure you want to remove the test case?',
+      )) {
+        dispatch(removeTestFieldAction(index));
+      }
     },
     onTestTypeButtonClicked(oldType: string, index: number) {
       dispatch(testTypeChangedAction(oldType, index));
