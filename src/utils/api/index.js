@@ -18,8 +18,8 @@ if (process.env.NODE_ENV === 'production') {
   SERVER = 'https://crowdsorcerer.testmycode.io/api/v0';
   SOCKET_SERVER = 'wss://crowdsorcerer.testmycode.io/cable';
 } else {
-  SERVER = 'http://localhost:3000/api/v0';
-  SOCKET_SERVER = 'ws://localhost:3000/cable';
+  SERVER = 'https://localhost:3000/api/v0';
+  SOCKET_SERVER = 'wss://localhost:3000/cable';
 }
 /* eslint-enable no-const-assign */
 export const SERVER_ADDR = SERVER;
@@ -36,7 +36,8 @@ export default class Api {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
+          'user_id': this.getTMCUsername(), 
         },
         credentials: 'omit',
       })
@@ -57,7 +58,8 @@ export default class Api {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
+          'user_id': this.getTMCUsername(), 
         },
         credentials: 'omit',
       })
@@ -78,6 +80,7 @@ export default class Api {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json', 
+            'user_id': this.getTMCUsername(),
           },
           credentials: 'omit',
         },
@@ -102,7 +105,8 @@ export default class Api {
       fetch(`${SERVER}/assignments/${assignmentId}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
+          'user_id': this.getTMCUsername(), 
         },
         credentials: 'omit',
       })
@@ -126,7 +130,7 @@ export default class Api {
     onInvalidDataError: () => void,
     sentExerciseId: number,
   ): void {
-    this.ws = new WebSocketConnection(SOCKET_SERVER);
+    this.ws = new WebSocketConnection(this.getTMCUsername(), SOCKET_SERVER);
     this.ws.createSubscription(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
   }
 
@@ -170,6 +174,7 @@ export default class Api {
     }
 
     return ({
+      user_id: this.getTMCUsername(),
       exercise: {
         assignment_id: assignmentState.assignmentId,
         description: Raw.serialize(formState.assignment.get(), { terse: true }),
@@ -187,6 +192,7 @@ export default class Api {
       answers = formValueToObject(reviewState.reviews);
     }
     return ({
+      user_id: this.getTMCUsername(),
       exercise: {
         exercise_id: reviewState.reviewable,
         tags: formState.tags.get(),
@@ -196,6 +202,13 @@ export default class Api {
         answers,
       },
     });
+  }
+
+  getTMCUsername() {
+    if (!storejs.get('tmc.user')) {
+      return '';
+    }
+    return storejs.get('tmc.user').username
   }
 
 }

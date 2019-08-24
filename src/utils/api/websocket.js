@@ -5,12 +5,14 @@ const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
 export default class WebSocketConnection {
 
-  constructor(serverAddr: string) {
+  constructor(user_id: string, serverAddr: string) {
+    this.user_id = user_id;
     this.serverAddr = serverAddr;
   }
 
   cable: ActionCable.Cable;
   connection: ActionCable.Channel;
+  user_id: string;
   serverAddr: string;
 
   deleteSubscription(): void {
@@ -68,6 +70,6 @@ export default class WebSocketConnection {
   }
 
   _addExtraParamsToUrl(url: string, exerciseId: number): string {
-    return `${url}?exercise_id=${exerciseId}`;
+    return `${url}?user_id=${this.user_id}&exercise_id=${exerciseId}`;
   }
 }
