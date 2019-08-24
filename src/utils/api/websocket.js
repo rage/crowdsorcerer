@@ -5,14 +5,12 @@ const JSON_FIELDS = ['status', 'message', 'progress', 'result'];
 
 export default class WebSocketConnection {
 
-  constructor(oauthToken: string, serverAddr: string) {
-    this.oauthToken = oauthToken;
+  constructor(serverAddr: string) {
     this.serverAddr = serverAddr;
   }
 
   cable: ActionCable.Cable;
   connection: ActionCable.Channel;
-  oauthToken: string;
   serverAddr: string;
 
   deleteSubscription(): void {
@@ -70,6 +68,6 @@ export default class WebSocketConnection {
   }
 
   _addExtraParamsToUrl(url: string, exerciseId: number): string {
-    return `${url}?oauth_token=${this.oauthToken}&exercise_id=${exerciseId}`;
+    return `${url}?exercise_id=${exerciseId}`;
   }
 }

@@ -36,7 +36,7 @@ export default class Api {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
         },
         credentials: 'omit',
       })
@@ -57,7 +57,7 @@ export default class Api {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
         },
         credentials: 'omit',
       })
@@ -74,10 +74,10 @@ export default class Api {
   async getReviewableExerciseAndQuestions(assignmentId: number, exerciseCount: number): Promise<any> {
     return (
       fetch(
-        `${SERVER}/assignments/${assignmentId}/peer_review_exercise?count=${exerciseCount}&oauth_token=${this.oauthToken()}`, {
+        `${SERVER}/assignments/${assignmentId}/peer_review_exercise?count=${exerciseCount}`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json', 
           },
           credentials: 'omit',
         },
@@ -102,7 +102,7 @@ export default class Api {
       fetch(`${SERVER}/assignments/${assignmentId}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
         },
         credentials: 'omit',
       })
@@ -126,7 +126,7 @@ export default class Api {
     onInvalidDataError: () => void,
     sentExerciseId: number,
   ): void {
-    this.ws = new WebSocketConnection(this.oauthToken(), SOCKET_SERVER);
+    this.ws = new WebSocketConnection(SOCKET_SERVER);
     this.ws.createSubscription(onUpdate, onDisconnected, onInvalidDataError, sentExerciseId);
   }
 
@@ -170,7 +170,6 @@ export default class Api {
     }
 
     return ({
-      oauth_token: this.oauthToken(),
       exercise: {
         assignment_id: assignmentState.assignmentId,
         description: Raw.serialize(formState.assignment.get(), { terse: true }),
@@ -188,7 +187,6 @@ export default class Api {
       answers = formValueToObject(reviewState.reviews);
     }
     return ({
-      oauth_token: this.oauthToken(),
       exercise: {
         exercise_id: reviewState.reviewable,
         tags: formState.tags.get(),
@@ -200,10 +198,4 @@ export default class Api {
     });
   }
 
-  oauthToken(): string {
-    if (!storejs.get('tmc.user')) {
-      return '';
-    }
-    return storejs.get('tmc.user').accessToken;
-  }
 }

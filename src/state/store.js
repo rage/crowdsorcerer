@@ -23,10 +23,7 @@ export type ThunkArgument = {
 
 // username is saved in web browser's localStorage as 'tmc.user'
 function getTMCUsername() {
-  if (!storejs.get('tmc.user')) {
-    return '';
-  }
-  return storejs.get('tmc.user').username;
+  return '';
 }
 
 function migrateOldLocalStorageFormat(assignmentId: number, username: string) {

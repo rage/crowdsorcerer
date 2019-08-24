@@ -64,16 +64,6 @@ window.initCrowdsorcerer = function initCrowdsorcerer() {
     const exerciseCount = e.dataset.exercises;
     const review = e.getAttribute('peer-review') !== null;
     if (review) {
-      let lastUser = storejs.get('tmc.user');
-      setInterval(() => {
-        const tmcUser = storejs.get('tmc.user');
-        const username = tmcUser ? tmcUser.username : '';
-        const lastUsername = lastUser ? lastUser.username : '';
-        if (username !== lastUsername && username === '') {
-          initReview(e, assignmentId, exerciseCount, review);
-        }
-        lastUser = tmcUser;
-      }, 500);
       initReview(e, assignmentId, exerciseCount, review);
     } else {
       const store = makeStore(assignmentId, review);
