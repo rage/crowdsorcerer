@@ -135,7 +135,12 @@ export default class Api {
   }
 
   _createFormJSON(formState: FormState, assignmentState: AssignmentState): Object {
-    const arrayJoinString = formState.language === 'Python' ? '", "' : '\\n';
+    let arrayJoinString;
+    if (formState.language === 'Python') {
+      arrayJoinString = formState.inputType === 'String' ? '", "' : ', ';
+    } else {
+      arrayJoinString = '\\n';
+    }
 
     const IOArray = formState.inputOutput.map(IO => ({
       input: IO.input.get().map(input => input.content).join(arrayJoinString),
@@ -153,7 +158,8 @@ export default class Api {
         test_name: t.name.get(),
         assertion_type: formState.inputOutput[index].type,
         test_code: t.code
-          .replace('<assertion>', assertionGenerator(formState.inputOutput[index].type, formState.language))
+          .replace('<assertion>',
+            assertionGenerator(formState.inputOutput[index].type, formState.language, formState.outputType))
           .replace(/<placeholderInput>/g, t.input === '<placeholderInput>'
             ? t.input
             : t.input.map(input => input.content).join(arrayJoinString))

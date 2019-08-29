@@ -61,6 +61,8 @@ class IOAndCode extends Component {
     tests: Array<Object>,
     readOnly: boolean,
     language: string,
+    inputType: string,
+    outputType: string
   }
 
   render() {
@@ -89,7 +91,13 @@ class IOAndCode extends Component {
               if (this.props.tests[index].input === '<placeholderInput>') {
                 input = '';
               } else {
-                const joinBy = this.props.language === 'Python' ? '", "' : '\\n';
+                let joinBy;
+                if (this.props.language === 'Python') {
+                  joinBy = this.props.inputType === 'String' ? '", "' : ', ';
+                } else {
+                  joinBy = '\\n';
+                }
+
                 input = this.props.tests[index].input.map(i => i.content).join(joinBy);
               }
 
@@ -106,7 +114,7 @@ class IOAndCode extends Component {
 
 
               test = this.props.tests[index].code
-                .replace('<assertion>', assertionGenerator(io.type, this.props.language))
+                .replace('<assertion>', assertionGenerator(io.type, this.props.language, this.props.outputType))
                 .replace(/<placeholderInput>/g, input)
                 .replace(/<placeholderOutput>/g, output)
                 .replace('<placeholderTestName>', `${name}`);
@@ -152,6 +160,8 @@ function mapStateToProps(state: State) {
     inputOutput: state.form.inputOutput,
     tests: state.form.unitTests.testArray,
     language: state.form.language,
+    inputType: state.form.inputType,
+    outputType: state.form.outputType,
   };
 }
 
