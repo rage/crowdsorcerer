@@ -154,7 +154,7 @@ export function submitFormAction() {
 
 export function assignmentInfoReceivedAction(
   newTags: Array<Tag>, boilerplate: string, testTemplate: ?string, testingType: string,
-  language: string, inputType: string, outputType: string,
+  language: string, inputType: string, outputType: string, testingAMethod: Boolean,
 ) {
   const tagSuggestions = newTags.map(tag => tag.name);
   const readOnlyModelSolutionLines = getReadOnlyLines(boilerplate);
@@ -182,6 +182,7 @@ export function assignmentInfoReceivedAction(
     language,
     inputType,
     outputType,
+    testingAMethod,
     type: ASSIGNMENT_INFO_RECEIVED,
   };
 }
@@ -220,7 +221,7 @@ export function getAssignmentInfoAction() {
         (response) => {
           dispatch(assignmentInfoReceivedAction(
             response.tags, response.template, response.test_template,
-            response.exercise_type, response.language, response.input_type, response.output_type,
+            response.exercise_type, response.language, response.input_type, response.output_type, response.testing_a_method,
           ));
         },
         (error) => {
@@ -437,7 +438,8 @@ export type AssignmentInfoReceivedAction = {
   testArray: Array<Object>,
   language: string,
   inputType: string,
-  outputType: string
+  outputType: string,
+  testingAMethod: boolean
 };
 
 export type SetShowCodeTemplateAction = {

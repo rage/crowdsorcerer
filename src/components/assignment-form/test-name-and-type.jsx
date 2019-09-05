@@ -23,6 +23,7 @@ class TestNameAndType extends Component {
     showErrors: boolean,
     readOnly: boolean,
     onRemoveFieldClick: (index: number) => void,
+    outputType: string,
   }
 
   render() {
@@ -51,6 +52,14 @@ class TestNameAndType extends Component {
         type="text"
         value={type ? type.label : ''}
         readOnly
+      />);
+    } else if (this.props.outputType === 'int') {
+      typeField = (<TextField
+        className={prefixer('test-name')}
+        defaultValue={'Equals'}
+        variant="outlined"
+        label="Assertion type"
+        disabled
       />);
     } else {
       typeField = (<Select
@@ -92,9 +101,12 @@ class TestNameAndType extends Component {
 
         <div>
           <FormControl className={prefixer('test-type')}>
-            <InputLabel shrink>
-              Assertion type
+            {this.props.outputType === 'String'
+              ? <InputLabel shrink>
+                Assertion type
             </InputLabel>
+              : ''
+            }
             {typeField}
           </FormControl>
         </div>
@@ -117,6 +129,7 @@ function mapStateToProps(state: State) {
   return {
     tests: state.form.unitTests.testArray,
     showErrors: state.form.showErrors,
+    outputType: state.form.outputType,
   };
 }
 

@@ -61,7 +61,8 @@ export type State = {
   previewState: boolean,
   language: string,
   inputType: string,
-  outputType: string
+  outputType: string,
+  testingAMethod: boolean,
 };
 
 export default reduceReducers(changes, validity);

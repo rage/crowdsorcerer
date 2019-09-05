@@ -62,7 +62,8 @@ class IOAndCode extends Component {
     readOnly: boolean,
     language: string,
     inputType: string,
-    outputType: string
+    outputType: string,
+    testingAMethod: boolean
   }
 
   render() {
@@ -108,9 +109,12 @@ class IOAndCode extends Component {
               let name = this.props.tests[index].name.get() === '<placeholderTestName>'
                 ? 'test'
                 : this.props.tests[index].name.get();
-              name = this.props.language === 'Python'
-                ? `test_${name}(self, mock_stdout)`
-                : `${name}()`;
+
+              if (this.props.language === 'Python') {
+                name = this.props.testingAMethod === true ? `test_${name}(self)` : `test_${name}(self, mock_stdout)`;
+              } else {
+                name = `${name}()`;
+              }
 
 
               test = this.props.tests[index].code
@@ -162,6 +166,7 @@ function mapStateToProps(state: State) {
     language: state.form.language,
     inputType: state.form.inputType,
     outputType: state.form.outputType,
+    testingAMethod: state.form.testingAMethod,
   };
 }
 

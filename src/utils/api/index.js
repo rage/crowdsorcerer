@@ -154,19 +154,26 @@ export default class Api {
 
     let unitTests;
     if (formState.unitTests.testArray.length > 0) {
-      unitTests = formState.unitTests.testArray.map((t, index) => ({
-        test_name: t.name.get(),
-        assertion_type: formState.inputOutput[index].type,
-        test_code: t.code
-          .replace('<assertion>',
-            assertionGenerator(formState.inputOutput[index].type, formState.language, formState.outputType))
-          .replace(/<placeholderInput>/g, t.input === '<placeholderInput>'
-            ? t.input
-            : t.input.map(input => input.content).join(arrayJoinString))
-          .replace(/<placeholderOutput>/g, t.output)
-          .replace('<placeholderTestName>',
-            formState.language === 'Python' ? `test_${t.name.get()}(self, mock_stdout)` : `${t.name.get()}()`),
-      }));
+      unitTests = formState.unitTests.testArray.map((t, index) => {
+        let name;
+        if (formState.language === 'Python') {
+          name = formState.testingAMethod === true ? `test_${t.name.get()}(self)` : `test_${t.name.get()}(self, mock_stdout)`;
+        } else {
+          name = `${t.name.get}()`;
+        }
+        return {
+          test_name: t.name.get(),
+          assertion_type: formState.inputOutput[index].type,
+          test_code: t.code
+            .replace('<assertion>',
+              assertionGenerator(formState.inputOutput[index].type, formState.language, formState.outputType))
+            .replace(/<placeholderInput>/g, t.input === '<placeholderInput>'
+              ? t.input
+              : t.input.map(input => input.content).join(arrayJoinString))
+            .replace(/<placeholderOutput>/g, t.output)
+            .replace('<placeholderTestName>', name),
+        };
+      });
     } else if (formState.unitTests.editableUnitTests) {
       unitTests = [{
         test_name: '',
