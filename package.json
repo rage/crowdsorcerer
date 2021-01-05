@@ -16,7 +16,7 @@
   "dependencies": {
     "@skidding/react-codemirror": "^1.0.0",
     "actioncable": "^5.1.1",
-    "axios": "^0.16.1",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.23.0",
     "codemirror": "^5.26.0",
     "draft-js": "^0.10.1",
