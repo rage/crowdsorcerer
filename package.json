@@ -18,7 +18,7 @@
     "actioncable": "^5.1.1",
     "axios": "^0.16.1",
     "babel-polyfill": "^6.23.0",
-    "codemirror": "^5.26.0",
+    "codemirror": "^5.58.2",
     "draft-js": "^0.10.1",
     "file-loader": "^0.11.1",
     "likert-react": "^0.0.0-beta5",
